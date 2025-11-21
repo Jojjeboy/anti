@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import SunCalc from 'suncalc';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { Category, List, Item } from '../types';
+import { Category, List, Item, Note } from '../types';
 
 interface AppContextType {
     categories: Category[];
@@ -16,6 +16,10 @@ interface AppContextType {
     moveList: (listId: string, newCategoryId: string) => void;
     updateListItems: (listId: string, items: Item[]) => void;
     toggleTheme: () => void;
+    notes: Note[];
+    addNote: (title: string, content: string) => void;
+    updateNote: (id: string, title: string, content: string) => void;
+    deleteNote: (id: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -24,6 +28,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const [categories, setCategories] = useLocalStorage<Category[]>('categories', []);
     const [lists, setLists] = useLocalStorage<List[]>('lists', []);
     const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light');
+    const [notes, setNotes] = useLocalStorage<Note[]>('notes', []);
 
     useEffect(() => {
         if (theme === 'dark') {
@@ -119,6 +124,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
 
+    const addNote = (title: string, content: string) => {
+        const newNote: Note = {
+            id: uuidv4(),
+            title,
+            content,
+            createdAt: new Date().toISOString(),
+        };
+        setNotes([newNote, ...notes]);
+    };
+
+    const updateNote = (id: string, title: string, content: string) => {
+        setNotes(notes.map((n) => (n.id === id ? { ...n, title, content } : n)));
+    };
+
+    const deleteNote = (id: string) => {
+        setNotes(notes.filter((n) => n.id !== id));
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -133,6 +156,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 moveList,
                 updateListItems,
                 toggleTheme,
+                notes,
+                addNote,
+                updateNote,
+                deleteNote,
             }}
         >
             {children}

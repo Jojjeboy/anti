@@ -4,6 +4,13 @@ export interface Item {
     completed: boolean;
 }
 
+export interface Note {
+    id: string;
+    title: string;
+    content: string;
+    createdAt: string;
+}
+
 export interface List {
     id: string;
     name: string;
