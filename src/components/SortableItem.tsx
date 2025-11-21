@@ -9,16 +9,17 @@ interface SortableItemProps {
     onToggle: (id: string) => void;
     onDelete: (id: string) => void;
     onEdit: (id: string, text: string) => void;
+    disabled?: boolean;
 }
 
-export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit }) => {
+export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, disabled }) => {
     const {
         attributes,
         listeners,
         setNodeRef,
         transform,
         transition,
-    } = useSortable({ id: item.id });
+    } = useSortable({ id: item.id, disabled });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -31,9 +32,11 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
             style={style}
             className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm group touch-none"
         >
-            <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1">
-                <GripVertical size={20} />
-            </div>
+            {!disabled && (
+                <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1">
+                    <GripVertical size={20} />
+                </div>
+            )}
 
             <input
                 type="checkbox"
