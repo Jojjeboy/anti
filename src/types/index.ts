@@ -16,6 +16,7 @@ export interface List {
     name: string;
     items: Item[];
     categoryId: string;
+    isPinned?: boolean;
 }
 
 export interface Category {

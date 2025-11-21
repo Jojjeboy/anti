@@ -14,6 +14,7 @@ interface AppContextType {
     deleteList: (id: string) => void;
     copyList: (listId: string) => void;
     moveList: (listId: string, newCategoryId: string) => void;
+    togglePin: (listId: string) => void;
     updateListItems: (listId: string, items: Item[]) => void;
     toggleTheme: () => void;
     notes: Note[];
@@ -124,6 +125,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setLists(lists.map((l) => (l.id === listId ? { ...l, items } : l)));
     };
 
+    const togglePin = (listId: string) => {
+        setLists(lists.map((l) => (l.id === listId ? { ...l, isPinned: !l.isPinned } : l)));
+    };
+
     const toggleTheme = () => {
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
         localStorage.setItem('manual_theme', 'true');
@@ -159,6 +164,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 deleteList,
                 copyList,
                 moveList,
+                togglePin,
                 updateListItems,
                 toggleTheme,
                 notes,
