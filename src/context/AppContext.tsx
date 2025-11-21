@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import SunCalc from 'suncalc';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { Category, List, Item, Note } from '../types';
+import { templates } from '../data/templates';
 
 interface AppContextType {
     categories: Category[];
@@ -11,6 +12,7 @@ interface AppContextType {
     addCategory: (name: string) => void;
     deleteCategory: (id: string) => void;
     addList: (name: string, categoryId: string) => void;
+    addListFromTemplate: (templateId: string, categoryId: string) => void;
     deleteList: (id: string) => void;
     copyList: (listId: string) => void;
     moveList: (listId: string, newCategoryId: string) => void;
@@ -78,6 +80,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const deleteList = (id: string) => {
         setLists(lists.filter((l) => l.id !== id));
+    };
+
+    const addListFromTemplate = (templateId: string, categoryId: string) => {
+        const template = templates.find(t => t.id === templateId);
+        if (template) {
+            const newList: List = {
+                id: uuidv4(),
+                name: template.name,
+                categoryId,
+                items: template.items.map(item => ({
+                    id: uuidv4(),
+                    text: item.text,
+                    completed: false
+                })),
+                isPinned: false
+            };
+            setLists([...lists, newList]);
+        }
     };
 
     const copyList = (listId: string) => {
@@ -161,6 +181,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addCategory,
                 deleteCategory,
                 addList,
+                addListFromTemplate,
                 deleteList,
                 copyList,
                 moveList,
