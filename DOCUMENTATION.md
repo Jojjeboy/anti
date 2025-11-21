@@ -6,8 +6,13 @@ A mobile-first Progressive Web App for managing reusable lists, built with React
 - **Categories**: Group lists into categories (e.g., Jobb, Privat, Resor).
 - **Lists**: Create, copy, move, and delete lists.
 - **Items**: Add, edit, delete, check/uncheck items.
+- **Templates**: Create lists from predefined templates (Grocery, Gym, etc.).
+- **Sorting**: Sort items manually, alphabetically, or by completion status.
+- **Voice Input**: Add items using voice dictation.
+- **Undo**: Undo accidental deletions of lists and items.
+- **Data Portability**: Export and import data via JSON.
 - **Drag and Drop**: Reorder items within a list.
-- **Dark Mode**: Toggle between light and dark themes.
+- **Dark Mode**: Toggle between light and dark themes (auto-detected or manual).
 - **Local Storage**: Data is persisted locally on the device.
 - **PWA**: Installable on mobile devices.
 
