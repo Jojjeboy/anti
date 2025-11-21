@@ -4,15 +4,32 @@ import { useApp } from '../context/AppContext';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, RotateCcw } from 'lucide-react';
+import { Plus, ChevronLeft, RotateCcw, Mic, MicOff } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
+
+import { useVoiceInput } from '../hooks/useVoiceInput';
 
 export const ListDetail: React.FC = () => {
     const { listId } = useParams<{ listId: string }>();
     const { lists, updateListItems, deleteItem } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
+
+    const { isListening, transcript, startListening, stopListening, resetTranscript, hasSupport } = useVoiceInput();
+
+    // Update input text when transcript changes
+    React.useEffect(() => {
+        if (transcript) {
+            setNewItemText(prev => {
+                // If we are appending, we might want a space, but for now let's just replace or append intelligently
+                // Simple approach: if input is empty, set to transcript. If not, append.
+                // Actually, for a simple "add item" flow, usually you speak the whole item.
+                // But let's make it so it updates the current text.
+                return transcript;
+            });
+        }
+    }, [transcript]);
 
     const list = lists.find((l) => l.id === listId);
 
@@ -50,6 +67,15 @@ export const ListDetail: React.FC = () => {
             const newItem = { id: uuidv4(), text: newItemText.trim(), completed: false };
             updateListItems(list.id, [...list.items, newItem]);
             setNewItemText('');
+            resetTranscript();
+        }
+    };
+
+    const toggleListening = () => {
+        if (isListening) {
+            stopListening();
+        } else {
+            startListening();
         }
     };
 
@@ -88,6 +114,7 @@ export const ListDetail: React.FC = () => {
 
     return (
         <div className="space-y-6">
+            {/* ... (header code) ... */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Link to={`/category/${list.categoryId}`} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
@@ -116,13 +143,28 @@ export const ListDetail: React.FC = () => {
             </div>
 
             <form onSubmit={handleAddItem} className="flex gap-2">
-                <input
-                    type="text"
-                    value={newItemText}
-                    onChange={(e) => setNewItemText(e.target.value)}
-                    placeholder="Add item..."
-                    className="flex-1 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
+                <div className="relative flex-1">
+                    <input
+                        type="text"
+                        value={newItemText}
+                        onChange={(e) => setNewItemText(e.target.value)}
+                        placeholder="Add item..."
+                        className="w-full p-3 pr-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    />
+                    {hasSupport && (
+                        <button
+                            type="button"
+                            onClick={toggleListening}
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all ${isListening
+                                ? 'bg-red-100 text-red-600 animate-pulse'
+                                : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                                }`}
+                            title={isListening ? "Stop listening" : "Start voice input"}
+                        >
+                            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                        </button>
+                    )}
+                </div>
                 <button
                     type="submit"
                     className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"

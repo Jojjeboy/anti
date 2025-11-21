@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Download, Upload, X, Trash2, AlertTriangle } from 'lucide-react';
+import { Download, Upload, X, AlertTriangle } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 interface SettingsModalProps {
