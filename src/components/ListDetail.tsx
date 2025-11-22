@@ -21,7 +21,7 @@ export const ListDetail: React.FC = () => {
     // Update input text when transcript changes
     React.useEffect(() => {
         if (transcript) {
-            setNewItemText(prev => {
+            setNewItemText(() => {
                 // If we are appending, we might want a space, but for now let's just replace or append intelligently
                 // Simple approach: if input is empty, set to transcript. If not, append.
                 // Actually, for a simple "add item" flow, usually you speak the whole item.

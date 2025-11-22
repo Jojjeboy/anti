@@ -97,32 +97,14 @@ Here is a sequential history of the prompts made during the development of this 
 
 ## 24. Rename to Notes
 **Date:** 2025-11-21
-> Update Roadmaps & Notes to only Notes
-
-## 25. Commit and Push
-**Date:** 2025-11-21
-> Commit the code and push it please
-
 ## 26. Feature Suggestions
 **Date:** 2025-11-21
->   
+> Is there any ideas or suggestions you can provide that would make the app more usefull and better based upon similar apps?
 
-## 27. Smarter List Management
+## 27. Implement Suggestions
 **Date:** 2025-11-21
-> Implement "Smarter List Management" features: Template Library (Grocery, Gym, etc.), Sorting Options (Alphabetical, Completed), and Undo/Toast Notifications for deletions.
+> Perfect implement all of the above. Step by step, make a git commit after each suggested functionality and continue to the next functionality, let me know after each step
 
-## 28. Data Portability
-**Date:** 2025-11-21
-> Implement Data Portability: Add functionality to Export data to JSON and Import data from JSON via a Settings modal.
-
-## 29. Visual/UX Polish
-**Date:** 2025-11-21
-> Add Visual/UX Polish: Implement micro-animations for list items, page transitions, and UI elements using tailwindcss-animate.
-
-## 30. Fix Build Error
-**Date:** 2025-11-21
-> Fix a build error in App.tsx caused by malformed JSX.
-
-## 31. Voice Input
-**Date:** 2025-11-21
-> Implement Voice Input: Add a microphone button to the "Add Item" input to allow users to dictate items using the Web Speech API.
+## 28. Build and Fix
+**Date:** 2025-11-22
+> Try to build the code and fix it if is broken
