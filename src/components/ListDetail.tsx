@@ -125,18 +125,18 @@ export const ListDetail: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* ... (header code) ... */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 flex-1">
-                    <Link to={`/category/${list.categoryId}`} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Link to={`/category/${list.categoryId}`} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors flex-shrink-0">
                         <ChevronLeft />
                     </Link>
                     {isEditingTitle ? (
-                        <div className="flex items-center gap-2 flex-1 mr-4">
+                        <div className="flex items-center gap-2 flex-1 mr-4 min-w-0">
                             <input
                                 type="text"
                                 value={editedTitle}
                                 onChange={(e) => setEditedTitle(e.target.value)}
-                                className="text-xl font-semibold bg-transparent border-b-2 border-blue-500 focus:outline-none w-full"
+                                className="text-xl font-semibold bg-transparent border-b-2 border-blue-500 focus:outline-none w-full min-w-0"
                                 autoFocus
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') handleSaveTitle();
@@ -149,11 +149,11 @@ export const ListDetail: React.FC = () => {
                             />
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2 group">
-                            <h2 className="text-xl font-semibold">{list.name}</h2>
+                        <div className="flex items-center gap-2 group min-w-0 flex-1">
+                            <h2 className="text-xl font-semibold truncate">{list.name}</h2>
                             <button
                                 onClick={() => setIsEditingTitle(true)}
-                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-500 transition-all"
+                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-500 transition-all flex-shrink-0"
                                 title="Edit Title"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -164,7 +164,7 @@ export const ListDetail: React.FC = () => {
                         </div>
                     )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-end sm:self-auto">
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}

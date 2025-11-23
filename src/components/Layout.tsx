@@ -49,7 +49,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     />
                 </div>
             </header>
-            <main className="flex-1 p-4 max-w-3xl mx-auto w-full">
+            <main className="flex-1 p-4 max-w-3xl mx-auto w-full overflow-hidden">
                 {searchQuery ? <SearchResults /> : children}
             </main>
             <footer className="p-6 text-center border-t border-gray-200 dark:border-gray-700 mt-auto flex flex-col items-center gap-2">

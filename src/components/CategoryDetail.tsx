@@ -151,15 +151,15 @@ export const CategoryDetail: React.FC = () => {
                         key={list.id}
                         className="group flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all animate-in fade-in slide-in-from-bottom-4 duration-300"
                     >
-                        <div className="flex items-center justify-between p-4">
+                        <div className="flex items-center justify-between p-4 gap-2">
                             <Link
                                 to={`/list/${list.id}`}
-                                className="flex-1 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                className="flex-1 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors min-w-0 truncate"
                             >
                                 {list.name}
-                                <span className="text-sm text-gray-400 ml-2">({list.items.length} items)</span>
+                                <span className="text-sm text-gray-400 ml-2 whitespace-nowrap">({list.items.length} items)</span>
                             </Link>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 flex-shrink-0">
                                 <button
                                     onClick={() => togglePin(list.id)}
                                     className={`p-2 transition-colors ${list.isPinned ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
