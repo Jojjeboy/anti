@@ -1,5 +1,29 @@
 [
   {
+    "hash": "5b4de4a3220812cea93888de592f441f2791aa95",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 14:25:37 +0100",
+    "message": ".env"
+  },
+  {
+    "hash": "0c324887a6aff50a313de6881d1a39320cb9385d",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 14:18:37 +0100",
+    "message": "Removed line from .gitignore to show env file"
+  },
+  {
+    "hash": "e91ebb8662dbe40c54868fbd00a64c9bce5c5cb8",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 14:12:22 +0100",
+    "message": "Vercel.json file"
+  },
+  {
+    "hash": "cef49dd03127b55c69afb66519c82181adf1396a",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 13:32:35 +0100",
+    "message": "fix: adjust list title marquee width to 130px"
+  },
+  {
     "hash": "40654a2ce37169210ef7971e63aa86e15df68a79",
     "author": "Jojjeboy",
     "date": "2025-11-24 13:30:52 +0100",
