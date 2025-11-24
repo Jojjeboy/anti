@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { Plus, Trash2, Copy, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
+import { MarqueeText } from './MarqueeText';
 
 export const CategoryDetail: React.FC = () => {
     const { t } = useTranslation();
@@ -128,10 +129,12 @@ export const CategoryDetail: React.FC = () => {
                         <div className="flex items-center justify-between p-4 gap-2">
                             <Link
                                 to={`/list/${list.id}`}
-                                className="flex-1 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors break-words"
+                                className="flex-1 min-w-0 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
-                                {list.name}
-                                <span className="text-sm text-gray-400 ml-2 whitespace-nowrap">({list.items.length} {t('lists.itemsCount')})</span>
+                                <div className="flex items-center gap-2">
+                                    <MarqueeText text={list.name} className="flex-1" />
+                                    <span className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">({list.items.length} {t('lists.itemsCount')})</span>
+                                </div>
                             </Link>
                             <div className="flex items-center gap-1 flex-shrink-0">
                                 <button
