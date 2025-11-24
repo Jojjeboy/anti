@@ -1,5 +1,11 @@
 [
   {
+    "hash": "ac7bf4d654408f85b67eeae73ddf8c32a682f1c4",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 21:11:26 +0100",
+    "message": "fix: Update footer date format to DD/MMM with conditional year"
+  },
+  {
     "hash": "9b6042785d8d6879e4c416845385ad819cb0eccc",
     "author": "Jojjeboy",
     "date": "2025-11-24 21:03:42 +0100",
