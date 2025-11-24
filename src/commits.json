@@ -1,5 +1,11 @@
 [
   {
+    "hash": "40654a2ce37169210ef7971e63aa86e15df68a79",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 13:30:52 +0100",
+    "message": "ui: remove item count from list display"
+  },
+  {
     "hash": "d7500095e8deb04cdf52ecd620e3dd19499522cc",
     "author": "Jojjeboy",
     "date": "2025-11-24 13:29:52 +0100",
