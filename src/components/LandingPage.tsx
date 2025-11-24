@@ -8,7 +8,7 @@ export function LandingPage() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background to-muted p-4">
             <div className="max-w-md w-full space-y-8 text-center">
                 <div className="space-y-2">
-                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">
+                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         Welcome to Anti
                     </h1>
                     <p className="text-muted-foreground text-lg">
