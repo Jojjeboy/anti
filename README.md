@@ -52,3 +52,6 @@ For a detailed log of the prompts used to build this application, please refer t
 To fully enable PWA installation, please add the following icons to the `public` directory:
 - `pwa-192x192.png`
 - `pwa-512x512.png`
+
+
+
