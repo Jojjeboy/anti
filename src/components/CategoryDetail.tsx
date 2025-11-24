@@ -98,6 +98,26 @@ export const CategoryDetail: React.FC = () => {
                                 <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                 <path d="m15 5 4 4" />
                             </svg>
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <div className="flex gap-2">
+                <form onSubmit={handleAdd} className="flex-1 flex gap-2">
+                    <input
+                        type="text"
+                        value={newListName}
+                        onChange={(e) => setNewListName(e.target.value)}
+                        placeholder={t('lists.newPlaceholder')}
+                        className="max-w-[200px] flex-1 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    />
+                    <button
+                        type="submit"
+                        className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"
+                    >
+                        <Plus />
+                    </button>
                 </form>
                 <div className="relative group">
                     <button
@@ -116,19 +136,11 @@ export const CategoryDetail: React.FC = () => {
                                     key={template.id}
                                     onClick={async () => {
                                         const newListId = await addList(t(template.nameKey), categoryId!);
-                                        // Add items from template
                                         const newItems = template.items.map(itemKey => ({
                                             id: crypto.randomUUID(),
                                             text: t(itemKey),
                                             completed: false
                                         }));
-                                        // We need to use updateListItems but we can't import it here directly from context inside the map
-                                        // So we need to expose updateListItems from useApp destructuring above
-                                        // But wait, updateListItems is available in the scope.
-                                        // However, we need to make sure the list exists in Firestore before updating it.
-                                        // Since addList awaits the creation, it should be fine.
-
-                                        // We need to import updateListItems from useApp
                                         await updateListItems(newListId, newItems);
                                     }}
                                     className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
@@ -235,5 +247,5 @@ export const CategoryDetail: React.FC = () => {
                 isDestructive
             />
         </div>
-            );
+    );
 };

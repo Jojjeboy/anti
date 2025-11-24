@@ -1,5 +1,11 @@
 [
   {
+    "hash": "711fdf6bf57a102d1b320c0a84188b227a19fa55",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 20:51:56 +0100",
+    "message": "fix: Reduce list input width to prevent template button overflow"
+  },
+  {
     "hash": "6c69e0f1595e39e74b4fa49aab20f9750f84a3c3",
     "author": "Jojjeboy",
     "date": "2025-11-24 20:17:56 +0100",
