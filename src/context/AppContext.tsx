@@ -18,7 +18,6 @@ interface AppContextType {
     deleteList: (id: string) => void;
     copyList: (listId: string) => void;
     moveList: (listId: string, newCategoryId: string) => void;
-    togglePin: (listId: string) => void;
     updateListItems: (listId: string, items: Item[]) => void;
     deleteItem: (listId: string, itemId: string) => void;
     importData: (data: any) => void;
@@ -146,10 +145,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setLists(lists.map((l) => (l.id === listId ? { ...l, categoryId: newCategoryId } : l)));
     };
 
-    const togglePin = (listId: string) => {
-        setLists(lists.map((l) => (l.id === listId ? { ...l, isPinned: !l.isPinned } : l)));
-    };
-
     const updateListItems = (listId: string, items: Item[]) => {
         setLists(lists.map((l) => (l.id === listId ? { ...l, items } : l)));
     };
@@ -231,7 +226,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 deleteList,
                 copyList,
                 moveList,
-                togglePin,
                 updateListItems,
                 deleteItem,
                 importData,

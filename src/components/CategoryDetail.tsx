@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Plus, Trash2, Copy, ArrowRight, ChevronLeft, Pin } from 'lucide-react';
+import { Plus, Trash2, Copy, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 
 export const CategoryDetail: React.FC = () => {
     const { t } = useTranslation();
     const { categoryId } = useParams<{ categoryId: string }>();
-    const { categories, lists, addList, deleteList, copyList, moveList, togglePin, updateCategoryName } = useApp();
+    const { categories, lists, addList, deleteList, copyList, moveList, updateCategoryName } = useApp();
     const [newListName, setNewListName] = useState('');
     const [movingListId, setMovingListId] = useState<string | null>(null);
     const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; listId: string | null }>({
@@ -20,8 +20,7 @@ export const CategoryDetail: React.FC = () => {
 
     const category = categories.find((c) => c.id === categoryId);
     const categoryLists = lists
-        .filter((l) => l.categoryId === categoryId)
-        .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+        .filter((l) => l.categoryId === categoryId);
 
     React.useEffect(() => {
         if (category) {
@@ -135,13 +134,6 @@ export const CategoryDetail: React.FC = () => {
                                 <span className="text-sm text-gray-400 ml-2 whitespace-nowrap">({list.items.length} {t('lists.itemsCount')})</span>
                             </Link>
                             <div className="flex items-center gap-1 flex-shrink-0">
-                                <button
-                                    onClick={() => togglePin(list.id)}
-                                    className={`p-2 transition-colors ${list.isPinned ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
-                                    title={list.isPinned ? t('lists.unpin') : t('lists.pin')}
-                                >
-                                    <Pin size={18} fill={list.isPinned ? "currentColor" : "none"} />
-                                </button>
                                 <button
                                     onClick={() => copyList(list.id)}
                                     className="p-2 text-gray-400 hover:text-blue-500 transition-colors"

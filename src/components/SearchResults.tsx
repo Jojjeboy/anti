@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Folder, FileText, Pin } from 'lucide-react';
+import { Folder, FileText } from 'lucide-react';
 
 export const SearchResults: React.FC = () => {
     const { lists, categories, searchQuery, setSearchQuery } = useApp();
@@ -55,7 +55,6 @@ export const SearchResults: React.FC = () => {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
                                         <span className="font-medium text-gray-700 dark:text-gray-200 block">{list.name}</span>
-                                        {list.isPinned && <Pin size={14} className="text-blue-500 fill-current" />}
                                     </div>
                                     <span className="text-xs text-gray-400">
                                         In {categories.find(c => c.id === list.categoryId)?.name || 'Unknown'} • {list.items.length} items
