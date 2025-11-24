@@ -9,6 +9,7 @@ export interface Note {
     title: string;
     content: string;
     createdAt: string;
+    priority: 'low' | 'medium' | 'high';
 }
 
 export interface List {

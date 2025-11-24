@@ -24,8 +24,8 @@ interface AppContextType {
     importData: (data: any) => void;
     toggleTheme: () => void;
     notes: Note[];
-    addNote: (title: string, content: string) => void;
-    updateNote: (id: string, title: string, content: string) => void;
+    addNote: (title: string, content: string, priority: 'low' | 'medium' | 'high') => void;
+    updateNote: (id: string, title: string, content: string, priority: 'low' | 'medium' | 'high') => void;
     deleteNote: (id: string) => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
@@ -198,18 +198,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         localStorage.setItem('manual_theme', 'true');
     };
 
-    const addNote = (title: string, content: string) => {
+    const addNote = (title: string, content: string, priority: 'low' | 'medium' | 'high') => {
         const newNote: Note = {
             id: uuidv4(),
             title,
             content,
             createdAt: new Date().toISOString(),
+            priority,
         };
         setNotes([newNote, ...notes]);
     };
 
-    const updateNote = (id: string, title: string, content: string) => {
-        setNotes(notes.map((n) => (n.id === id ? { ...n, title, content } : n)));
+    const updateNote = (id: string, title: string, content: string, priority: 'low' | 'medium' | 'high') => {
+        setNotes(notes.map((n) => (n.id === id ? { ...n, title, content, priority } : n)));
     };
 
     const deleteNote = (id: string) => {
