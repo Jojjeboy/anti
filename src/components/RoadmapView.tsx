@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { ChevronDown, ChevronUp, Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
+import { MarqueeText } from './MarqueeText';
 
 export const RoadmapView: React.FC = () => {
     const { t } = useTranslation();
@@ -188,16 +189,18 @@ export const RoadmapView: React.FC = () => {
                                         onClick={() => toggleExpand(note.id)}
                                         className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
                                     >
-                                        <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                                            {note.title}
-                                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${note.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <div className="max-w-[150px]">
+                                                <MarqueeText text={note.title} className="font-semibold text-lg text-gray-800 dark:text-gray-200" />
+                                            </div>
+                                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${note.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                                                 : note.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                     : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                                                 }`}>
                                                 {(note.priority || 'low').charAt(0).toUpperCase() + (note.priority || 'low').slice(1)}
                                             </span>
-                                        </h3>
-                                        <div className="flex items-center gap-3">
+                                        </div>
+                                        <div className="flex items-center gap-3 flex-shrink-0 ml-2">
                                             <span className="text-xs text-gray-400">
                                                 {new Date(note.createdAt).toLocaleDateString()}
                                             </span>

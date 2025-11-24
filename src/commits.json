@@ -1,6 +1,6 @@
 [
   {
-    "hash": "d72f9746be2ca0a7e4297e3e7a75ae26e354eb44",
+    "hash": "bb2725be066cba705704c06defd6d8a84c6f02b1",
     "author": "Jojjeboy",
     "date": "2025-11-24 18:47:14 +0100",
     "message": "Migrate to Firebase Firestore with offline support and data migration"
