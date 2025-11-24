@@ -1,5 +1,17 @@
 [
   {
+    "hash": "37373e22e0d08fb463e29397c4edf895c15e631a",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 07:26:28 +0100",
+    "message": "fix: adjust list title marquee width to 110px"
+  },
+  {
+    "hash": "cb2a4d59799ad84aebf696cf40409a1662d6a051",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 07:22:30 +0100",
+    "message": "feat: sort notes by priority (high > medium > low)"
+  },
+  {
     "hash": "27139ca5f8d0d325cea733dbded880b8dfa50ea0",
     "author": "Jojjeboy",
     "date": "2025-11-24 07:18:56 +0100",

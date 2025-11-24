@@ -8,6 +8,7 @@ import { RoadmapView } from './components/RoadmapView'
 import { ActivityLog } from './components/ActivityLog'
 import { ToastProvider } from './context/ToastContext'
 import { ToastContainer } from './components/ToastContainer'
+import { UpdatePrompt } from './components/UpdatePrompt'
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                             <Route path="/activity" element={<ActivityLog />} />
                         </Routes>
                         <ToastContainer />
+                        <UpdatePrompt />
                     </Layout>
                 </BrowserRouter>
             </AppProvider>
