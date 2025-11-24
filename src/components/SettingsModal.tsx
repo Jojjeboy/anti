@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Download, Upload, X, AlertTriangle } from 'lucide-react';
+import { Download, Upload, X, AlertTriangle, RefreshCw } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 import { useTranslation } from 'react-i18next';
@@ -148,6 +148,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                                 className="hidden"
                             />
                         </div>
+                    </div>
+                    <div className="space-y-4">
+                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('settings.system', 'System')}</h3>
+                        <button
+                            onClick={() => {
+                                if ('serviceWorker' in navigator) {
+                                    navigator.serviceWorker.getRegistrations().then((registrations) => {
+                                        for (const registration of registrations) {
+                                            registration.unregister();
+                                        }
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    window.location.reload();
+                                }
+                            }}
+                            className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left group w-full"
+                        >
+                            <div className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg group-hover:scale-110 transition-transform">
+                                <RefreshCw size={20} />
+                            </div>
+                            <div>
+                                <div className="font-medium">{t('settings.reloadUpdate', 'Reload & Update')}</div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">{t('settings.reloadUpdateDesc', 'Clear cache and reload to get the latest version')}</div>
+                            </div>
+                        </button>
                     </div>
 
                     <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-900/50 flex gap-3">
