@@ -128,7 +128,7 @@ export const CategoryDetail: React.FC = () => {
                         <div className="flex items-center justify-between p-4 gap-2">
                             <Link
                                 to={`/list/${list.id}`}
-                                className="flex-1 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors min-w-0 truncate"
+                                className="flex-1 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors break-words"
                             >
                                 {list.name}
                                 <span className="text-sm text-gray-400 ml-2 whitespace-nowrap">({list.items.length} {t('lists.itemsCount')})</span>
