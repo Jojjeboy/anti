@@ -33,8 +33,8 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
             className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm group animate-in fade-in slide-in-from-bottom-2 duration-200"
         >
             {!disabled && (
-                <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1">
-                    <GripVertical size={20} />
+                <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 -ml-1">
+                    <GripVertical size={24} />
                 </div>
             )}
 
