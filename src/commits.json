@@ -1,5 +1,11 @@
 [
   {
+    "hash": "9593488666870d736a009eddd8e77b086351b391",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 20:11:03 +0100",
+    "message": "feat: Add note completion status with sorting and styling"
+  },
+  {
     "hash": "46138a6faa35ef33b2c6c1ca55351e97da68b2bb",
     "author": "Jojjeboy",
     "date": "2025-11-24 20:05:31 +0100",

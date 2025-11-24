@@ -220,9 +220,6 @@ export const NotesView: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3 flex-shrink-0 ml-2">
-                                            <span className="text-xs text-gray-400">
-                                                {new Date(note.createdAt).toLocaleDateString()}
-                                            </span>
                                             {expandedNoteId === note.id ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
                                         </div>
                                     </div>
