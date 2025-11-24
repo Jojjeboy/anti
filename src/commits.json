@@ -1,5 +1,11 @@
 [
   {
+    "hash": "9b66bd6d5e91d7016b9e2a946f6914b830fe7a50",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 19:52:28 +0100",
+    "message": "Remove legacy import/export and add offline indicator"
+  },
+  {
     "hash": "1171c636f4f10428f4b362669dbd19732ae8b4b1",
     "author": "Jojjeboy",
     "date": "2025-11-24 19:11:21 +0100",

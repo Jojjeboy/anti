@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Plus, Trash2, Copy, ArrowRight, ChevronLeft } from 'lucide-react';
+import { Plus, Trash2, Copy, ArrowRight, ChevronLeft, LayoutTemplate } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MarqueeText } from './MarqueeText';
+import { templates } from '../data/templates';
 
 export const CategoryDetail: React.FC = () => {
     const { t } = useTranslation();
     const { categoryId } = useParams<{ categoryId: string }>();
-    const { categories, lists, addList, deleteList, copyList, moveList, updateCategoryName } = useApp();
+    const { categories, lists, addList, deleteList, copyList, moveList, updateCategoryName, updateListItems } = useApp();
     const [newListName, setNewListName] = useState('');
     const [movingListId, setMovingListId] = useState<string | null>(null);
     const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; listId: string | null }>({
@@ -118,6 +119,46 @@ export const CategoryDetail: React.FC = () => {
                         <Plus />
                     </button>
                 </form>
+                <div className="relative group">
+                    <button
+                        className="p-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        title={t('templates.create')}
+                    >
+                        <LayoutTemplate size={24} />
+                    </button>
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden hidden group-hover:block z-20 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-2">
+                            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider px-2 py-1 mb-1">
+                                {t('templates.title')}
+                            </div>
+                            {templates.map(template => (
+                                <button
+                                    key={template.id}
+                                    onClick={async () => {
+                                        const newListId = await addList(t(template.nameKey), categoryId!);
+                                        // Add items from template
+                                        const newItems = template.items.map(itemKey => ({
+                                            id: crypto.randomUUID(),
+                                            text: t(itemKey),
+                                            completed: false
+                                        }));
+                                        // We need to use updateListItems but we can't import it here directly from context inside the map
+                                        // So we need to expose updateListItems from useApp destructuring above
+                                        // But wait, updateListItems is available in the scope.
+                                        // However, we need to make sure the list exists in Firestore before updating it.
+                                        // Since addList awaits the creation, it should be fine.
+
+                                        // We need to import updateListItems from useApp
+                                        await updateListItems(newListId, newItems);
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                                >
+                                    {t(template.nameKey)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div className="grid gap-3">

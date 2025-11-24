@@ -90,5 +90,48 @@
         "itemDeleted": "Objekt borttaget",
         "dataImported": "Data importerad",
         "importFailed": "Misslyckades med att importera data"
+    },
+    "templates": {
+        "title": "Mallar",
+        "create": "Skapa från mall",
+        "grocery": {
+            "name": "Inköpslista",
+            "items": {
+                "milk": "Mjölk",
+                "bread": "Bröd",
+                "eggs": "Ägg",
+                "cheese": "Ost",
+                "butter": "Smör",
+                "coffee": "Kaffe",
+                "pasta": "Pasta",
+                "rice": "Ris",
+                "chicken": "Kyckling",
+                "vegetables": "Grönsaker"
+            }
+        },
+        "gym": {
+            "name": "Gymväska",
+            "items": {
+                "water": "Vattenflaska",
+                "towel": "Handduk",
+                "shoes": "Träningsskor",
+                "headphones": "Hörlurar",
+                "lock": "Hänglås",
+                "protein": "Proteinshake",
+                "clothes": "Träningskläder"
+            }
+        },
+        "travel": {
+            "name": "Resepackning",
+            "items": {
+                "passport": "Pass",
+                "tickets": "Biljetter",
+                "charger": "Mobilladdare",
+                "clothes": "Kläder",
+                "toiletries": "Necessär",
+                "medication": "Mediciner",
+                "camera": "Kamera"
+            }
+        }
     }
 }

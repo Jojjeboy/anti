@@ -15,7 +15,7 @@ interface AppContextType {
     addCategory: (name: string) => Promise<void>;
     updateCategoryName: (id: string, name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
-    addList: (name: string, categoryId: string) => Promise<void>;
+    addList: (name: string, categoryId: string) => Promise<string>;
     updateListName: (id: string, name: string) => Promise<void>;
     deleteList: (id: string) => Promise<void>;
     copyList: (listId: string) => Promise<void>;
@@ -97,7 +97,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const addList = async (name: string, categoryId: string) => {
-        await listsSync.addItem({ id: uuidv4(), name, categoryId, items: [] });
+        const id = uuidv4();
+        await listsSync.addItem({ id, name, categoryId, items: [] });
+        return id;
     };
 
     const updateListName = async (id: string, name: string) => {

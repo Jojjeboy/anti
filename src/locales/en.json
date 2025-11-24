@@ -90,5 +90,48 @@
         "itemDeleted": "Item deleted",
         "dataImported": "Data imported successfully",
         "importFailed": "Failed to import data"
+    },
+    "templates": {
+        "title": "Templates",
+        "create": "Create from Template",
+        "grocery": {
+            "name": "Grocery List",
+            "items": {
+                "milk": "Milk",
+                "bread": "Bread",
+                "eggs": "Eggs",
+                "cheese": "Cheese",
+                "butter": "Butter",
+                "coffee": "Coffee",
+                "pasta": "Pasta",
+                "rice": "Rice",
+                "chicken": "Chicken",
+                "vegetables": "Vegetables"
+            }
+        },
+        "gym": {
+            "name": "Gym Bag",
+            "items": {
+                "water": "Water Bottle",
+                "towel": "Towel",
+                "shoes": "Gym Shoes",
+                "headphones": "Headphones",
+                "lock": "Padlock",
+                "protein": "Protein Shake",
+                "clothes": "Gym Clothes"
+            }
+        },
+        "travel": {
+            "name": "Travel Packing",
+            "items": {
+                "passport": "Passport",
+                "tickets": "Tickets",
+                "charger": "Phone Charger",
+                "clothes": "Clothes",
+                "toiletries": "Toiletries",
+                "medication": "Medication",
+                "camera": "Camera"
+            }
+        }
     }
 }
