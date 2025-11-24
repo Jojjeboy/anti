@@ -135,7 +135,6 @@ export const CategoryDetail: React.FC = () => {
                                     <div className="max-w-[90px]">
                                         <MarqueeText text={list.name} />
                                     </div>
-                                    <span className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">({list.items.length} {t('lists.itemsCount')})</span>
                                 </div>
                             </Link>
                             <div className="flex items-center gap-1 flex-shrink-0">
