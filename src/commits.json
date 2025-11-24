@@ -1,5 +1,11 @@
 [
   {
+    "hash": "a64b1734c49b3486ba9597a47dc89ac212cbac2c",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 20:59:25 +0100",
+    "message": "fix: Restore CategoryDetail.tsx and reduce input width"
+  },
+  {
     "hash": "711fdf6bf57a102d1b320c0a84188b227a19fa55",
     "author": "Jojjeboy",
     "date": "2025-11-24 20:51:56 +0100",

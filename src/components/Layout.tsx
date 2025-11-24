@@ -71,9 +71,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         {t('app.lastUpdated')}
                     </p>
                     {latestCommit && (
-                        <Link to="/activity" className="text-[10px] text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors max-w-xs truncate">
-                            {latestCommit.message}
-                        </Link>
+                        <>
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                                {new Date(latestCommit.date).toLocaleString('sv-SE', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </p>
+                            <Link to="/activity" className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors max-w-xs truncate">
+                                {latestCommit.message}
+                            </Link>
+                        </>
                     )}
                 </div>
             </footer>
