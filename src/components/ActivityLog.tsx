@@ -34,22 +34,44 @@ export const ActivityLog: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">{t('activity.show', 'Show')}:</span>
-                    <select
-                        value={itemsPerPage}
-                        onChange={(e) => {
-                            setItemsPerPage(Number(e.target.value));
-                            setCurrentPage(1);
-                        }}
-                        className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    >
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
+                <div className="flex items-center gap-4 self-end sm:self-auto">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-2 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                            {t('common.prev', 'Prev')}
+                        </button>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {currentPage} / {totalPages}
+                        </span>
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="px-2 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                            {t('common.next', 'Next')}
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{t('activity.show', 'Show')}:</span>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                            className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        >
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </div>
                 </div>
+
             </div>
 
             <div className="relative border-l-2 border-gray-200 dark:border-gray-700 ml-3 space-y-8 pb-8">
@@ -92,27 +114,7 @@ export const ActivityLog: React.FC = () => {
                 ))}
             </div>
 
-            {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 pt-4 pb-20">
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    >
-                        {t('common.prev', 'Prev')}
-                    </button>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {t('common.page', 'Page')} {currentPage} {t('common.of', 'of')} {totalPages}
-                    </span>
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    >
-                        {t('common.next', 'Next')}
-                    </button>
-                </div>
-            )}
+
         </div>
     );
 };

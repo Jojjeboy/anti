@@ -1,5 +1,11 @@
 [
   {
+    "hash": "0cb1ca4d6a55045786fc40bda41aeaf05622c865",
+    "author": "Jojjeboy",
+    "date": "2025-11-24 21:25:33 +0100",
+    "message": "fix: Add bottom padding to activity pagination for mobile visibility"
+  },
+  {
     "hash": "e1e91cda38cd97fe85a86b06c7a166ac99a68174",
     "author": "Jojjeboy",
     "date": "2025-11-24 21:23:06 +0100",

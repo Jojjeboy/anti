@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { ChevronDown, ChevronUp, Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
-import { MarqueeText } from './MarqueeText';
+
 
 export const NotesView: React.FC = () => {
     const { t } = useTranslation();
@@ -190,8 +190,10 @@ export const NotesView: React.FC = () => {
                                         className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
                                     >
                                         <div className="flex items-center gap-2 min-w-0">
-                                            <div className="max-w-[150px]">
-                                                <MarqueeText text={note.title} className="font-semibold text-lg text-gray-800 dark:text-gray-200" />
+                                            <div className="max-w-[150px] truncate" title={note.title}>
+                                                <span className="font-semibold text-lg text-gray-800 dark:text-gray-200">
+                                                    {note.title}
+                                                </span>
                                             </div>
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${note.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                                                 : note.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'

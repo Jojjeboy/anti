@@ -76,10 +76,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 const day = commitDate.getDate().toString().padStart(2, '0');
                                 const month = commitDate.toLocaleString('sv-SE', { month: 'short' });
                                 const year = isCurrentYear ? '' : ` ${commitDate.getFullYear()}`;
-                                return `${day}${month}${year}`;
+                                return `${day}/${month}${year}`;
                             })()}
-                            <Link to="/activity" className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors max-w-xs truncate">
-                                {latestCommit.message}
+                            <Link to="/activity" className="ml-1 text-[10px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+                                {latestCommit.message.length > 30 ? `${latestCommit.message.substring(0, 30)}....` : latestCommit.message}
                             </Link>
                         </p>
                     </div>

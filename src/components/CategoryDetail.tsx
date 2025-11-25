@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext';
 import { Plus, Trash2, Copy, ArrowRight, ChevronLeft, LayoutTemplate } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
-import { MarqueeText } from './MarqueeText';
+
 import { templates } from '../data/templates';
 
 export const CategoryDetail: React.FC = () => {
@@ -165,8 +165,8 @@ export const CategoryDetail: React.FC = () => {
                                 className="flex-1 min-w-0 text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
                                 <div className="flex items-center gap-2">
-                                    <div className="max-w-[130px]">
-                                        <MarqueeText text={list.name} />
+                                    <div className="max-w-[130px] truncate" title={list.name}>
+                                        {list.name}
                                     </div>
                                 </div>
                             </Link>
