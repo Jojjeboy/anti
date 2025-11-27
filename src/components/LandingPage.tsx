@@ -12,7 +12,7 @@ export function LandingPage() {
                         Welcome to Anti
                     </h1>
                     <p className="text-muted-foreground text-lg">
-                        Your personal task and roadmap manager.
+                        Reusable lists app
                     </p>
                 </div>
 
@@ -25,10 +25,6 @@ export function LandingPage() {
                         <span>Sign in with Google</span>
                     </button>
                 </div>
-
-                <p className="text-sm text-muted-foreground">
-                    Secure authentication powered by Firebase
-                </p>
             </div>
         </div>
     );
