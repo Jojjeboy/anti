@@ -1,5 +1,11 @@
 [
   {
+    "hash": "f2aae26a9e70a0d129274281ee5e3fd74cc1fa1f",
+    "author": "Jojjeboy",
+    "date": "2025-11-30 08:49:58 +0100",
+    "message": "Add drag and drop functionality for lists"
+  },
+  {
     "hash": "2d1fd2fcece5b57fd60f34bf5944cc2709c32ef7",
     "author": "Johannes Kärnstam",
     "date": "2025-11-27 13:28:23 +0100",

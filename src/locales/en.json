@@ -35,6 +35,7 @@
         "pin": "Pin List",
         "unpin": "Unpin List",
         "editTitle": "Edit Title",
+        "actions": "Actions",
         "notFound": "List not found.",
         "sort": {
             "manual": "Manual",

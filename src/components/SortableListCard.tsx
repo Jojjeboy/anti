@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Link } from 'react-router-dom';
-import { Copy, ArrowRight, Trash2, GripVertical } from 'lucide-react';
+import { Copy, ArrowRight, Trash2, GripVertical, MoreVertical } from 'lucide-react';
 import type { List, Category } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +28,7 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
     onMoveToCategory,
 }) => {
     const { t } = useTranslation();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const {
         attributes,
         listeners,
@@ -68,28 +69,49 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
                         </div>
                     </Link>
                 </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
+                <div className="relative flex-shrink-0">
                     <button
-                        onClick={async () => await onCopy(list.id)}
-                        className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
-                        title={t('lists.copy')}
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
+                        className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        title={t('lists.actions')}
                     >
-                        <Copy size={18} />
+                        <MoreVertical size={18} />
                     </button>
-                    <button
-                        onClick={() => onMove(list.id)}
-                        className="p-2 text-gray-400 hover:text-yellow-500 transition-colors"
-                        title={t('lists.move')}
-                    >
-                        <ArrowRight size={18} />
-                    </button>
-                    <button
-                        onClick={() => onDelete(list.id)}
-                        className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                        title={t('lists.deleteTitle')}
-                    >
-                        <Trash2 size={18} />
-                    </button>
+                    {dropdownOpen && (
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200">
+                            <button
+                                onClick={async () => {
+                                    await onCopy(list.id);
+                                    setDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                            >
+                                <Copy size={16} />
+                                {t('lists.copy')}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onMove(list.id);
+                                    setDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition-colors"
+                            >
+                                <ArrowRight size={16} />
+                                {t('lists.move')}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onDelete(list.id);
+                                    setDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                            >
+                                <Trash2 size={16} />
+                                {t('lists.deleteTitle')}
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
