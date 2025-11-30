@@ -1,5 +1,17 @@
 [
   {
+    "hash": "2d1fd2fcece5b57fd60f34bf5944cc2709c32ef7",
+    "author": "Johannes Kärnstam",
+    "date": "2025-11-27 13:28:23 +0100",
+    "message": "Login page"
+  },
+  {
+    "hash": "74f0c4bae7da994300195141c40f50d877c3215a",
+    "author": "Johannes Kärnstam",
+    "date": "2025-11-27 13:05:39 +0100",
+    "message": "Swipe and delete for real"
+  },
+  {
     "hash": "b4e8bf64532e66eacc71f47f36df3e37fc539e77",
     "author": "Johannes Kärnstam",
     "date": "2025-11-27 11:26:51 +0100",

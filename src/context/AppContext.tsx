@@ -15,11 +15,13 @@ interface AppContextType {
     addCategory: (name: string) => Promise<void>;
     updateCategoryName: (id: string, name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
+    reorderCategories: (categories: Category[]) => Promise<void>;
     addList: (name: string, categoryId: string) => Promise<string>;
     updateListName: (id: string, name: string) => Promise<void>;
     deleteList: (id: string) => Promise<void>;
     copyList: (listId: string) => Promise<void>;
     moveList: (listId: string, newCategoryId: string) => Promise<void>;
+    reorderLists: (lists: List[]) => Promise<void>;
     updateListItems: (listId: string, items: Item[]) => Promise<void>;
     deleteItem: (listId: string, itemId: string) => Promise<void>;
     toggleTheme: () => void;
@@ -160,6 +162,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await listsSync.updateItem(listId, { categoryId: newCategoryId });
     };
 
+    const reorderLists = async (reorderedLists: List[]) => {
+        // Update all lists with new order values
+        const updates = reorderedLists.map((list, index) =>
+            listsSync.updateItem(list.id, { order: index })
+        );
+        await Promise.all(updates);
+    };
+
+    const reorderCategories = async (reorderedCategories: Category[]) => {
+        // Update all categories with new order values
+        const updates = reorderedCategories.map((category, index) =>
+            categoriesSync.updateItem(category.id, { order: index })
+        );
+        await Promise.all(updates);
+    };
+
     const updateListItems = async (listId: string, items: Item[]) => {
         await listsSync.updateItem(listId, { items });
     };
@@ -231,11 +249,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addCategory,
                 updateCategoryName,
                 deleteCategory,
+                reorderCategories,
                 addList,
                 updateListName,
                 deleteList,
                 copyList,
                 moveList,
+                reorderLists,
                 updateListItems,
                 deleteItem,
                 toggleTheme,
