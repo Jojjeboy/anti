@@ -1,5 +1,11 @@
 [
   {
+    "hash": "f006c6a0ca9e3f37de472934776eebc2d6f1bdd3",
+    "author": "Jojjeboy",
+    "date": "2025-12-03 20:14:14 +0100",
+    "message": "Switch to HashRouter for GitHub Pages compatibility"
+  },
+  {
     "hash": "6259ae8c891218a8e3528fea98be0ab37c046a80",
     "author": "Jojjeboy",
     "date": "2025-12-03 20:10:18 +0100",
