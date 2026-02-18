@@ -1,5 +1,15 @@
 [
   {
+    "hash": "42a6e24b7a2be1c20b97b303168744a2ca62f0c0",
+    "date": "2026-02-12 15:19:22 +0100",
+    "message": "isRessattable?"
+  },
+  {
+    "hash": "79756aad32a44c675b5e96323114212e1bb13771",
+    "date": "2026-02-12 14:20:35 +0100",
+    "message": "Rename last stuff"
+  },
+  {
     "hash": "9777afe625b48a1f5728cba67c102840fc448728",
     "date": "2026-02-11 16:22:54 +0100",
     "message": "Merge branch 'master' of https://github.com/Jojjeboy/looplist"
@@ -88,15 +98,5 @@
     "hash": "f2485454fbf461449b6d319ae419b95368d9141f",
     "date": "2026-01-09 11:43:29 +0100",
     "message": "feat: add header and github history link to activity log"
-  },
-  {
-    "hash": "febf0e4730359fa398ec89cf2154613591996b90",
-    "date": "2026-01-09 11:22:07 +0100",
-    "message": "Removed temp files"
-  },
-  {
-    "hash": "d14b07b25fea190a800ef7e61138f710c26f1517",
-    "date": "2026-01-09 11:20:07 +0100",
-    "message": "chore: remove activity log pagination and category bulk edit feature"
   }
 ]

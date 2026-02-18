@@ -58,6 +58,7 @@ export const CombinationEditor: React.FC<CombinationEditorProps> = ({
 
     // Filter lists based on search query
     const filteredLists = lists.filter(list => {
+        if (!list || !list.name) return false;
         const searchLower = searchQuery.toLowerCase();
         const matchesName = list.name.toLowerCase().includes(searchLower);
         const matchesCategory = getCategoryName(list.categoryId).toLowerCase().includes(searchLower);

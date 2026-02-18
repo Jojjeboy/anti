@@ -121,4 +121,26 @@ describe('CombinationEditor', () => {
         expect(screen.queryByText('List 1')).toBeNull();
         expect(screen.getByText('List 3')).toBeDefined();
     });
+
+    it('does not crash when receiving malformed lists', () => {
+        const malformedLists: List[] = [
+            { id: '1', categoryId: 'cat1', items: [] } as unknown as List, // Missing name
+            { id: '2', name: undefined, categoryId: 'cat1', items: [] } as unknown as List,
+            null as unknown as List,
+            undefined as unknown as List
+        ];
+
+        render(
+            <CombinationEditor
+                isOpen={true}
+                onClose={() => {}}
+                onSave={() => {}}
+                lists={malformedLists}
+                categories={mockCategories}
+            />
+        );
+        
+        // Should render without crashing
+        expect(screen.getByText('combinations.create')).toBeDefined();
+    });
 });
