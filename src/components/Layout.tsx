@@ -7,6 +7,7 @@ import { SearchResults } from './SearchResults';
 import { SettingsModal } from './SettingsModal';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
+import commitsData from '../commits.json';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
@@ -78,6 +79,24 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-24 md:pb-8 min-w-0">
                     {searchQuery ? <SearchResults /> : children}
                 </main>
+
+                {/* Commit hash footer */}
+                {commitsData && commitsData.length > 0 && (
+                    <div className="hidden md:flex justify-end px-8 py-1">
+                        <span className="text-[10px] text-gray-800 dark:text-gray-200 font-mono" title="Commit hash">
+                            {commitsData[0].hash.substring(0, 7)}
+                        </span>
+                    </div>
+                )}
+
+                {/* Commit hash — mobile (shown above bottom nav) */}
+                {commitsData && commitsData.length > 0 && (
+                    <div className="md:hidden flex justify-end px-4 pb-1">
+                        <span className="text-[10px] text-gray-800 dark:text-gray-200 font-mono" title="Commit hash">
+                            {commitsData[0].hash.substring(0, 7)}
+                        </span>
+                    </div>
+                )}
 
                 {/* Mobile Bottom Navigation */}
                 <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pb-safe z-30">

@@ -1,5 +1,15 @@
 [
   {
+    "hash": "6dbd81eba9faae43f8125033bbed02947edc4d83",
+    "date": "2026-02-18 06:58:54 +0100",
+    "message": "fix: downgrade eslint and typescript-eslint dependency versions"
+  },
+  {
+    "hash": "da6c4c38e00d74ae820d7282c9c90a7ea114bad9",
+    "date": "2026-02-18 06:56:14 +0100",
+    "message": "feat: introduce a CombinationEditor component, add commit history data, and Swedish localization."
+  },
+  {
     "hash": "42a6e24b7a2be1c20b97b303168744a2ca62f0c0",
     "date": "2026-02-12 15:19:22 +0100",
     "message": "isRessattable?"
@@ -88,15 +98,5 @@
     "hash": "3d1e71afd63e67497870df5441e94a82ac9f1055",
     "date": "2026-01-12 09:35:04 +0100",
     "message": "Statistics"
-  },
-  {
-    "hash": "368da7f9924bb0a7b2931d46c369f9722821cd30",
-    "date": "2026-01-09 11:56:32 +0100",
-    "message": "feat: add statistics page with usage metrics and charts"
-  },
-  {
-    "hash": "f2485454fbf461449b6d319ae419b95368d9141f",
-    "date": "2026-01-09 11:43:29 +0100",
-    "message": "feat: add header and github history link to activity log"
   }
 ]
