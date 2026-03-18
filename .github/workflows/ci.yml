@@ -43,9 +43,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fix Audit Issues
-        run: npm audit fix --omit=dev
-
       - name: Security Audit
         run: npm audit --audit-level=high --omit=dev
 
