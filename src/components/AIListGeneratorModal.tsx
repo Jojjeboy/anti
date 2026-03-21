@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Folder, Sparkles, Loader2, Wand2 } from 'lucide-react';
+import { X, Folder, Loader2, Wand2 } from 'lucide-react';
 import { Category, Item } from '../types';
 import { generateListContent, GeneratedList } from '../services/aiService';
+import geminiIconUrl from '../assets/gemini.svg';
 
 interface AIListGeneratorModalProps {
     isOpen: boolean;
@@ -108,7 +109,7 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                     {/* Header */}
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                            <Sparkles className="text-purple-500" size={20} />
+                            <img src={geminiIconUrl} alt="Gemini" className="w-5 h-5 drop-shadow-sm" />
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                                 Skapa lista med AI
                             </h3>

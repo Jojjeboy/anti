@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { Folder, ChevronRight, Plus, Layers, Sparkles } from 'lucide-react';
+import { Folder, ChevronRight, Plus, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { SessionPicker } from './SessionPicker';
+import geminiIconUrl from '../assets/gemini.svg';
 
 import { CombinationCard } from './CombinationCard';
 import { CombinationEditor } from './CombinationEditor';
@@ -118,6 +119,13 @@ export const CategoryView: React.FC = React.memo(() => {
         <div className="space-y-8 pb-8">
             <div className="flex items-center justify-between gap-4">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{t('categories.title')}</h2>
+                <button
+                    onClick={() => setAiModalOpen(true)}
+                    className="p-2.5 rounded-xl bg-white dark:bg-gray-800 border-2 border-purple-100 dark:border-purple-900 shadow-sm hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700 transition-all group shrink-0"
+                    title="Skapa med AI"
+                >
+                    <img src={geminiIconUrl} alt="Gemini" className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                </button>
             </div>
 
             {/* Categories Section - Always Visible */}
@@ -166,21 +174,12 @@ export const CategoryView: React.FC = React.memo(() => {
                     {t('categories.manage', 'Hantera kategorier')}
                 </button>
                 <div className="hidden sm:block"> {/* Spacer */} </div>
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => setAiModalOpen(true)}
-                        className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline transition-colors flex items-center gap-1"
-                    >
-                        <Sparkles size={16} />
-                        <span>Skapa med AI</span>
-                    </button>
-                    <button
-                        onClick={() => setImportModalOpen(true)}
-                        className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:underline transition-colors flex items-center gap-1"
-                    >
-                        <span>{t('categories.importJSON', 'Import JSON')}</span>
-                    </button>
-                </div>
+                <button
+                    onClick={() => setImportModalOpen(true)}
+                    className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:underline transition-colors flex items-center gap-1"
+                >
+                    <span>{t('categories.importJSON', 'Import JSON')}</span>
+                </button>
             </div>
 
             {/* Inline Tabs Section */}
