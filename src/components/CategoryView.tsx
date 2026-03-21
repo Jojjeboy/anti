@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { Folder, ChevronRight, Plus, Layers } from 'lucide-react';
+import { Folder, ChevronRight, Plus, Layers, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { SessionPicker } from './SessionPicker';
@@ -12,6 +12,7 @@ import { ListCombination, Item } from '../types';
 import { CategorySection } from './CategorySection';
 import { ManageCategoriesModal } from './ManageCategoriesModal';
 import { ImportListModal } from './ImportListModal';
+import { AIListGeneratorModal } from './AIListGeneratorModal';
 
 /**
  * Main overview page that displays categories and their associated lists.
@@ -40,6 +41,7 @@ export const CategoryView: React.FC = React.memo(() => {
         combinationId: null,
     });
     const [importModalOpen, setImportModalOpen] = useState(false);
+    const [aiModalOpen, setAiModalOpen] = useState(false);
 
     // Categories sorted by their order property for consistent display
     const sortedCategories = [...categories].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -164,12 +166,21 @@ export const CategoryView: React.FC = React.memo(() => {
                     {t('categories.manage', 'Hantera kategorier')}
                 </button>
                 <div className="hidden sm:block"> {/* Spacer */} </div>
-                <button
-                    onClick={() => setImportModalOpen(true)}
-                    className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-blue-300 hover:underline transition-colors flex items-center gap-1"
-                >
-                    <span>{t('categories.importJSON', 'Import JSON')}</span>
-                </button>
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setAiModalOpen(true)}
+                        className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline transition-colors flex items-center gap-1"
+                    >
+                        <Sparkles size={16} />
+                        <span>Skapa med AI</span>
+                    </button>
+                    <button
+                        onClick={() => setImportModalOpen(true)}
+                        className="text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:underline transition-colors flex items-center gap-1"
+                    >
+                        <span>{t('categories.importJSON', 'Import JSON')}</span>
+                    </button>
+                </div>
             </div>
 
             {/* Inline Tabs Section */}
@@ -360,7 +371,7 @@ export const CategoryView: React.FC = React.memo(() => {
                 onClose={() => setManageCategoriesOpen(false)}
                 categories={sortedCategories}
                 onReorder={reorderCategories}
-                onAdd={addCategory}
+                onAdd={async (name) => { await addCategory(name); }}
                 onDelete={deleteCategory}
             />
 
@@ -387,6 +398,14 @@ export const CategoryView: React.FC = React.memo(() => {
                 onClose={() => setImportModalOpen(false)}
                 onImport={handleImportList}
                 categories={sortedCategories}
+            />
+
+            <AIListGeneratorModal
+                isOpen={aiModalOpen}
+                onClose={() => setAiModalOpen(false)}
+                onSave={handleImportList}
+                categories={sortedCategories}
+                onAddCategory={addCategory}
             />
         </div>
     );

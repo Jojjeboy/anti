@@ -47,6 +47,10 @@ vi.mock('./ImportListModal', () => ({
     ImportListModal: ({ isOpen }: { isOpen: boolean }) => isOpen ? <div data-testid="import-list-modal">Import List Modal</div> : null
 }));
 
+vi.mock('./AIListGeneratorModal', () => ({
+    AIListGeneratorModal: ({ isOpen }: { isOpen: boolean }) => isOpen ? <div data-testid="ai-list-modal">AI Modal</div> : null
+}));
+
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
     Plus: () => <div data-testid="plus" />,
@@ -55,7 +59,8 @@ vi.mock('lucide-react', () => ({
     ChevronDown: () => <div data-testid="chevron-down" />,
     ChevronRight: () => <div data-testid="chevron-right" />,
     Layers: () => <div data-testid="layers" />,
-    Home: () => <div data-testid="home" />
+    Home: () => <div data-testid="home" />,
+    Sparkles: () => <div data-testid="sparkles" />
 }));
 
 

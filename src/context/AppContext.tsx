@@ -15,7 +15,7 @@ interface AppContextType {
     categories: Category[];
     lists: List[];
     theme: 'light' | 'dark';
-    addCategory: (name: string) => Promise<void>;
+    addCategory: (name: string) => Promise<string>;
     updateCategoryName: (id: string, name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
     reorderCategories: (categories: Category[]) => Promise<void>;
@@ -114,7 +114,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }, []);
 
     const addCategory = async (name: string) => {
-        await categoriesSync.addItem({ id: uuidv4(), name });
+        const id = uuidv4();
+        await categoriesSync.addItem({ id, name });
+        return id;
     };
 
     const updateCategoryName = async (id: string, name: string) => {
