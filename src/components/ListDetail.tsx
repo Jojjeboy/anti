@@ -5,7 +5,7 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 
@@ -37,6 +37,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [editedSectionName, setEditedSectionName] = useState('');
     const [deletingSectionId, setDeleteSectionId] = useState<string | null>(null);
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
+    const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const navigate = useNavigate();
 
     const list: List | undefined = lists.find((l) => l.id === listId);
@@ -147,9 +148,10 @@ export const ListDetail: React.FC = React.memo(() => {
     }, [list?.settings?.defaultSort]);
 
     // Memoized sort of items based on current settings
-    const sortedItems = React.useMemo(() => {
-        if (!list) return [];
+    const { activeItems, completedItems } = React.useMemo(() => {
+        if (!list) return { activeItems: [], completedItems: [] };
         const items = [...list.items];
+
         if (sortBy === 'alphabetical') {
             items.sort((a, b) => a.text.localeCompare(b.text));
         } else if (sortBy === 'completed') {
@@ -168,7 +170,18 @@ export const ListDetail: React.FC = React.memo(() => {
                 return a.text.localeCompare(b.text);
             });
         }
-        return items;
+
+        if (list.settings?.hideCompleted) {
+            return {
+                activeItems: items.filter(item => !item.completed),
+                completedItems: items.filter(item => item.completed)
+            };
+        }
+
+        return {
+            activeItems: items,
+            completedItems: []
+        };
     }, [list, sortBy, threeStageMode]);
 
     // Update calendar event title when list name changes
@@ -548,10 +561,10 @@ export const ListDetail: React.FC = React.memo(() => {
             {
                 sortBy === 'manual' ? (
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={sortedItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                             <div className="space-y-6">
                                 {(() => {
-                                    const groupedItems = groupItemsBySection(sortedItems);
+                                    const groupedItems = groupItemsBySection(activeItems);
                                     const sections = list?.sections || [];
                                     const hasAnySections = sections.length > 0;
 
@@ -613,7 +626,7 @@ export const ListDetail: React.FC = React.memo(() => {
                                                 );
                                             })}
 
-                                            {sortedItems.length === 0 && (
+                                            {activeItems.length === 0 && (
                                                 <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
                                             )}
                                         </>
@@ -625,7 +638,7 @@ export const ListDetail: React.FC = React.memo(() => {
                 ) : (
                     <div className="space-y-6">
                         {(() => {
-                            const groupedItems = groupItemsBySection(sortedItems);
+                            const groupedItems = groupItemsBySection(activeItems);
                             const sections = list?.sections || [];
                             const hasAnySections = sections.length > 0;
 
@@ -689,7 +702,7 @@ export const ListDetail: React.FC = React.memo(() => {
                                         );
                                     })}
 
-                                    {sortedItems.length === 0 && (
+                                    {activeItems.length === 0 && (
                                         <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
                                     )}
                                 </>
@@ -698,6 +711,40 @@ export const ListDetail: React.FC = React.memo(() => {
                     </div>
                 )
             }
+
+            {/* Completed Items Accordion (when hideCompleted is active) */}
+            {list.settings?.hideCompleted && completedItems.length > 0 && (
+                <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
+                    <button
+                        onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
+                        className="flex items-center gap-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors w-full text-left p-2 group"
+                    >
+                        <ChevronDown
+                            size={18}
+                            className={`transform transition-transform duration-200 ${completedAccordionOpen ? '' : '-rotate-90'}`}
+                        />
+                        <span className="text-sm font-medium">
+                            {t('lists.completedAccordion', { count: completedItems.length })}
+                        </span>
+                    </button>
+
+                    {completedAccordionOpen && (
+                        <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                            {completedItems.map((item) => (
+                                <SortableItem
+                                    key={item.id}
+                                    item={item}
+                                    onToggle={list?.archived ? undefined : handleToggle}
+                                    onDelete={list?.archived ? undefined : handleDelete}
+                                    onEdit={list?.archived ? undefined : handleEdit}
+                                    threeStageMode={threeStageMode}
+                                    disabled={true}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <Modal
                 isOpen={uncheckModalOpen}
@@ -761,6 +808,23 @@ export const ListDetail: React.FC = React.memo(() => {
                             className={`w-12 h-6 rounded-full transition-colors relative ${list?.settings?.pinned ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
                         >
                             <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${list?.settings?.pinned ? 'translate-x-6' : ''}`} />
+                        </button>
+                    </div>
+
+                    {/* Hide Completed Items Toggle */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                                <EyeOff size={16} className={list?.settings?.hideCompleted ? "text-blue-500" : "text-gray-400"} />
+                                <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.hideCompleted.title')}</span>
+                            </div>
+                            <span className="text-sm text-gray-500">{t('lists.settings.hideCompleted.description')}</span>
+                        </div>
+                        <button
+                            onClick={() => updateSettings({ hideCompleted: !list?.settings?.hideCompleted })}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${list?.settings?.hideCompleted ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
+                        >
+                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${list?.settings?.hideCompleted ? 'translate-x-6' : ''}`} />
                         </button>
                     </div>
 

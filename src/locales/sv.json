@@ -59,6 +59,7 @@
         "reset": "Återställ",
         "addItemPlaceholder": "Lägg till objekt...",
         "emptyList": "Listan är tom.",
+        "completedAccordion": "Avklarade ({{count}})",
         "resetTitle": "Återställ lista",
         "resetMessage": "Är du säker på att du vill avmarkera alla objekt?",
         "clearCompleted": "Rensa klara",
@@ -87,6 +88,10 @@
             "archive": {
                 "title": "Arkiverad",
                 "description": "Lås listan och göm den från huvudvyn."
+            },
+            "hideCompleted": {
+                "title": "Göm avklarade objekt",
+                "description": "Visa inte objekt som redan är klara"
             }
         },
         "archivedBadge": "Arkiverad",

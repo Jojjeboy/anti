@@ -28,6 +28,7 @@ export interface ListSettings {
   calendarEndTime?: string;
   pinned?: boolean;
   isResettable?: boolean;
+  hideCompleted?: boolean;
 }
 
 export interface List {

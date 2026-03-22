@@ -60,6 +60,7 @@
         "reset": "Reset",
         "addItemPlaceholder": "Add item...",
         "emptyList": "List is empty.",
+        "completedAccordion": "Completed ({{count}})",
         "resetTitle": "Reset List",
         "resetMessage": "Are you sure you want to uncheck all items?",
         "clearCompleted": "Clear Completed",
@@ -88,6 +89,10 @@
             "archive": {
                 "title": "Archived",
                 "description": "Lock the list and hide it from the home view."
+            },
+            "hideCompleted": {
+                "title": "Hide Completed Items",
+                "description": "Don't show items that are already done"
             }
         },
         "archivedBadge": "Archived",

@@ -1,5 +1,20 @@
 [
   {
+    "hash": "acbc9d01e2a33a00dfb71d8fdb3800502ef26ae5",
+    "date": "2026-03-21 22:52:25 +0100",
+    "message": "chore: Ignore scripts/pasted_secret_config.js."
+  },
+  {
+    "hash": "522691277d038a206d2b29bdf8912f69f2b0ade4",
+    "date": "2026-03-21 22:36:22 +0100",
+    "message": "style: refine AI button to be an icon-only button and fix Gemini SVG path"
+  },
+  {
+    "hash": "583b6ee61959b0445a6ea4d004a88cfe5a551127",
+    "date": "2026-03-21 22:31:51 +0100",
+    "message": "Major: Google Gemini integration"
+  },
+  {
     "hash": "c49a6e08d500585bb0c240cbfd27566d1b265ba9",
     "date": "2026-03-18 06:40:09 +0100",
     "message": "more more fix"
@@ -83,20 +98,5 @@
     "hash": "32ce581fd01666eb8a8f18eb4cdb3304c2ba3a65",
     "date": "2026-01-13 21:02:34 +0100",
     "message": "Sortable fix"
-  },
-  {
-    "hash": "0bae7f3ac1b365b0ae45a24c65a713854b1ad6e8",
-    "date": "2026-01-13 09:38:05 +0100",
-    "message": "Bugfix"
-  },
-  {
-    "hash": "531cce9158d8919a4abdc6c4d4c261cc5401422f",
-    "date": "2026-01-12 19:18:58 +0100",
-    "message": "Fix modal scrolling and bump version to 8.0.1"
-  },
-  {
-    "hash": "56d3115f512b83011c601756b9e0fd46f2c5be2d",
-    "date": "2026-01-12 19:11:18 +0100",
-    "message": "Bugfix section"
   }
 ]

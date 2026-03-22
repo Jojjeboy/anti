@@ -44,7 +44,10 @@ vi.mock('lucide-react', () => ({
     RotateCcw: () => <div />,
     Settings: () => <div data-testid="settings-icon" />,
     ChevronDown: () => <div />,
-    Pin: () => <div />
+    Pin: () => <div />,
+    EyeOff: () => <div />,
+    Trash2: () => <div />,
+    Edit2: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();
@@ -88,6 +91,10 @@ describe('ListDetail', () => {
             sessions: [],
             completeSession: vi.fn(),
             deleteSession: vi.fn(),
+            archiveList: vi.fn(),
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
         } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
     });
 
@@ -176,7 +183,10 @@ describe('ListDetail', () => {
             sessions: [],
             completeSession: vi.fn(),
             deleteSession: vi.fn(),
-            // Add other required mock properties if missing from previous context
+            archiveList: vi.fn(),
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
         } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
 
         renderComponent();
@@ -186,6 +196,113 @@ describe('ListDetail', () => {
         expect(mockUpdateListItems).toHaveBeenCalledWith('list1', expect.arrayContaining([
             expect.objectContaining({ id: 'i1', completed: false, state: 'ongoing' })
         ]));
+    });
+
+    it('filters out completed items when hideCompleted is true', () => {
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'My List',
+                    categoryId: 'cat1',
+                    items: [
+                        { id: 'i1', text: 'Apple', completed: false },
+                        { id: 'i2', text: 'Banana', completed: true }
+                    ],
+                    settings: { hideCompleted: true, threeStageMode: false, defaultSort: 'manual' }
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: vi.fn(),
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            categories: [],
+            addCategory: vi.fn(),
+            deleteCategory: vi.fn(),
+            reorderCategories: vi.fn(),
+            addList: vi.fn(),
+            deleteList: vi.fn(),
+            copyList: vi.fn(),
+            moveList: vi.fn(),
+            updateCategoryName: vi.fn(),
+            reorderLists: vi.fn(),
+            addSession: vi.fn(),
+            combinations: [],
+            addCombination: vi.fn(),
+            updateCombination: vi.fn(),
+            deleteCombination: vi.fn(),
+            sessions: [],
+            completeSession: vi.fn(),
+            deleteSession: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+        expect(screen.getByText('Apple')).toBeDefined();
+        // Banana is in the accordion, which is closed by default
+        expect(screen.queryByText('Banana')).toBeNull();
+
+        // Find and click the accordion button
+        const accordionButton = screen.getByText(/lists.completedAccordion/);
+        expect(accordionButton).toBeDefined();
+        fireEvent.click(accordionButton);
+
+        // Now Banana should be visible
+        expect(screen.getByText('Banana')).toBeDefined();
+    });
+
+    it('shows all items when hideCompleted is false', () => {
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'My List',
+                    categoryId: 'cat1',
+                    items: [
+                        { id: 'i1', text: 'Apple', completed: false },
+                        { id: 'i2', text: 'Banana', completed: true }
+                    ],
+                    settings: { hideCompleted: false, threeStageMode: false, defaultSort: 'manual' }
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: vi.fn(),
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            categories: [],
+            addCategory: vi.fn(),
+            deleteCategory: vi.fn(),
+            reorderCategories: vi.fn(),
+            addList: vi.fn(),
+            deleteList: vi.fn(),
+            copyList: vi.fn(),
+            moveList: vi.fn(),
+            updateCategoryName: vi.fn(),
+            reorderLists: vi.fn(),
+            addSession: vi.fn(),
+            combinations: [],
+            addCombination: vi.fn(),
+            updateCombination: vi.fn(),
+            deleteCombination: vi.fn(),
+            sessions: [],
+            completeSession: vi.fn(),
+            deleteSession: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+        expect(screen.getByText('Apple')).toBeDefined();
+        expect(screen.getByText('Banana')).toBeDefined();
+        // Accordion should not be present
+        expect(screen.queryByText(/lists.completedAccordion/)).toBeNull();
     });
 
 });
