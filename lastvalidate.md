@@ -1,4 +1,4 @@
-# Validation Output (2026-03-22T12:57:00.152Z)
+# Validation Output (2026-03-22T13:08:28.517Z)
 
 ```bash
 
@@ -13,20 +13,20 @@ computing gzip size...
 dist/manifest.webmanifest                            0.36 kB
 dist/index.html                                      0.54 kB │ gzip:   0.32 kB
 dist/assets/gemini-BfquLd1p.svg                      8.71 kB │ gzip:   2.02 kB
-dist/assets/index-D-p9iBR-.css                      50.89 kB │ gzip:   8.23 kB
+dist/assets/index-BkEbxSEa.css                      51.01 kB │ gzip:   8.25 kB
 dist/assets/workbox-window.prod.es5-BIl4cyR9.js      5.76 kB │ gzip:   2.37 kB
-dist/assets/index-KkA6YVAt.js                    1,381.08 kB │ gzip: 417.59 kB
+dist/assets/index-CZ3xVWzF.js                    1,381.66 kB │ gzip: 417.76 kB
 
 (!) Some chunks are larger than 1300 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 6.16s
+✓ built in 3.48s
 Unknown input options: manualChunks. Allowed options: cache, context, experimentalCacheExpiry, experimentalLogSideEffects, external, fs, input, jsx, logLevel, makeAbsoluteExternalsRelative, maxParallelFileOps, moduleContext, onLog, onwarn, perf, plugins, preserveEntrySignatures, preserveSymlinks, shimMissingExports, strictDeprecations, treeshake, watch
 
 PWA v1.2.0
 mode      generateSW
-precache  8 entries (1404.56 KiB)
+precache  8 entries (1405.24 KiB)
 files generated
   dist/sw.js
 
@@ -44,30 +44,6 @@ files generated
 
 [1m[46m RUN [49m[22m [36mv4.0.16 [39m[90m/Users/jk/kod/looplist[39m
       [2mCoverage enabled with [22m[33mv8[39m
-
-[90mstderr[2m | src/context/ToastContext.test.tsx[2m > [22m[2mToastContext[2m > [22m[2mshowToast adds a toast
-[22m[39mAn update to ToastProvider inside a test was not wrapped in act(...).
-
-When testing, code that causes React state updates should be wrapped into act(...):
-
-act(() => {
-  /* fire events that update state */
-});
-/* assert on the output */
-
-This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
-
-[90mstderr[2m | src/context/ToastContext.test.tsx[2m > [22m[2mToastContext[2m > [22m[2mremoveToast removes a toast by id
-[22m[39mAn update to ToastProvider inside a test was not wrapped in act(...).
-
-When testing, code that causes React state updates should be wrapped into act(...):
-
-act(() => {
-  /* fire events that update state */
-});
-/* assert on the output */
-
-This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
 
 [90mstderr[2m | src/hooks/useFirestoreSync.test.ts[2m > [22m[2museFirestoreSync[2m > [22m[2mshould handle snapshot errors
 [22m[39mFirestore sync error for users/test-user-id/test-collection: Error: Firestore error
@@ -121,18 +97,18 @@ This ensures that you're testing the behavior the user would see in the browser.
     at trace [90m(file:///Users/jk/kod/looplist/[39mnode_modules/[4mvitest[24m/dist/chunks/test.B8ej_ZHS.js:239:21[90m)[39m
     at runTest [90m(file:///Users/jk/kod/looplist/[39mnode_modules/[4m@vitest/runner[24m/dist/index.js:1653:12[90m)[39m
 
- [32m✓[39m src/context/ToastContext.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 15[2mms[22m[39m
  [32m✓[39m src/context/AuthContext.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
- [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 27[2mms[22m[39m
- [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 50[2mms[22m[39m
- [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 24[2mms[22m[39m
- [32m✓[39m src/components/SessionPicker.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m src/components/CombinationEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 62[2mms[22m[39m
+ [32m✓[39m src/components/SessionPicker.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m src/components/AIListGeneratorModal.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 72[2mms[22m[39m
+ [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 25[2mms[22m[39m
 [90mstderr[2m | src/components/SessionDetail.test.tsx[2m > [22m[2mSessionDetail[2m > [22m[2mcompletes session
 [22m[39mNo routes matched location "/category/cat1" 
 
- [32m✓[39m src/components/CombinationEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 53[2mms[22m[39m
- [32m✓[39m src/components/SessionDetail.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 66[2mms[22m[39m
- [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m src/components/SessionDetail.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 69[2mms[22m[39m
 [90mstderr[2m | src/components/ListDetail.test.tsx[2m > [22m[2mListDetail[2m > [22m[2madds a new item
 [22m[39mAn update to ListDetail inside a test was not wrapped in act(...).
 
@@ -157,26 +133,49 @@ act(() => {
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
 
- [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 65[2mms[22m[39m
- [32m✓[39m src/components/CategoryView.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+ [32m✓[39m src/components/CategoryView.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+[90mstderr[2m | src/context/ToastContext.test.tsx[2m > [22m[2mToastContext[2m > [22m[2mshowToast adds a toast
+[22m[39mAn update to ToastProvider inside a test was not wrapped in act(...).
 
-[2m Test Files [22m [1m[32m11 passed[39m[22m[90m (11)[39m
-[2m      Tests [22m [1m[32m63 passed[39m[22m[90m (63)[39m
-[2m   Start at [22m 13:57:28
-[2m   Duration [22m 1.32s[2m (transform 1.11s, setup 1.49s, import 2.72s, tests 429ms, environment 6.56s)[22m
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+[90mstderr[2m | src/context/ToastContext.test.tsx[2m > [22m[2mToastContext[2m > [22m[2mremoveToast removes a toast by id
+[22m[39mAn update to ToastProvider inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ [32m✓[39m src/context/ToastContext.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m12 passed[39m[22m[90m (12)[39m
+[2m      Tests [22m [1m[32m64 passed[39m[22m[90m (64)[39m
+[2m   Start at [22m 14:08:37
+[2m   Duration [22m 5.56s[2m (transform 2.34s, setup 7.25s, import 10.16s, tests 526ms, environment 35.02s)[22m
 
 JUNIT report written to /Users/jk/kod/looplist/dist/test-results.xml
 [34m % [39m[2mCoverage report from [22m[33mv8[39m
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------|---------|----------|---------|---------|-------------------
-All files          |   54.04 |    45.71 |    47.5 |   55.08 |                   
+All files          |   55.21 |    48.72 |   51.04 |   56.13 |                   
  src               |     100 |      100 |     100 |     100 |                   
   firebase.ts      |     100 |      100 |     100 |     100 |                   
- src/assets        |       0 |        0 |       0 |       0 |                   
-  gemini.svg       |       0 |        0 |       0 |       0 |                   
- src/components    |   53.88 |    49.58 |   48.21 |    55.1 |                   
-  CategoryView.tsx |   34.31 |       25 |      25 |   36.55 | ...08-282,305-404 
+ src/components    |   55.71 |    53.33 |   53.68 |   56.76 |                   
+  ...atorModal.tsx |   41.42 |    53.44 |   42.85 |   43.28 | ...01,217,231-273 
   ...ionEditor.tsx |   93.47 |    84.61 |   94.44 |    92.5 | 33-34,54          
   ...rBoundary.tsx |   31.25 |    16.66 |   42.85 |   31.25 | 22-30,35-40,48-80 
   ListDetail.tsx   |   42.04 |    39.31 |   30.61 |   44.44 | ...1-824,841-1093 

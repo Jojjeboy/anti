@@ -123,32 +123,34 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                     </div>
 
                     <div className="space-y-4">
-                        {!generatedList ? (
-                            <>
+                        <div className="space-y-3">
+                            {!generatedList && (
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Beskriv vilken typ av lista du vill skapa, till exempel &quot;Packlista för weekend i Sthlm&quot; eller &quot;Ingredienser för lasagne&quot;.
                                 </p>
+                            )}
 
-                                <div>
-                                    <textarea
-                                        value={prompt}
-                                        onChange={(e) => {
-                                            setPrompt(e.target.value);
-                                            setError('');
-                                        }}
-                                        placeholder="Ex: Packlista för en snowboardresa i fjällen..."
-                                        className="w-full h-32 p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-sm focus:ring-2 focus:ring-purple-500 outline-none resize-none transition-all placeholder:text-gray-400 disabled:opacity-60 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
-                                        disabled={isLoading}
-                                    />
+                            <div className="relative">
+                                <textarea
+                                    value={prompt}
+                                    onChange={(e) => {
+                                        setPrompt(e.target.value);
+                                        setError('');
+                                    }}
+                                    placeholder="Ex: Packlista för en snowboardresa i fjällen..."
+                                    className={`w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-sm focus:ring-2 focus:ring-purple-500 outline-none resize-none transition-all placeholder:text-gray-400 disabled:opacity-60 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed ${generatedList ? 'h-20' : 'h-32'}`}
+                                    disabled={isLoading || isSaving}
+                                />
+                            </div>
+
+                            {error && !generatedList && (
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex gap-2">
+                                    <span className="text-red-600 dark:text-red-400 text-sm">⚠️</span>
+                                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                                 </div>
+                            )}
 
-                                {error && (
-                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex gap-2">
-                                        <span className="text-red-600 dark:text-red-400 text-sm">⚠️</span>
-                                        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-                                    </div>
-                                )}
-
+                            {!generatedList && (
                                 <div className="flex justify-end pt-2">
                                     <button
                                         onClick={handleGenerate}
@@ -168,9 +170,22 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                                         )}
                                     </button>
                                 </div>
-                            </>
-                        ) : (
-                            <div className="animate-in fade-in zoom-in-95 duration-200">
+                            )}
+                        </div>
+                        {generatedList && (
+                            <div className="animate-in fade-in zoom-in-95 duration-200 space-y-4">
+                                {/* Preview result header with re-generate option */}
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Förslag</span>
+                                    <button
+                                        onClick={handleGenerate}
+                                        disabled={isLoading || !prompt.trim()}
+                                        className="text-xs font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 flex items-center gap-1 transition-colors disabled:opacity-50"
+                                    >
+                                        {isLoading ? <Loader2 className="animate-spin" size={12} /> : <Wand2 size={12} />}
+                                        {isLoading ? 'Uppdaterar...' : 'Generera om'}
+                                    </button>
+                                </div>
                                 {/* Preview result */}
                                 <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800/50 rounded-xl p-5 mb-5">
                                     <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3 pb-3 border-b border-purple-200 dark:border-purple-800">

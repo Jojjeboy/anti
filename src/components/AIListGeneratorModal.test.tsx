@@ -1,0 +1,67 @@
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { AIListGeneratorModal } from './AIListGeneratorModal';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import * as aiService from '../services/aiService';
+
+// Mock aiService
+vi.mock('../services/aiService', () => ({
+    generateListContent: vi.fn(),
+}));
+
+// Mock assets
+vi.mock('../assets/gemini.svg', () => ({
+    default: 'mock-svg-url'
+}));
+
+describe('AIListGeneratorModal', () => {
+    const mockOnClose = vi.fn();
+    const mockOnSave = vi.fn();
+    const mockCategories = [{ id: 'cat1', name: 'Work' }];
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('allows rephrasing and regenerating after initial generation', async () => {
+        const mockGeneratedList = {
+            title: 'Packing List',
+            items: ['Shirt', 'Pants']
+        };
+        vi.mocked(aiService.generateListContent).mockResolvedValue(mockGeneratedList);
+
+        render(
+            <AIListGeneratorModal 
+                isOpen={true} 
+                onClose={mockOnClose} 
+                onSave={mockOnSave} 
+                categories={mockCategories} 
+            />
+        );
+
+        // Initial generation
+        const textarea = screen.getByPlaceholderText(/Ex: Packlista för en snowboardresa/);
+        fireEvent.change(textarea, { target: { value: 'Packing for Hawaii' } });
+        
+        const generateButton = screen.getByText('Generera list-förslag');
+        fireEvent.click(generateButton);
+
+        await waitFor(() => {
+            expect(screen.getByText('Packing List')).toBeDefined();
+        });
+
+        // Verify textarea is still there
+        expect(screen.getByDisplayValue('Packing for Hawaii')).toBeDefined();
+
+        // Rephrase
+        fireEvent.change(textarea, { target: { value: 'Packing for Hawaii with snorkeling' } });
+        
+        // Find and click "Generera om"
+        const regenerateButton = screen.getByText('Generera om');
+        fireEvent.click(regenerateButton);
+
+        await waitFor(() => {
+            expect(aiService.generateListContent).toHaveBeenCalledTimes(2);
+            expect(aiService.generateListContent).toHaveBeenLastCalledWith('Packing for Hawaii with snorkeling');
+        });
+    });
+});
