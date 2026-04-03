@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useBlocker, useNavigate } from 'react-router-dom';
+import { useParams, useBlocker, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
@@ -41,6 +41,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const navigate = useNavigate();
+    const { hash } = useLocation();
 
     const list: List | undefined = lists.find((l) => l.id === listId);
 
@@ -71,6 +72,13 @@ export const ListDetail: React.FC = React.memo(() => {
             updateListAccess(listId);
         }
     }, [listId]);
+
+    // Handle direct settings navigation via hash
+    useEffect(() => {
+        if (hash === '#settings') {
+            setSettingsOpen(true);
+        }
+    }, [hash]);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -1080,7 +1088,7 @@ export const ListDetail: React.FC = React.memo(() => {
                                 setSettingsOpen(false);
                                 setUncheckModalOpen(true);
                             }}
-                            className="w-full flex items-center justify-center gap-2 p-3 text-red-600 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            className="w-full flex items-center justify-center gap-2 p-3 text-orange-600 bg-orange-50 dark:bg-orange-900/10 hover:bg-orange-100 dark:hover:bg-orange-900/20 rounded-lg transition-colors"   
                         >
                             <RotateCcw size={18} />
                             {t('lists.reset')}

@@ -1,5 +1,25 @@
 [
   {
+    "hash": "4f76726e0424edee810d1e4c5cfb04ada02c4cb1",
+    "date": "2026-04-03 11:46:36 +0200",
+    "message": "feat: add list deletion confirmation modals and settings-level delete"
+  },
+  {
+    "hash": "a110b2670cc4827d5fb893a6c4acd7248f64ad1b",
+    "date": "2026-04-03 11:07:21 +0200",
+    "message": "feat: track and display AI generation metadata for lists"
+  },
+  {
+    "hash": "e6b20578c2efee9cb935087061203999b604520a",
+    "date": "2026-03-22 14:08:49 +0100",
+    "message": "Allow users to rephrase and regenerate AI-generated lists within the modal, including UI adjustments and new tests for this functionality."
+  },
+  {
+    "hash": "9a369922b1fe54aaa02df38706f6f8c12b9cf369",
+    "date": "2026-03-22 13:57:44 +0100",
+    "message": "Add option to hide completed items in lists and update localization."
+  },
+  {
     "hash": "acbc9d01e2a33a00dfb71d8fdb3800502ef26ae5",
     "date": "2026-03-21 22:52:25 +0100",
     "message": "chore: Ignore scripts/pasted_secret_config.js."
@@ -78,25 +98,5 @@
     "hash": "d14f8e3b4baf3e74577d150a1712d39ce7aaa4d0",
     "date": "2026-01-20 10:19:40 +0100",
     "message": "feat: add 3-stage mode to sessions, fix list clear, and restore theme toggle (v9.1.0)"
-  },
-  {
-    "hash": "0e99495e9874701bd6c9b780f0d186e106247cda",
-    "date": "2026-01-13 21:46:37 +0100",
-    "message": "Documentation"
-  },
-  {
-    "hash": "9e1c86217c1b8ac174ce6aff520c3bfaf175490e",
-    "date": "2026-01-13 21:29:02 +0100",
-    "message": "packa.json bump"
-  },
-  {
-    "hash": "c8123501b65d65293ea36cb5c700d5ebf258b8c5",
-    "date": "2026-01-13 21:25:01 +0100",
-    "message": "Fix again"
-  },
-  {
-    "hash": "32ce581fd01666eb8a8f18eb4cdb3304c2ba3a65",
-    "date": "2026-01-13 21:02:34 +0100",
-    "message": "Sortable fix"
   }
 ]

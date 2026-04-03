@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Link } from 'react-router-dom';
-import { Copy, ArrowRight, Trash2, GripVertical, MoreVertical, CheckCheck } from 'lucide-react';
+import { Copy, ArrowRight, Trash2, GripVertical, MoreVertical, CheckCheck, Settings } from 'lucide-react';
 import type { List, Category } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -124,6 +124,17 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
                                 <CheckCheck size={16} />
                                 {t('lists.clearCompleted')}
                             </button>
+                            <Link
+                                to={`/list/${list.id}#settings`}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDropdownOpen(false);
+                                }}
+                            >
+                                <Settings size={16} />
+                                {t('lists.settings.title')}
+                            </Link>
                             <button
                                 onClick={() => {
                                     onDelete(list.id);
