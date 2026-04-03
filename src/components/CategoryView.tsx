@@ -41,6 +41,10 @@ export const CategoryView: React.FC = React.memo(() => {
         isOpen: false,
         combinationId: null,
     });
+    const [deleteListModal, setDeleteListModal] = useState<{ isOpen: boolean; listId: string | null }>({
+        isOpen: false,
+        listId: null,
+    });
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [aiModalOpen, setAiModalOpen] = useState(false);
 
@@ -105,6 +109,13 @@ export const CategoryView: React.FC = React.memo(() => {
         }
     };
 
+    const confirmDeleteList = async () => {
+        if (deleteListModal.listId) {
+            await deleteList(deleteListModal.listId);
+            setDeleteListModal({ isOpen: false, listId: null });
+        }
+    };
+
 
     /**
      * Handles the import of a list from JSON data.
@@ -154,7 +165,7 @@ export const CategoryView: React.FC = React.memo(() => {
                         }}
                         onCopyList={copyList}
                         onMoveList={moveList}
-                        onDeleteList={deleteList}
+                        onDeleteList={(listId: string) => setDeleteListModal({ isOpen: true, listId })}
                         onClearCompleted={(listId) => {
                             const list = lists.find(l => l.id === listId);
                             if (list) {
@@ -372,6 +383,16 @@ export const CategoryView: React.FC = React.memo(() => {
                 title={t('combinations.deleteTitle', 'Radera mall')}
                 message={t('combinations.deleteMessage', 'Är du säker på att du vill radera denna mall? Listorna kommer inte att raderas.')}
                 confirmText={t('common.delete', 'Radera')}
+                isDestructive
+            />
+
+            <Modal
+                isOpen={deleteListModal.isOpen}
+                onClose={() => setDeleteListModal({ isOpen: false, listId: null })}
+                onConfirm={confirmDeleteList}
+                title={t('lists.deleteTitle')}
+                message={t('lists.deleteMessage')}
+                confirmText={t('lists.deleteConfirm')}
                 isDestructive
             />
 

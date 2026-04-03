@@ -25,9 +25,10 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
 export const ListDetail: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
-    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection } = useApp();
+    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, deleteList } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
     const [settingsOpen, setSettingsOpen] = useState(false);
@@ -1085,8 +1086,35 @@ export const ListDetail: React.FC = React.memo(() => {
                             {t('lists.reset')}
                         </button>
                     </div>
+
+                    {/* Delete List Action */}
+                    <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <button
+                            onClick={() => {
+                                setDeleteConfirmOpen(true);
+                            }}
+                            className="w-full flex items-center justify-center gap-2 p-3 text-red-600 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors border border-red-100 dark:border-red-900/30"
+                        >
+                            <Trash2 size={18} />
+                            {t('lists.deleteTitle')}
+                        </button>
+                    </div>
                 </div>
             </Modal>
+            <Modal
+                isOpen={deleteConfirmOpen}
+                onClose={() => setDeleteConfirmOpen(false)}
+                onConfirm={async () => {
+                    if (list) {
+                        await deleteList(list.id);
+                        navigate('/');
+                    }
+                }}
+                title={t('lists.deleteTitle')}
+                message={t('lists.deleteMessage')}
+                confirmText={t('lists.deleteConfirm')}
+                isDestructive
+            />
             <Modal
                 isOpen={deletingSectionId !== null}
                 onClose={() => setDeleteSectionId(null)}
