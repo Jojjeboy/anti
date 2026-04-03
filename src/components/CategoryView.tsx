@@ -23,7 +23,7 @@ import { AIListGeneratorModal } from './AIListGeneratorModal';
 export const CategoryView: React.FC = React.memo(() => {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
-    const { categories, lists, addCategory, deleteCategory, updateCategoryName, addList, deleteList, copyList, moveList, updateListItems, reorderLists, addSession, combinations, addCombination, updateCombination, deleteCombination, reorderCategories } = useApp();
+    const { categories, lists, addCategory, deleteCategory, updateCategoryName, addList, updateListSettings, deleteList, copyList, moveList, updateListItems, reorderLists, addSession, combinations, addCombination, updateCombination, deleteCombination, reorderCategories } = useApp();
     const [activeTab, setActiveTab] = useState<'home' | 'templates' | 'archived'>('home');
     const [sessionPickerOpen, setSessionPickerOpen] = useState(false);
     const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
@@ -109,9 +109,19 @@ export const CategoryView: React.FC = React.memo(() => {
     /**
      * Handles the import of a list from JSON data.
      */
-    const handleImportList = async (name: string, items: Item[], categoryId: string) => {
+    const handleImportList = async (name: string, items: Item[], categoryId: string, aiPrompt?: string) => {
         const newListId = await addList(name, categoryId);
         await updateListItems(newListId, items);
+
+        if (aiPrompt) {
+            await updateListSettings(newListId, {
+                threeStageMode: false,
+                defaultSort: 'manual',
+                isAIGenerated: true,
+                aiPrompt
+            });
+        }
+
         navigate(`/list/${newListId}`);
     };
 

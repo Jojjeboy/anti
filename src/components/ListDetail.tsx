@@ -8,6 +8,7 @@ import { SortableItem } from './SortableItem';
 import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
+import geminiIconUrl from '../assets/gemini.svg';
 
 import { useTranslation } from 'react-i18next';
 
@@ -763,6 +764,28 @@ export const ListDetail: React.FC = React.memo(() => {
                 onConfirm={() => setSettingsOpen(false)}
             >
                 <div className="space-y-6 pt-2">
+                    {/* AI Generation Info */}
+                    {list?.settings?.isAIGenerated && (
+                        <div className="p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800/50 rounded-xl space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex items-center gap-2">
+                                <img src={geminiIconUrl} alt="Gemini" className="w-5 h-5 drop-shadow-sm" />
+                                <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">
+                                    {t('lists.settings.ai.generatedBy', 'Skapad med Gemini AI')}
+                                </span>
+                            </div>
+                            {list.settings.aiPrompt && (
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 dark:text-purple-500/70">
+                                        {t('lists.settings.ai.promptUsed', 'Prompt som användes')}
+                                    </span>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 italic bg-white/50 dark:bg-gray-900/50 p-2.5 rounded-lg border border-purple-100/50 dark:border-purple-800/20">
+                                        &quot;{list.settings.aiPrompt}&quot;
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Three Stage Mode Toggle */}
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col">

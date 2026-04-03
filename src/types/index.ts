@@ -29,6 +29,8 @@ export interface ListSettings {
   pinned?: boolean;
   isResettable?: boolean;
   hideCompleted?: boolean;
+  isAIGenerated?: boolean;
+  aiPrompt?: string;
 }
 
 export interface List {

@@ -7,7 +7,7 @@ import geminiIconUrl from '../assets/gemini.svg';
 interface AIListGeneratorModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (name: string, items: Item[], categoryId: string) => Promise<void>;
+    onSave: (name: string, items: Item[], categoryId: string, aiPrompt?: string) => Promise<void>;
     categories: Category[];
     onAddCategory?: (name: string) => Promise<string>;
 }
@@ -93,7 +93,7 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                 completed: false
             }));
 
-            await onSave(generatedList.title, formattedItems, targetCategoryId);
+            await onSave(generatedList.title, formattedItems, targetCategoryId, prompt);
             handleClose();
         } catch {
             setError('Kunde inte spara listan. Vänligen försök igen.');

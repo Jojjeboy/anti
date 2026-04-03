@@ -1,4 +1,4 @@
-# Validation Output (2026-03-22T13:08:28.517Z)
+# Validation Output (2026-04-03T09:06:47.991Z)
 
 ```bash
 
@@ -13,20 +13,20 @@ computing gzip size...
 dist/manifest.webmanifest                            0.36 kB
 dist/index.html                                      0.54 kB │ gzip:   0.32 kB
 dist/assets/gemini-BfquLd1p.svg                      8.71 kB │ gzip:   2.02 kB
-dist/assets/index-BkEbxSEa.css                      51.01 kB │ gzip:   8.25 kB
+dist/assets/index-BuwPtJXc.css                      51.35 kB │ gzip:   8.30 kB
 dist/assets/workbox-window.prod.es5-BIl4cyR9.js      5.76 kB │ gzip:   2.37 kB
-dist/assets/index-CZ3xVWzF.js                    1,381.66 kB │ gzip: 417.76 kB
+dist/assets/index-C0MmFo15.js                    1,382.79 kB │ gzip: 418.14 kB
+✓ built in 2.05s
 
 (!) Some chunks are larger than 1300 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.48s
 Unknown input options: manualChunks. Allowed options: cache, context, experimentalCacheExpiry, experimentalLogSideEffects, external, fs, input, jsx, logLevel, makeAbsoluteExternalsRelative, maxParallelFileOps, moduleContext, onLog, onwarn, perf, plugins, preserveEntrySignatures, preserveSymlinks, shimMissingExports, strictDeprecations, treeshake, watch
 
 PWA v1.2.0
 mode      generateSW
-precache  8 entries (1405.24 KiB)
+precache  8 entries (1406.68 KiB)
 files generated
   dist/sw.js
 
@@ -97,18 +97,13 @@ files generated
     at trace [90m(file:///Users/jk/kod/looplist/[39mnode_modules/[4mvitest[24m/dist/chunks/test.B8ej_ZHS.js:239:21[90m)[39m
     at runTest [90m(file:///Users/jk/kod/looplist/[39mnode_modules/[4m@vitest/runner[24m/dist/index.js:1653:12[90m)[39m
 
- [32m✓[39m src/context/AuthContext.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
- [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 24[2mms[22m[39m
- [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 52[2mms[22m[39m
- [32m✓[39m src/components/CombinationEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 62[2mms[22m[39m
- [32m✓[39m src/components/SessionPicker.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 63[2mms[22m[39m
- [32m✓[39m src/components/AIListGeneratorModal.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 72[2mms[22m[39m
- [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/context/AuthContext.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 29[2mms[22m[39m
 [90mstderr[2m | src/components/SessionDetail.test.tsx[2m > [22m[2mSessionDetail[2m > [22m[2mcompletes session
 [22m[39mNo routes matched location "/category/cat1" 
 
- [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 29[2mms[22m[39m
- [32m✓[39m src/components/SessionDetail.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 69[2mms[22m[39m
 [90mstderr[2m | src/components/ListDetail.test.tsx[2m > [22m[2mListDetail[2m > [22m[2madds a new item
 [22m[39mAn update to ListDetail inside a test was not wrapped in act(...).
 
@@ -121,6 +116,8 @@ act(() => {
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
 
+ [32m✓[39m src/components/SessionDetail.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+ [32m✓[39m src/components/SessionPicker.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 61[2mms[22m[39m
 [90mstderr[2m | src/components/ListDetail.test.tsx[2m > [22m[2mListDetail[2m > [22m[2mtoggles item completion
 [22m[39mAn update to ListDetail inside a test was not wrapped in act(...).
 
@@ -133,8 +130,11 @@ act(() => {
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
 
- [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 67[2mms[22m[39m
- [32m✓[39m src/components/CategoryView.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m src/components/CombinationEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 60[2mms[22m[39m
+ [32m✓[39m src/components/AIListGeneratorModal.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 76[2mms[22m[39m
+ [32m✓[39m src/components/CategoryView.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 35[2mms[22m[39m
 [90mstderr[2m | src/context/ToastContext.test.tsx[2m > [22m[2mToastContext[2m > [22m[2mshowToast adds a toast
 [22m[39mAn update to ToastProvider inside a test was not wrapped in act(...).
 
@@ -163,22 +163,25 @@ This ensures that you're testing the behavior the user would see in the browser.
 
 [2m Test Files [22m [1m[32m12 passed[39m[22m[90m (12)[39m
 [2m      Tests [22m [1m[32m64 passed[39m[22m[90m (64)[39m
-[2m   Start at [22m 14:08:37
-[2m   Duration [22m 5.56s[2m (transform 2.34s, setup 7.25s, import 10.16s, tests 526ms, environment 35.02s)[22m
+[2m   Start at [22m 11:06:55
+[2m   Duration [22m 1.42s[2m (transform 1.31s, setup 1.32s, import 2.43s, tests 532ms, environment 5.61s)[22m
 
 JUNIT report written to /Users/jk/kod/looplist/dist/test-results.xml
 [34m % [39m[2mCoverage report from [22m[33mv8[39m
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------|---------|----------|---------|---------|-------------------
-All files          |   55.21 |    48.72 |   51.04 |   56.13 |                   
+All files          |   53.12 |    46.13 |    47.3 |   54.16 |                   
  src               |     100 |      100 |     100 |     100 |                   
   firebase.ts      |     100 |      100 |     100 |     100 |                   
- src/components    |   55.71 |    53.33 |   53.68 |   56.76 |                   
+ src/assets        |       0 |        0 |       0 |       0 |                   
+  gemini.svg       |       0 |        0 |       0 |       0 |                   
+ src/components    |   52.51 |    49.63 |   47.89 |   53.72 |                   
   ...atorModal.tsx |   41.42 |    53.44 |   42.85 |   43.28 | ...01,217,231-273 
+  CategoryView.tsx |   33.65 |    24.24 |      25 |   35.78 | ...18-292,315-414 
   ...ionEditor.tsx |   93.47 |    84.61 |   94.44 |    92.5 | 33-34,54          
   ...rBoundary.tsx |   31.25 |    16.66 |   42.85 |   31.25 | 22-30,35-40,48-80 
-  ListDetail.tsx   |   42.04 |    39.31 |   30.61 |   44.44 | ...1-824,841-1093 
+  ListDetail.tsx   |   42.04 |    39.09 |   30.61 |   44.44 | ...2-847,864-1116 
   Modal.tsx        |    91.3 |    88.23 |   85.71 |   90.47 | 35-36             
   ...chResults.tsx |   88.23 |    93.33 |   81.81 |    87.5 | 32,51             
   ...ionDetail.tsx |   82.14 |    67.44 |   94.11 |      80 | 52-63,86,214      
