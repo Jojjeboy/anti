@@ -13,7 +13,7 @@ export interface GeneratedList {
 
 export const generateListContent = async (prompt: string): Promise<GeneratedList> => {
     if (!apiKey) {
-        throw new Error("Missing Gemini API Key. Please add VITE_GEMINI_KEY to your .env file.");
+        throw new Error("Ingen API-nyckel hittades. Vänligen lägg till VITE_GEMINI_KEY i din .env-fil.");
     }
 
     try {
@@ -39,7 +39,28 @@ export const generateListContent = async (prompt: string): Promise<GeneratedList
         return data;
     } catch (error) {
         console.error("Error generating list with AI:", error);
-        const errorMessage = error instanceof Error ? error.message : "Kunde inte generera lista. Kontrollera din prompt eller försök igen senare.";
+        
+        let errorMessage = "Kunde inte generera lista. Kontrollera din prompt eller försök igen senare.";
+        
+        if (error instanceof Error) {
+            const raw = error.message.toLowerCase();
+            if (raw.includes("api key not valid") || raw.includes("api_key_invalid")) {
+                errorMessage = "Ogiltig API-nyckel för AI-tjänsten. Vänligen kontrollera dina inställningar.";
+            } else if (raw.includes("fetch failed") || raw.includes("network error") || raw.includes("failed to fetch")) {
+                errorMessage = "Nätverksfel: Kunde inte ansluta till AI-tjänsten. Kontrollera din internetanslutning.";
+            } else if (raw.includes("429") || raw.includes("quota") || raw.includes("too many requests")) {
+                errorMessage = "Servern är överbelastad just nu. Vänligen vänta en liten stund och försök igen.";
+            } else if (raw.includes("safety") || raw.includes("blocked")) {
+                errorMessage = "Din förfrågan blockades av säkerhetsskäl. Försök att formulera om texten.";
+            } else if (raw.includes("invalid response format") || raw.includes("json")) {
+                errorMessage = "AI:n returnerade ett format vi inte kunde förstå. Vänligen försök med en annan beskrivning.";
+            } else if (error.message.length < 100) {
+                // If it's a relatively short error message, we can show it directly,
+                // but we clean up potential google prefixes
+                errorMessage = error.message.replace(/\[GoogleGenerativeAI Error\]:\s*/i, '');
+            }
+        }
+        
         throw new Error(errorMessage);
     }
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Folder, Loader2, Wand2 } from 'lucide-react';
+import { X, Folder, Loader2, Wand2, AlertTriangle, Sparkles } from 'lucide-react';
 import { Category, Item } from '../types';
 import { generateListContent, GeneratedList } from '../services/aiService';
 import geminiIconUrl from '../assets/gemini.svg';
@@ -144,9 +144,22 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                             </div>
 
                             {error && !generatedList && (
-                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex gap-2">
-                                    <span className="text-red-600 dark:text-red-400 text-sm">⚠️</span>
-                                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200 mt-2 shadow-sm border-l-4 border-l-red-500">
+                                    <AlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" size={18} />
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h4 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-1">Ett fel uppstod</h4>
+                                                <p className="text-sm text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                            </div>
+                                            <button 
+                                                onClick={handleGenerate}
+                                                className="text-xs font-bold text-red-700 dark:text-red-400 hover:underline uppercase tracking-wider ml-4 mt-0.5 whitespace-nowrap"
+                                            >
+                                                Försök igen
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
@@ -176,7 +189,10 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                             <div className="animate-in fade-in zoom-in-95 duration-200 space-y-4">
                                 {/* Preview result header with re-generate option */}
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Förslag</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Sparkles className="text-purple-500" size={12} />
+                                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Förslag</span>
+                                    </div>
                                     <button
                                         onClick={handleGenerate}
                                         disabled={isLoading || !prompt.trim()}
@@ -262,9 +278,12 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                                 </div>
 
                                 {error && (
-                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4 flex gap-2">
-                                        <span className="text-red-600 dark:text-red-400 text-sm">⚠️</span>
-                                        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200 shadow-sm border-l-4 border-l-red-500">
+                                        <AlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" size={18} />
+                                        <div>
+                                            <h4 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-1">Kunde inte spara</h4>
+                                            <p className="text-sm text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                        </div>
                                     </div>
                                 )}
 

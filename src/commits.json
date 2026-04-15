@@ -1,5 +1,10 @@
 [
   {
+    "hash": "f2068f8b285bfbd9d7f7c9a6e6d09fc0dd87d24e",
+    "date": "2026-04-03 12:08:50 +0200",
+    "message": "feat: add direct list settings access from home page"
+  },
+  {
     "hash": "4f76726e0424edee810d1e4c5cfb04ada02c4cb1",
     "date": "2026-04-03 11:46:36 +0200",
     "message": "feat: add list deletion confirmation modals and settings-level delete"
@@ -93,10 +98,5 @@
     "hash": "30bad0f920ca31284aee49ae30acc1e68aaefeff",
     "date": "2026-01-21 15:08:51 +0100",
     "message": "feat: implement pinned list navigation blocking and refactor to Data Router (v10.0.0)"
-  },
-  {
-    "hash": "d14f8e3b4baf3e74577d150a1712d39ce7aaa4d0",
-    "date": "2026-01-20 10:19:40 +0100",
-    "message": "feat: add 3-stage mode to sessions, fix list clear, and restore theme toggle (v9.1.0)"
   }
 ]

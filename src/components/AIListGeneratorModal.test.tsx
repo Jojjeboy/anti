@@ -64,4 +64,40 @@ describe('AIListGeneratorModal', () => {
             expect(aiService.generateListContent).toHaveBeenLastCalledWith('Packing for Hawaii with snorkeling');
         });
     });
+
+    it('displays a nice error message and retry button when generation fails', async () => {
+        const errorMessage = 'Nätverksfel: Kunde inte ansluta till AI-tjänsten.';
+        vi.mocked(aiService.generateListContent).mockRejectedValue(new Error(errorMessage));
+
+        render(
+            <AIListGeneratorModal 
+                isOpen={true} 
+                onClose={mockOnClose} 
+                onSave={mockOnSave} 
+                categories={mockCategories} 
+            />
+        );
+
+        const textarea = screen.getByPlaceholderText(/Ex: Packlista för en snowboardresa/);
+        fireEvent.change(textarea, { target: { value: 'Test prompt' } });
+        
+        const generateButton = screen.getByText('Generera list-förslag');
+        fireEvent.click(generateButton);
+
+        await waitFor(() => {
+            expect(screen.getByText('Ett fel uppstod')).toBeDefined();
+            expect(screen.getByText(errorMessage)).toBeDefined();
+            expect(screen.getByText('Försök igen')).toBeDefined();
+        });
+
+        // Test retry button
+        vi.mocked(aiService.generateListContent).mockResolvedValue({ title: 'Success', items: ['Item 1'] });
+        const retryButton = screen.getByText('Försök igen');
+        fireEvent.click(retryButton);
+
+        await waitFor(() => {
+            expect(screen.getByText('Success')).toBeDefined();
+            expect(screen.queryByText('Ett fel uppstod')).toBeNull();
+        });
+    });
 });
