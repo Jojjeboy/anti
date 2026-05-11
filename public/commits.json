@@ -1,5 +1,10 @@
 [
   {
+    "hash": "6fb6f387fca321ffbece12bf70263edc5bdd63a0",
+    "date": "2026-04-15 07:26:30 +0200",
+    "message": "Error handleing"
+  },
+  {
     "hash": "f2068f8b285bfbd9d7f7c9a6e6d09fc0dd87d24e",
     "date": "2026-04-03 12:08:50 +0200",
     "message": "feat: add direct list settings access from home page"
@@ -93,10 +98,5 @@
     "hash": "92a6dda8a4696c2a3d6ae272ce1e22807aa4ca0b",
     "date": "2026-02-11 16:17:19 +0100",
     "message": "Rename to Looplist"
-  },
-  {
-    "hash": "30bad0f920ca31284aee49ae30acc1e68aaefeff",
-    "date": "2026-01-21 15:08:51 +0100",
-    "message": "feat: implement pinned list navigation blocking and refactor to Data Router (v10.0.0)"
   }
 ]

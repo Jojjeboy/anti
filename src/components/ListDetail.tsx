@@ -548,6 +548,16 @@ export const ListDetail: React.FC = React.memo(() => {
                         <Plus />
                     </button>
                     <button
+                        type="button"
+                        onClick={() => setUncheckModalOpen(true)}
+                        disabled={!list.items.some(item => item.completed)}
+                        title={t('lists.reset')}
+                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-800"
+                    >
+                        <RotateCcw size={20} />
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setSettingsOpen(true)}
                         className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
                     >
