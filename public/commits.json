@@ -1,5 +1,20 @@
 [
   {
+    "hash": "b7355286700c0a5753fcd5a842848b6552652648",
+    "date": "2026-05-11 15:13:36 +0200",
+    "message": "Updates"
+  },
+  {
+    "hash": "ed991b57154dd4bee480950999680c6040f70835",
+    "date": "2026-05-11 15:07:27 +0200",
+    "message": "mc"
+  },
+  {
+    "hash": "3f0ab805f887d0510aa0f0711dab0596f7474018",
+    "date": "2026-05-11 14:59:29 +0200",
+    "message": "Stuff"
+  },
+  {
     "hash": "6fb6f387fca321ffbece12bf70263edc5bdd63a0",
     "date": "2026-04-15 07:26:30 +0200",
     "message": "Error handleing"
@@ -83,20 +98,5 @@
     "hash": "79756aad32a44c675b5e96323114212e1bb13771",
     "date": "2026-02-12 14:20:35 +0100",
     "message": "Rename last stuff"
-  },
-  {
-    "hash": "9777afe625b48a1f5728cba67c102840fc448728",
-    "date": "2026-02-11 16:22:54 +0100",
-    "message": "Merge branch 'master' of https://github.com/Jojjeboy/looplist"
-  },
-  {
-    "hash": "3ba59d124729d7bfb25b6f7d7221e849e9c30f75",
-    "date": "2026-02-11 16:17:19 +0100",
-    "message": "audit fix"
-  },
-  {
-    "hash": "92a6dda8a4696c2a3d6ae272ce1e22807aa4ca0b",
-    "date": "2026-02-11 16:17:19 +0100",
-    "message": "Rename to Looplist"
   }
 ]
