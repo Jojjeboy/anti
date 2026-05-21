@@ -26,11 +26,10 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
     const [sectionName, setSectionName] = useState('');
     const [isImporting, setIsImporting] = useState(false);
 
-    // Filter out the current list and archived lists
     const availableLists = useMemo(() => {
         return lists
             .filter((l) => l.id !== currentListId && !l.archived)
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .sort((a, b) => (a?.name || '').localeCompare(b?.name || ''));
     }, [lists, currentListId]);
 
     // Filter available lists by search query

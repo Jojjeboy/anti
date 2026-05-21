@@ -165,7 +165,7 @@ export const ListDetail: React.FC = React.memo(() => {
         const items = [...list.items];
 
         if (sortBy === 'alphabetical') {
-            items.sort((a, b) => a.text.localeCompare(b.text));
+            items.sort((a, b) => (a?.text || '').localeCompare(b?.text || ''));
         } else if (sortBy === 'completed') {
             items.sort((a, b) => {
                 // Sort order: Prepared -> Unchecked -> Completed
@@ -179,7 +179,7 @@ export const ListDetail: React.FC = React.memo(() => {
                 const weightB = getWeight(b);
                 if (weightA !== weightB) return weightA - weightB;
                 // Secondary sort: Alphabetical
-                return a.text.localeCompare(b.text);
+                return (a?.text || '').localeCompare(b?.text || '');
             });
         }
 

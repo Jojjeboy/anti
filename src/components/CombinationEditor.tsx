@@ -70,7 +70,7 @@ export const CombinationEditor: React.FC<CombinationEditorProps> = ({
         // Selected lists in selection order
         ...selectedListIds.map(id => filteredLists.find(list => list.id === id)).filter((l): l is List => !!l),
         // Unselected lists alphabetically
-        ...filteredLists.filter(list => !selectedListIds.includes(list.id)).sort((a, b) => a.name.localeCompare(b.name))
+        ...filteredLists.filter(list => !selectedListIds.includes(list.id)).sort((a, b) => (a?.name || '').localeCompare(b?.name || ''))
     ];
 
     const handleSave = () => {

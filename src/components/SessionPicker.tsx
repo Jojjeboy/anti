@@ -58,7 +58,7 @@ export const SessionPicker: React.FC<SessionPickerProps> = ({
         // Selected lists in selection order
         ...selectedListIds.map(id => filteredLists.find(list => list.id === id)).filter(Boolean) as typeof filteredLists,
         // Unselected lists alphabetically
-        ...filteredLists.filter(list => !selectedListIds.includes(list.id)).sort((a, b) => a.name.localeCompare(b.name))
+        ...filteredLists.filter(list => !selectedListIds.includes(list.id)).sort((a, b) => (a?.name || '').localeCompare(b?.name || ''))
     ];
 
     const handleCreate = async () => {
