@@ -50,6 +50,7 @@ interface AppContextType {
     addSection: (listId: string, name: string) => Promise<void>;
     updateSection: (listId: string, sectionId: string, name: string) => Promise<void>;
     deleteSection: (listId: string, sectionId: string) => Promise<void>;
+    importItemsFromList: (targetListId: string, sourceItems: Item[], sourceListName: string, sectionName?: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -461,6 +462,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const importItemsFromList = async (targetListId: string, sourceItems: Item[], sourceListName: string, sectionName?: string) => {
+        const list = listsSync.data.find((l: List) => l.id === targetListId);
+        if (!list) return;
+
+        let updatedSections = list.sections || [];
+        let sectionId: string | undefined;
+
+        if (sectionName) {
+            const newSectionId = uuidv4();
+            const newSection: Section = {
+                id: newSectionId,
+                name: sectionName,
+                order: updatedSections.length
+            };
+            updatedSections = [...updatedSections, newSection];
+            sectionId = newSectionId;
+        }
+
+        const newItems: Item[] = sourceItems.map(item => ({
+            id: uuidv4(),
+            text: item.text,
+            completed: false,
+            state: 'unresolved',
+            ...(sectionId && { sectionId })
+        }));
+
+        await listsSync.updateItem(targetListId, {
+            sections: updatedSections,
+            items: [...list.items, ...newItems]
+        });
+
+        // Trigger success toast message
+        showToast(t('lists.importFromList.successToast', { count: newItems.length, name: sourceListName }), 'success');
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -502,6 +538,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addSection,
                 updateSection,
                 deleteSection,
+                importItemsFromList,
             }}
         >
             <ErrorBoundary>

@@ -111,6 +111,21 @@
             "deleteTitle": "Delete Section",
             "deleteMessage": "Are you sure? Items in this section will be moved to 'Unsectioned'.",
             "deleteConfirm": "Delete"
+        },
+        "importFromList": {
+            "buttonTitle": "Add from another list",
+            "title": "Add from another list",
+            "description": "Choose a list to import items from. You can selectively check/uncheck items to import.",
+            "selectList": "Select Source List",
+            "noLists": "No other lists available",
+            "searchPlaceholder": "Search lists...",
+            "itemsToImport": "Select items to import",
+            "selectAll": "Select All",
+            "selectNone": "Deselect All",
+            "createSection": "Create a new section for these items",
+            "sectionNameLabel": "Section Name",
+            "importButton": "Import {{count}} items",
+            "successToast": "Imported {{count}} items from \"{{name}}\""
         }
     },
     "todos": {

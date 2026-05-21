@@ -110,6 +110,21 @@
             "deleteTitle": "Ta bort sektion",
             "deleteMessage": "Är du säker? Objekt i denna sektion kommer att flyttas till 'Utan sektion'.",
             "deleteConfirm": "Ta bort"
+        },
+        "importFromList": {
+            "buttonTitle": "Lägg till från annan lista",
+            "title": "Lägg till från annan lista",
+            "description": "Välj en lista att hämta objekt ifrån. Du kan välja exakt vilka objekt du vill importera.",
+            "selectList": "Välj källista",
+            "noLists": "Inga andra listor tillgängliga",
+            "searchPlaceholder": "Sök listor...",
+            "itemsToImport": "Välj objekt att importera",
+            "selectAll": "Markera alla",
+            "selectNone": "Avmarkera alla",
+            "createSection": "Skapa ny sektion för dessa objekt",
+            "sectionNameLabel": "Sektionsnamn",
+            "importButton": "Importera {{count}} objekt",
+            "successToast": "Importerade {{count}} objekt från \"{{name}}\""
         }
     },
     "todos": {

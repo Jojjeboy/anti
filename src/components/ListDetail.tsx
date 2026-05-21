@@ -5,9 +5,10 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
+import { ImportFromListModal } from './ImportFromListModal';
 import geminiIconUrl from '../assets/gemini.svg';
 
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,7 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
 export const ListDetail: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
-    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, deleteList } = useApp();
+    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, deleteList, importItemsFromList } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -40,6 +41,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [deletingSectionId, setDeleteSectionId] = useState<string | null>(null);
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
+    const [importFromListOpen, setImportFromListOpen] = useState(false);
     const navigate = useNavigate();
     const { hash } = useLocation();
 
@@ -555,6 +557,14 @@ export const ListDetail: React.FC = React.memo(() => {
                         className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-800"
                     >
                         <RotateCcw size={20} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setImportFromListOpen(true)}
+                        title={t('lists.importFromList.buttonTitle')}
+                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+                    >
+                        <FolderInput size={20} />
                     </button>
                     <button
                         type="button"
@@ -1170,6 +1180,15 @@ export const ListDetail: React.FC = React.memo(() => {
                     </p>
                 </div>
             </Modal>
+            <ImportFromListModal
+                isOpen={importFromListOpen}
+                onClose={() => setImportFromListOpen(false)}
+                onImport={(sourceList, selectedItems, sectionName) =>
+                    importItemsFromList(list.id, selectedItems, sourceList.name, sectionName)
+                }
+                currentListId={list.id}
+                lists={lists}
+            />
         </div >
     );
 });
