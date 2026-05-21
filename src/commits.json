@@ -1,5 +1,10 @@
 [
   {
+    "hash": "990551ede2ac02b68af04d7d9ecc555e396c972a",
+    "date": "2026-05-21 06:28:11 +0200",
+    "message": "feat: add functionality to import items from another list"
+  },
+  {
     "hash": "9b9d5c5dce45a54e0b02d04a81bc26e80a6e6e71",
     "date": "2026-05-19 09:36:53 +0200",
     "message": "Fixed statistics"
@@ -93,10 +98,5 @@
     "hash": "da6c4c38e00d74ae820d7282c9c90a7ea114bad9",
     "date": "2026-02-18 06:56:14 +0100",
     "message": "feat: introduce a CombinationEditor component, add commit history data, and Swedish localization."
-  },
-  {
-    "hash": "42a6e24b7a2be1c20b97b303168744a2ca62f0c0",
-    "date": "2026-02-12 15:19:22 +0100",
-    "message": "isRessattable?"
   }
 ]
