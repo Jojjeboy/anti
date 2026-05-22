@@ -44,7 +44,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
         setSelectedList(list);
         setSectionName(list.name);
         // By default, check all items
-        setSelectedItemIds(new Set(list.items.map((i) => i.id)));
+        setSelectedItemIds(new Set((list.items || []).map((i) => i.id)));
     };
 
     // Toggle single item selection
@@ -61,7 +61,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
     // Toggle select all / none
     const handleSelectAll = () => {
         if (!selectedList) return;
-        setSelectedItemIds(new Set(selectedList.items.map((i) => i.id)));
+        setSelectedItemIds(new Set((selectedList.items || []).map((i) => i.id)));
     };
 
     const handleSelectNone = () => {
@@ -83,7 +83,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
     const handleImportSubmit = async () => {
         if (!selectedList || selectedItemIds.size === 0) return;
 
-        const itemsToImport = selectedList.items.filter((item) => selectedItemIds.has(item.id));
+        const itemsToImport = (selectedList.items || []).filter((item) => selectedItemIds.has(item.id));
 
         try {
             setIsImporting(true);
@@ -101,7 +101,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
     };
 
     // Keep active list's items length in mind
-    const hasItems = selectedList && selectedList.items.length > 0;
+    const hasItems = selectedList && (selectedList.items || []).length > 0;
 
     // Reset selected items checklist if selectedList disappears
     useEffect(() => {
@@ -192,7 +192,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
                                                     {list.name}
                                                 </p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                                    {list.items.length} {t('lists.itemsCount', 'objekt')}
+                                                    {(list.items || []).length} {t('lists.itemsCount', 'objekt')}
                                                 </p>
                                             </div>
                                         </button>
@@ -286,7 +286,7 @@ export const ImportFromListModal: React.FC<ImportFromListModalProps> = ({
                                             {t('lists.emptyList', 'Listan är tom')}
                                         </p>
                                     ) : (
-                                        selectedList.items.map((item) => {
+                                        (selectedList.items || []).map((item) => {
                                             const isChecked = selectedItemIds.has(item.id);
                                             return (
                                                 <button

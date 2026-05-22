@@ -1,5 +1,15 @@
 [
   {
+    "hash": "78fae427c7c536bf4bd74b14523bf2afe83b9bb0",
+    "date": "2026-05-21 09:00:53 +0200",
+    "message": "mc"
+  },
+  {
+    "hash": "7680a37e85abc9c1d939e6080a6458ec4bde9b86",
+    "date": "2026-05-21 07:14:58 +0200",
+    "message": "fix: add nullish checks on list/item names and texts before sorting with localeCompare"
+  },
+  {
     "hash": "990551ede2ac02b68af04d7d9ecc555e396c972a",
     "date": "2026-05-21 06:28:11 +0200",
     "message": "feat: add functionality to import items from another list"
@@ -88,15 +98,5 @@
     "hash": "c0edbfed980bd4c91f99cf5f0ead312554e7e3f5",
     "date": "2026-03-17 16:25:41 +0100",
     "message": "feat: Add environment variable generation script and display the latest commit hash in the application layout."
-  },
-  {
-    "hash": "6dbd81eba9faae43f8125033bbed02947edc4d83",
-    "date": "2026-02-18 06:58:54 +0100",
-    "message": "fix: downgrade eslint and typescript-eslint dependency versions"
-  },
-  {
-    "hash": "da6c4c38e00d74ae820d7282c9c90a7ea114bad9",
-    "date": "2026-02-18 06:56:14 +0100",
-    "message": "feat: introduce a CombinationEditor component, add commit history data, and Swedish localization."
   }
 ]

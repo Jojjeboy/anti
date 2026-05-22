@@ -70,6 +70,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const sessionsSync = useFirestoreSync<ExecutionSession>('users/{uid}/sessions', user?.uid);
     const combinationsSync = useFirestoreSync<ListCombination>('users/{uid}/combinations', user?.uid);
 
+    const processedLists = React.useMemo(() => {
+        return listsSync.data.map((l: List) => ({
+            ...l,
+            items: l.items || []
+        }));
+    }, [listsSync.data]);
+
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [searchQuery, setSearchQuery] = useState('');
     const { showToast } = useToast();
@@ -127,7 +134,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const deleteCategory = async (id: string) => {
         await categoriesSync.deleteItem(id);
         // Also delete associated lists
-        const listsToDelete = listsSync.data.filter((l: List) => l.categoryId === id);
+        const listsToDelete = processedLists.filter((l: List) => l.categoryId === id);
         await Promise.all(listsToDelete.map((l: List) => listsSync.deleteItem(l.id)));
     };
 
@@ -144,7 +151,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const updateListSettings = async (id: string, settings: ListSettings) => {
         // If this list is being pinned, unpin all other lists first
         if (settings.pinned) {
-            const pinnedLists = listsSync.data.filter((l: List) => l.id !== id && l.settings?.pinned);
+            const pinnedLists = processedLists.filter((l: List) => l.id !== id && l.settings?.pinned);
 
             if (pinnedLists.length > 0) {
                 const unpinPromises = pinnedLists.map((l: List) => {
@@ -162,7 +169,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const archiveList = async (id: string, archived: boolean) => {
-        const list = listsSync.data.find((l: List) => l.id === id);
+        const list = processedLists.find((l: List) => l.id === id);
         if (list) {
             const updates: Partial<List> = { archived };
             if (archived) {
@@ -197,7 +204,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const deleteList = async (id: string) => {
-        const listToDelete = listsSync.data.find((l: List) => l.id === id);
+        const listToDelete = processedLists.find((l: List) => l.id === id);
         if (listToDelete) {
             // Handle combinations
             const affectedCombinations = combinationsSync.data.filter((c: ListCombination) => c.listIds.includes(id));
@@ -250,7 +257,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const copyList = async (listId: string) => {
-        const listToCopy = listsSync.data.find((l: List) => l.id === listId);
+        const listToCopy = processedLists.find((l: List) => l.id === listId);
         if (listToCopy) {
             // Determine base name
             let baseName = listToCopy.name;
@@ -261,7 +268,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
             // Find all existing copies to determine the next number
             let maxCopyNumber = 0;
-            listsSync.data.forEach((l: List) => {
+            processedLists.forEach((l: List) => {
                 if (l.name === baseName) {
                     // The original list counts as "copy 0" effectively for logic, but we start numbering at 1
                 }
@@ -311,7 +318,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const deleteItem = async (listId: string, itemId: string) => {
-        const list = listsSync.data.find((l: List) => l.id === listId);
+        const list = processedLists.find((l: List) => l.id === listId);
         if (list) {
             const itemToDelete = list.items.find((i: Item) => i.id === itemId);
             if (itemToDelete) {
@@ -328,7 +335,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                         // However, for undo, we can just push the item back to the list we have reference to, 
                         // or better, get the current list from the data array if possible, but that's hard in a callback.
                         // A simple approach:
-                        const currentList = listsSync.data.find((l: List) => l.id === listId);
+                        const currentList = processedLists.find((l: List) => l.id === listId);
                         if (currentList) {
                             await updateListItems(listId, [...currentList.items, itemToDelete]);
                         }
@@ -394,7 +401,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (session) {
             // Reset all lists in the session
             const resetPromises = session.listIds.map((listId: string) => {
-                const list = listsSync.data.find((l: List) => l.id === listId);
+                const list = processedLists.find((l: List) => l.id === listId);
                 if (list) {
                     const resetItems = list.items.map((item: Item) => ({ ...item, completed: false }));
                     return updateListItems(listId, resetItems);
@@ -415,7 +422,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const addSection = async (listId: string, name: string) => {
-        const list = listsSync.data.find((l: List) => l.id === listId);
+        const list = processedLists.find((l: List) => l.id === listId);
         if (list) {
             const sections = list.sections || [];
             const newSection: Section = {
@@ -435,7 +442,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const updateSection = async (listId: string, sectionId: string, name: string) => {
-        const list = listsSync.data.find((l: List) => l.id === listId);
+        const list = processedLists.find((l: List) => l.id === listId);
         if (list && list.sections) {
             const updatedSections = list.sections.map(section =>
                 section.id === sectionId ? { ...section, name } : section
@@ -445,7 +452,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const deleteSection = async (listId: string, sectionId: string) => {
-        const list = listsSync.data.find((l: List) => l.id === listId);
+        const list = processedLists.find((l: List) => l.id === listId);
         if (list) {
             // Remove section from sections array
             const updatedSections = (list.sections || []).filter(s => s.id !== sectionId);
@@ -463,7 +470,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const importItemsFromList = async (targetListId: string, sourceItems: Item[], sourceListName: string, sectionName?: string) => {
-        const list = listsSync.data.find((l: List) => l.id === targetListId);
+        const list = processedLists.find((l: List) => l.id === targetListId);
         if (!list) return;
 
         let updatedSections = list.sections || [];
@@ -501,7 +508,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         <AppContext.Provider
             value={{
                 categories: categoriesSync.data,
-                lists: listsSync.data,
+                lists: processedLists,
                 theme,
                 addCategory,
                 updateCategoryName,
