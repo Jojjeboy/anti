@@ -49,6 +49,7 @@ vi.mock('lucide-react', () => ({
     Trash2: () => <div />,
     Edit2: () => <div />,
     FolderInput: () => <div />,
+    MoreVertical: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();
