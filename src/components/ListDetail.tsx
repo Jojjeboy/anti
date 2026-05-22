@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useBlocker, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportFromListModal } from './ImportFromListModal';
@@ -42,10 +42,24 @@ export const ListDetail: React.FC = React.memo(() => {
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [importFromListOpen, setImportFromListOpen] = useState(false);
+    const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+    const moreMenuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const { hash } = useLocation();
 
     const list: List | undefined = lists.find((l) => l.id === listId);
+
+    // Close more-menu when clicking outside
+    useEffect(() => {
+        if (!moreMenuOpen) return;
+        const handleClickOutside = (e: MouseEvent) => {
+            if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+                setMoreMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [moreMenuOpen]);
 
     // Block navigation if the list is pinned
     const blocker = useBlocker(
@@ -549,30 +563,54 @@ export const ListDetail: React.FC = React.memo(() => {
                     >
                         <Plus />
                     </button>
-                    <button
-                        type="button"
-                        onClick={() => setUncheckModalOpen(true)}
-                        disabled={!list.items.some(item => item.completed)}
-                        title={t('lists.reset')}
-                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-800"
-                    >
-                        <RotateCcw size={20} />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setImportFromListOpen(true)}
-                        title={t('lists.importFromList.buttonTitle')}
-                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-                    >
-                        <FolderInput size={20} />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setSettingsOpen(true)}
-                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-                    >
-                        <Settings size={20} />
-                    </button>
+                    {/* Kebab / overflow menu */}
+                    <div className="relative" ref={moreMenuRef}>
+                        <button
+                            type="button"
+                            onClick={() => setMoreMenuOpen((prev) => !prev)}
+                            title={t('common.more', 'Mer')}
+                            className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+                        >
+                            <MoreVertical size={20} />
+                        </button>
+
+                        {moreMenuOpen && (
+                            <div className="absolute right-0 bottom-full mb-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                                {/* Reset */}
+                                <button
+                                    type="button"
+                                    onClick={() => { setMoreMenuOpen(false); setUncheckModalOpen(true); }}
+                                    disabled={!list.items.some(item => item.completed)}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    <RotateCcw size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                    <span>{t('lists.reset')}</span>
+                                </button>
+
+                                {/* Import from list */}
+                                <button
+                                    type="button"
+                                    onClick={() => { setMoreMenuOpen(false); setImportFromListOpen(true); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <FolderInput size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                    <span>{t('lists.importFromList.buttonTitle')}</span>
+                                </button>
+
+                                <div className="border-t border-gray-100 dark:border-gray-700" />
+
+                                {/* Settings */}
+                                <button
+                                    type="button"
+                                    onClick={() => { setMoreMenuOpen(false); setSettingsOpen(true); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <Settings size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                    <span>{t('lists.settings.title')}</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </form>
             )}
 

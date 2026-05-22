@@ -112,8 +112,8 @@
             "deleteConfirm": "Ta bort"
         },
         "importFromList": {
-            "buttonTitle": "Lägg till från annan lista",
-            "title": "Lägg till från annan lista",
+            "buttonTitle": "Lägg till från lista",
+            "title": "Lägg till från lista",
             "description": "Välj en lista att hämta objekt ifrån. Du kan välja exakt vilka objekt du vill importera.",
             "selectList": "Välj källista",
             "noLists": "Inga andra listor tillgängliga",
