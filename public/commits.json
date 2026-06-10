@@ -1,5 +1,30 @@
 [
   {
+    "hash": "0a8e6a01fd5206d955cb9e45e6f84020c171ae29",
+    "date": "2026-05-22 15:58:01 +0200",
+    "message": "chore: remove SONAR_TOKEN secret from pages workflow ci job"
+  },
+  {
+    "hash": "b8778e05ba8042ade8eb4007d70373ae9b0b9f7a",
+    "date": "2026-05-22 15:55:58 +0200",
+    "message": "chore: remove SonarQube integration and configuration from CI workflow"
+  },
+  {
+    "hash": "866c78acaef6832d4ed859b62739ebcc5d8bcb0d",
+    "date": "2026-05-22 15:53:07 +0200",
+    "message": "fix: add MoreVertical to lucide-react mock in ListDetail tests"
+  },
+  {
+    "hash": "67d80998668f43011ae305d7a87e96fd5f7a1751",
+    "date": "2026-05-22 15:47:15 +0200",
+    "message": "feat: move secondary list actions to a collapsible kebab menu and update import translation strings"
+  },
+  {
+    "hash": "3420ef49a937e4323c7c80709165da9a37488f8e",
+    "date": "2026-05-22 15:31:19 +0200",
+    "message": "fix: safely handle lists with missing items array (GitHub Pages crash)"
+  },
+  {
     "hash": "78fae427c7c536bf4bd74b14523bf2afe83b9bb0",
     "date": "2026-05-21 09:00:53 +0200",
     "message": "mc"
@@ -73,30 +98,5 @@
     "hash": "522691277d038a206d2b29bdf8912f69f2b0ade4",
     "date": "2026-03-21 22:36:22 +0100",
     "message": "style: refine AI button to be an icon-only button and fix Gemini SVG path"
-  },
-  {
-    "hash": "583b6ee61959b0445a6ea4d004a88cfe5a551127",
-    "date": "2026-03-21 22:31:51 +0100",
-    "message": "Major: Google Gemini integration"
-  },
-  {
-    "hash": "c49a6e08d500585bb0c240cbfd27566d1b265ba9",
-    "date": "2026-03-18 06:40:09 +0100",
-    "message": "more more fix"
-  },
-  {
-    "hash": "9f5ae079df926a04ccc3192ba47a9cd27fa30296",
-    "date": "2026-03-18 06:37:01 +0100",
-    "message": "More fix"
-  },
-  {
-    "hash": "85c0b2f6eab78db4d761e34b70cf70e43087b949",
-    "date": "2026-03-18 06:27:48 +0100",
-    "message": "Fix errors"
-  },
-  {
-    "hash": "c0edbfed980bd4c91f99cf5f0ead312554e7e3f5",
-    "date": "2026-03-17 16:25:41 +0100",
-    "message": "feat: Add environment variable generation script and display the latest commit hash in the application layout."
   }
 ]

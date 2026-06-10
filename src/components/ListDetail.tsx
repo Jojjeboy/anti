@@ -5,7 +5,7 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportFromListModal } from './ImportFromListModal';
@@ -43,6 +43,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [importFromListOpen, setImportFromListOpen] = useState(false);
     const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+    const [promptCopied, setPromptCopied] = useState(false);
     const moreMenuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const { hash } = useLocation();
@@ -830,100 +831,118 @@ export const ListDetail: React.FC = React.memo(() => {
                 confirmText={t('common.done')} // Or just close
                 onConfirm={() => setSettingsOpen(false)}
             >
-                <div className="space-y-6 pt-2">
+                <div className="space-y-1 pt-2">
                     {/* AI Generation Info */}
                     {list?.settings?.isAIGenerated && (
-                        <div className="p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800/50 rounded-xl space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="mb-4 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/10 border border-purple-200/60 dark:border-purple-700/40 rounded-2xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                             <div className="flex items-center gap-2">
                                 <img src={geminiIconUrl} alt="Gemini" className="w-5 h-5 drop-shadow-sm" />
-                                <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">
+                                <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">
                                     {t('lists.settings.ai.generatedBy', 'Skapad med Gemini AI')}
                                 </span>
                             </div>
                             {list.settings.aiPrompt && (
-                                <div className="space-y-1">
+                                <div className="space-y-1.5">
                                     <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 dark:text-purple-500/70">
                                         {t('lists.settings.ai.promptUsed', 'Prompt som användes')}
                                     </span>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300 italic bg-white/50 dark:bg-gray-900/50 p-2.5 rounded-lg border border-purple-100/50 dark:border-purple-800/20">
-                                        &quot;{list.settings.aiPrompt}&quot;
-                                    </p>
+                                    <div className="relative">
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 italic bg-white/70 dark:bg-gray-900/50 p-3 pr-10 rounded-xl border border-purple-100 dark:border-purple-800/30 leading-relaxed">
+                                            &quot;{list.settings.aiPrompt}&quot;
+                                        </p>
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(list.settings!.aiPrompt!);
+                                                setPromptCopied(true);
+                                                setTimeout(() => setPromptCopied(false), 2000);
+                                            }}
+                                            className="absolute top-2 right-2 p-1.5 rounded-lg text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-800/40 transition-all"
+                                            title={promptCopied ? 'Kopierat!' : 'Kopiera prompt'}
+                                        >
+                                            {promptCopied
+                                                ? <Check size={14} className="text-green-500" />
+                                                : <Copy size={14} />}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    {/* Three Stage Mode Toggle */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                            <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.threeStage.title')}</span>
-                            <span className="text-sm text-gray-500">{t('lists.settings.threeStage.description')}</span>
-                        </div>
-                        <button
-                            onClick={() => updateSettings({ threeStageMode: !threeStageMode })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${threeStageMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${threeStageMode ? 'translate-x-6' : ''}`} />
-                        </button>
-                    </div>
-
-                    {/* Resettable List Toggle */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <RotateCcw size={16} className={(list?.settings?.isResettable ?? true) ? "text-blue-500" : "text-gray-400"} />
-                                <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.resettable.title', 'Reset Suggestion')}</span>
+                    {/* Toggle rows */}
+                    <div className="rounded-2xl border border-gray-100 dark:border-gray-700/60 overflow-hidden divide-y divide-gray-100 dark:divide-gray-700/60">
+                        {/* Three Stage Mode */}
+                        <div className="flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800/60">
+                            <div className="flex flex-col gap-0.5">
+                                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.threeStage.title')}</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">{t('lists.settings.threeStage.description')}</span>
                             </div>
-                            <span className="text-sm text-gray-500">{t('lists.settings.resettable.description', 'Ask to reset when all items are done')}</span>
+                            <button
+                                onClick={() => updateSettings({ threeStageMode: !threeStageMode })}
+                                className={`flex-shrink-0 w-11 h-6 rounded-full transition-colors relative ${threeStageMode ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-600'}`}
+                            >
+                                <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${threeStageMode ? 'translate-x-5' : ''}`} />
+                            </button>
                         </div>
-                        <button
-                            onClick={() => updateSettings({ isResettable: !(list?.settings?.isResettable ?? true) })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${(list?.settings?.isResettable ?? true) ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${(list?.settings?.isResettable ?? true) ? 'translate-x-6' : ''}`} />
-                        </button>
-                    </div>
 
-                    {/* Pinned List Toggle */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <Pin size={16} className={list?.settings?.pinned ? "text-blue-500" : "text-gray-400"} />
-                                <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.pinned.title', 'Fäst lista')}</span>
+                        {/* Resettable */}
+                        <div className="flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800/60">
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5">
+                                    <RotateCcw size={13} className={(list?.settings?.isResettable ?? true) ? 'text-blue-500' : 'text-gray-400'} />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.resettable.title', 'Reset Suggestion')}</span>
+                                </div>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">{t('lists.settings.resettable.description', 'Ask to reset when all items are done')}</span>
                             </div>
-                            <span className="text-sm text-gray-500">{t('lists.settings.pinned.description', 'Öppna denna lista automatiskt när appen startar')}</span>
+                            <button
+                                onClick={() => updateSettings({ isResettable: !(list?.settings?.isResettable ?? true) })}
+                                className={`flex-shrink-0 w-11 h-6 rounded-full transition-colors relative ${(list?.settings?.isResettable ?? true) ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-600'}`}
+                            >
+                                <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${(list?.settings?.isResettable ?? true) ? 'translate-x-5' : ''}`} />
+                            </button>
                         </div>
-                        <button
-                            onClick={() => updateSettings({ pinned: !list?.settings?.pinned })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${list?.settings?.pinned ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${list?.settings?.pinned ? 'translate-x-6' : ''}`} />
-                        </button>
-                    </div>
 
-                    {/* Hide Completed Items Toggle */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <EyeOff size={16} className={list?.settings?.hideCompleted ? "text-blue-500" : "text-gray-400"} />
-                                <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.hideCompleted.title')}</span>
+                        {/* Pinned */}
+                        <div className="flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800/60">
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5">
+                                    <Pin size={13} className={list?.settings?.pinned ? 'text-blue-500' : 'text-gray-400'} />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.pinned.title', 'Fäst lista')}</span>
+                                </div>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">{t('lists.settings.pinned.description', 'Öppna denna lista automatiskt när appen startar')}</span>
                             </div>
-                            <span className="text-sm text-gray-500">{t('lists.settings.hideCompleted.description')}</span>
+                            <button
+                                onClick={() => updateSettings({ pinned: !list?.settings?.pinned })}
+                                className={`flex-shrink-0 w-11 h-6 rounded-full transition-colors relative ${list?.settings?.pinned ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-600'}`}
+                            >
+                                <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${list?.settings?.pinned ? 'translate-x-5' : ''}`} />
+                            </button>
                         </div>
-                        <button
-                            onClick={() => updateSettings({ hideCompleted: !list?.settings?.hideCompleted })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${list?.settings?.hideCompleted ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${list?.settings?.hideCompleted ? 'translate-x-6' : ''}`} />
-                        </button>
+
+                        {/* Hide Completed */}
+                        <div className="flex items-center justify-between px-4 py-3.5 bg-white dark:bg-gray-800/60">
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5">
+                                    <EyeOff size={13} className={list?.settings?.hideCompleted ? 'text-blue-500' : 'text-gray-400'} />
+                                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.hideCompleted.title')}</span>
+                                </div>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">{t('lists.settings.hideCompleted.description')}</span>
+                            </div>
+                            <button
+                                onClick={() => updateSettings({ hideCompleted: !list?.settings?.hideCompleted })}
+                                className={`flex-shrink-0 w-11 h-6 rounded-full transition-colors relative ${list?.settings?.hideCompleted ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-600'}`}
+                            >
+                                <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${list?.settings?.hideCompleted ? 'translate-x-5' : ''}`} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Sorting Options */}
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div className="space-y-2 pt-4">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 px-1">
                             {t('lists.settings.sort')}
                         </label>
-                        <div className="space-y-2">
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700/60 overflow-hidden divide-y divide-gray-100 dark:divide-gray-700/60">
                             {(['manual', 'alphabetical', 'completed'] as const).map((mode) => (
                                 <button
                                     key={mode}
@@ -931,12 +950,13 @@ export const ListDetail: React.FC = React.memo(() => {
                                         setSortBy(mode);
                                         updateSettings({ defaultSort: mode });
                                     }}
-                                    className={`w-full flex items-center justify-between p-3 rounded-lg border ${sortBy === mode
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                                        : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
-                                        }`}
+                                    className={`w-full flex items-center justify-between px-4 py-3 transition-colors ${
+                                        sortBy === mode
+                                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                                            : 'bg-white dark:bg-gray-800/60 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/60'
+                                    }`}
                                 >
-                                    <span className="capitalize">{t(`lists.sort.${mode}`)}</span>
+                                    <span className="text-sm font-medium capitalize">{t(`lists.sort.${mode}`)}</span>
                                     {sortBy === mode && <div className="w-2 h-2 rounded-full bg-blue-500" />}
                                 </button>
                             ))}
