@@ -1,5 +1,10 @@
 [
   {
+    "hash": "f390413ef50b527413606c303b22b565158b89a5",
+    "date": "2026-06-10 06:58:58 +0200",
+    "message": "feat: redesign list settings UI and add copy functionality to AI prompts"
+  },
+  {
     "hash": "0a8e6a01fd5206d955cb9e45e6f84020c171ae29",
     "date": "2026-05-22 15:58:01 +0200",
     "message": "chore: remove SONAR_TOKEN secret from pages workflow ci job"
@@ -93,10 +98,5 @@
     "hash": "acbc9d01e2a33a00dfb71d8fdb3800502ef26ae5",
     "date": "2026-03-21 22:52:25 +0100",
     "message": "chore: Ignore scripts/pasted_secret_config.js."
-  },
-  {
-    "hash": "522691277d038a206d2b29bdf8912f69f2b0ade4",
-    "date": "2026-03-21 22:36:22 +0100",
-    "message": "style: refine AI button to be an icon-only button and fix Gemini SVG path"
   }
 ]

@@ -5,10 +5,11 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check, Download } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportFromListModal } from './ImportFromListModal';
+import { ExportListModal } from './ExportListModal';
 import geminiIconUrl from '../assets/gemini.svg';
 
 import { useTranslation } from 'react-i18next';
@@ -42,6 +43,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [importFromListOpen, setImportFromListOpen] = useState(false);
+    const [exportModalOpen, setExportModalOpen] = useState(false);
     const [moreMenuOpen, setMoreMenuOpen] = useState(false);
     const [promptCopied, setPromptCopied] = useState(false);
     const moreMenuRef = useRef<HTMLDivElement>(null);
@@ -596,6 +598,16 @@ export const ListDetail: React.FC = React.memo(() => {
                                 >
                                     <FolderInput size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                                     <span>{t('lists.importFromList.buttonTitle')}</span>
+                                </button>
+
+                                {/* Export list */}
+                                <button
+                                    type="button"
+                                    onClick={() => { setMoreMenuOpen(false); setExportModalOpen(true); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <Download size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                    <span>{t('export.buttonTitle', 'Exportera lista (JSON)')}</span>
                                 </button>
 
                                 <div className="border-t border-gray-100 dark:border-gray-700" />
@@ -1159,6 +1171,20 @@ export const ListDetail: React.FC = React.memo(() => {
                         </div>
                     )}
 
+                    {/* Export List Action */}
+                    <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <button
+                            onClick={() => {
+                                setSettingsOpen(false);
+                                setExportModalOpen(true);
+                            }}
+                            className="w-full flex items-center justify-center gap-2 p-3 text-blue-600 bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/20 rounded-lg transition-colors font-medium border border-blue-100 dark:border-blue-900/30"
+                        >
+                            <Download size={18} />
+                            {t('export.buttonTitle', 'Exportera lista (JSON)')}
+                        </button>
+                    </div>
+
                     {/* Reset List Action */}
                     <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
                         <button
@@ -1246,6 +1272,11 @@ export const ListDetail: React.FC = React.memo(() => {
                 }
                 currentListId={list.id}
                 lists={lists}
+            />
+            <ExportListModal
+                isOpen={exportModalOpen}
+                onClose={() => setExportModalOpen(false)}
+                list={list}
             />
         </div >
     );

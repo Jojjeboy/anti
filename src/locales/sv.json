@@ -307,6 +307,17 @@
         "importing": "Importerar...",
         "import": "Importera"
     },
+    "export": {
+        "title": "Exportera lista till JSON",
+        "description": "Exportera dina listobjekt i ett standardiserat JSON-format.",
+        "formatLabel": "JSON-format",
+        "simpleFormat": "Enkelt format (endast text)",
+        "detailedFormat": "Detaljerat format (med status)",
+        "copy": "Kopiera JSON",
+        "copied": "Kopierat!",
+        "download": "Ladda ner JSON",
+        "buttonTitle": "Exportera lista (JSON)"
+    },
     "stats": {
         "title": "Statistik",
         "subtitle": "Insikter i din produktivitet och dina vanor",

@@ -50,6 +50,11 @@ vi.mock('lucide-react', () => ({
     Edit2: () => <div />,
     FolderInput: () => <div />,
     MoreVertical: () => <div />,
+    Download: () => <div />,
+    FileText: () => <div />,
+    X: () => <div />,
+    Copy: () => <div />,
+    Check: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();
@@ -305,6 +310,18 @@ describe('ListDetail', () => {
         expect(screen.getByText('Banana')).toBeDefined();
         // Accordion should not be present
         expect(screen.queryByText(/lists.completedAccordion/)).toBeNull();
+    });
+
+    it('opens export modal from quick settings menu', () => {
+        renderComponent();
+        const moreButton = screen.getByTitle('common.more');
+        fireEvent.click(moreButton);
+
+        const exportButton = screen.getByText('export.buttonTitle');
+        expect(exportButton).toBeDefined();
+        fireEvent.click(exportButton);
+
+        expect(screen.getByText('export.title')).toBeDefined();
     });
 
 });

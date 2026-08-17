@@ -308,6 +308,17 @@
         "importing": "Importing...",
         "import": "Import"
     },
+    "export": {
+        "title": "Export List to JSON",
+        "description": "Export your list items in standard JSON format.",
+        "formatLabel": "JSON Format",
+        "simpleFormat": "Simple format (text only)",
+        "detailedFormat": "Detailed format (with completion status)",
+        "copy": "Copy JSON",
+        "copied": "Copied!",
+        "download": "Download JSON",
+        "buttonTitle": "Export list (JSON)"
+    },
     "stats": {
         "title": "Statistics",
         "subtitle": "Insights into your productivity and habits",
