@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Edit2 } from 'lucide-react';
 import { Category, List } from '../types';
 import { useTranslation } from 'react-i18next';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
@@ -16,6 +16,7 @@ interface CategorySectionProps {
     onCopyList: (listId: string) => Promise<void>;
     onMoveList: (listId: string, newCategoryId: string) => Promise<void>;
     onDeleteList: (listId: string) => void;
+    onArchiveList?: (listId: string) => void;
     onClearCompleted: (listId: string) => void;
     onReorderLists: (lists: List[]) => Promise<void>;
 }
@@ -30,6 +31,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     onCopyList,
     onMoveList,
     onDeleteList,
+    onArchiveList,
     onClearCompleted,
     onReorderLists,
 }) => {
@@ -51,17 +53,35 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         .filter((l) => l.categoryId === category.id && !l.archived)
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
+    const isDuplicateName = React.useMemo(() => {
+        const trimmed = (newListName || '').trim().toLowerCase();
+        if (!trimmed) return false;
+        return (lists || []).some((l) => (l?.name || '').trim().toLowerCase() === trimmed);
+    }, [newListName, lists]);
+
+    const isDuplicateCategoryName = React.useMemo(() => {
+        const trimmed = (editedTitle || '').trim().toLowerCase();
+        if (!trimmed) return false;
+        return (categories || []).some(
+            (c) => c.id !== category.id && (c?.name || '').trim().toLowerCase() === trimmed
+        );
+    }, [editedTitle, categories, category.id]);
+
     const handleSaveTitle = async () => {
-        if (editedTitle.trim() && editedTitle !== category.name) {
-            await onUpdateName(category.id, editedTitle.trim());
+        const trimmed = editedTitle.trim();
+        if (trimmed && !isDuplicateCategoryName && trimmed !== category.name) {
+            await onUpdateName(category.id, trimmed);
+        } else {
+            setEditedTitle(category.name);
         }
         setIsEditingTitle(false);
     };
 
     const handleAddList = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (newListName.trim()) {
-            await onAddList(newListName.trim(), category.id);
+        const trimmed = newListName.trim();
+        if (trimmed && !isDuplicateName) {
+            await onAddList(trimmed, category.id);
             setNewListName('');
             setIsAddingList(false);
         }
@@ -90,21 +110,28 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
             {/* Category Header */}
             <div className="flex items-center gap-2 group mb-3">
                 {isEditingTitle ? (
-                    <input
-                        type="text"
-                        value={editedTitle}
-                        onChange={(e) => setEditedTitle(e.target.value)}
-                        className="text-xl font-bold bg-transparent border-b-2 border-blue-500 focus:outline-none flex-1"
-                        autoFocus
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSaveTitle();
-                            if (e.key === 'Escape') {
-                                setEditedTitle(category.name);
-                                setIsEditingTitle(false);
-                            }
-                        }}
-                        onBlur={handleSaveTitle}
-                    />
+                    <div className="flex-1 space-y-1 min-w-0">
+                        <input
+                            type="text"
+                            value={editedTitle}
+                            onChange={(e) => setEditedTitle(e.target.value)}
+                            className={`text-xl font-bold bg-transparent border-b-2 ${isDuplicateCategoryName ? 'border-red-500 focus:border-red-500' : 'border-blue-500'} focus:outline-none w-full`}
+                            autoFocus
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !isDuplicateCategoryName) handleSaveTitle();
+                                if (e.key === 'Escape') {
+                                    setEditedTitle(category.name);
+                                    setIsEditingTitle(false);
+                                }
+                            }}
+                            onBlur={handleSaveTitle}
+                        />
+                        {isDuplicateCategoryName && (
+                            <p className="text-xs text-red-500 dark:text-red-400 font-medium animate-in fade-in duration-200">
+                                {t('categories.duplicateNameError', 'En kategori med detta namn finns redan')}
+                            </p>
+                        )}
+                    </div>
                 ) : (
                     <>
                         <h3
@@ -120,6 +147,14 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                         >
                             {category.name}
                         </h3>
+                        <button
+                            onClick={() => setIsEditingTitle(true)}
+                            className="p-2 text-gray-400 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                            title={t('categories.editTitle', 'Redigera kategori')}
+                            aria-label={t('categories.editTitle', 'Redigera kategori')}
+                        >
+                            <Edit2 size={18} />
+                        </button>
                         <button
                             onClick={() => onDelete(category.id)}
                             className="p-2 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
@@ -139,21 +174,29 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
             {/* Add List Form */}
             {isAddingList && (
-                <form onSubmit={handleAddList} className="flex gap-2 mb-3">
-                    <input
-                        type="text"
-                        value={newListName}
-                        onChange={(e) => setNewListName(e.target.value)}
-                        placeholder={t('lists.newPlaceholder')}
-                        autoFocus
-                        className="flex-1 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    />
-                    <button
-                        type="submit"
-                        className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"
-                    >
-                        <Plus />
-                    </button>
+                <form onSubmit={handleAddList} className="space-y-1 mb-3">
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newListName}
+                            onChange={(e) => setNewListName(e.target.value)}
+                            placeholder={t('lists.newPlaceholder')}
+                            autoFocus
+                            className={`flex-1 p-3 rounded-xl border ${isDuplicateName ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-gray-700 focus:ring-blue-500'} bg-white dark:bg-gray-800 shadow-sm focus:ring-2 outline-none transition-all`}
+                        />
+                        <button
+                            type="submit"
+                            disabled={!newListName.trim() || isDuplicateName}
+                            className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            <Plus />
+                        </button>
+                    </div>
+                    {isDuplicateName && (
+                        <p className="text-xs text-red-500 dark:text-red-400 font-medium pl-1 animate-in fade-in duration-200">
+                            {t('lists.duplicateNameError', 'En lista med detta namn finns redan')}
+                        </p>
+                    )}
                 </form>
             )}
 
@@ -169,6 +212,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                                 onCopy={onCopyList}
                                 onMove={(listId) => setMovingListId(movingListId === listId ? null : listId)}
                                 onDelete={onDeleteList}
+                                onArchive={onArchiveList}
                                 onClearCompleted={onClearCompleted}
                                 isMoving={movingListId === list.id}
                                 categories={categories}

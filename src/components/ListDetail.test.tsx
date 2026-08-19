@@ -55,9 +55,12 @@ vi.mock('lucide-react', () => ({
     X: () => <div />,
     Copy: () => <div />,
     Check: () => <div />,
+    Archive: () => <div />,
+    ArchiveRestore: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();
+const mockArchiveList = vi.fn();
 
 describe('ListDetail', () => {
     beforeEach(() => {
@@ -98,7 +101,7 @@ describe('ListDetail', () => {
             sessions: [],
             completeSession: vi.fn(),
             deleteSession: vi.fn(),
-            archiveList: vi.fn(),
+            archiveList: mockArchiveList,
             addSection: vi.fn(),
             updateSection: vi.fn(),
             deleteSection: vi.fn(),
@@ -322,6 +325,71 @@ describe('ListDetail', () => {
         fireEvent.click(exportButton);
 
         expect(screen.getByText('export.title')).toBeDefined();
+    });
+
+    it('archives list from quick settings menu', () => {
+        renderComponent();
+        const moreButton = screen.getByTitle('common.more');
+        fireEvent.click(moreButton);
+
+        const archiveButton = screen.getByText('lists.archive');
+        expect(archiveButton).toBeDefined();
+        fireEvent.click(archiveButton);
+
+        expect(mockArchiveList).toHaveBeenCalledWith('list1', true);
+    });
+
+    it('displays banner and unarchives list when list is archived', () => {
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'Archived List',
+                    categoryId: 'cat1',
+                    archived: true,
+                    items: []
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            categories: [],
+            addCategory: vi.fn(),
+            deleteCategory: vi.fn(),
+            reorderCategories: vi.fn(),
+            addList: vi.fn(),
+            deleteList: vi.fn(),
+            copyList: vi.fn(),
+            moveList: vi.fn(),
+            updateCategoryName: vi.fn(),
+            reorderLists: vi.fn(),
+            addSession: vi.fn(),
+            combinations: [],
+            addCombination: vi.fn(),
+            updateCombination: vi.fn(),
+            deleteCombination: vi.fn(),
+            sessions: [],
+            completeSession: vi.fn(),
+            deleteSession: vi.fn(),
+            archiveList: mockArchiveList,
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            importItemsFromList: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+
+        expect(screen.getByText('lists.archivedBadge')).toBeDefined();
+        expect(screen.getByText('lists.archivedWarning')).toBeDefined();
+
+        const unarchiveButtons = screen.getAllByText('lists.unarchive');
+        expect(unarchiveButtons.length).toBeGreaterThan(0);
+        fireEvent.click(unarchiveButtons[0]);
+
+        expect(mockArchiveList).toHaveBeenCalledWith('list1', false);
     });
 
 });

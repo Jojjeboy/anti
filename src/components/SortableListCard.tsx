@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Link } from 'react-router-dom';
-import { Copy, ArrowRight, Trash2, GripVertical, MoreVertical, CheckCheck, Settings } from 'lucide-react';
+import { Copy, ArrowRight, Trash2, GripVertical, MoreVertical, CheckCheck, Settings, Archive } from 'lucide-react';
 import type { List, Category } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +12,7 @@ interface SortableListCardProps {
     onMove: (listId: string) => void;
     onDelete: (listId: string) => void;
     onClearCompleted: (listId: string) => void;
+    onArchive?: (listId: string) => void;
     isMoving: boolean;
     categories: Category[];
     currentCategoryId: string;
@@ -25,6 +26,7 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
     onMove,
     onDelete,
     onClearCompleted,
+    onArchive,
     isMoving,
     categories,
     currentCategoryId,
@@ -124,6 +126,26 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
                                 <CheckCheck size={16} />
                                 {t('lists.clearCompleted')}
                             </button>
+                            <button
+                                onClick={() => {
+                                    onArchive?.(list.id);
+                                    setDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/30 transition-colors"
+                            >
+                                <Archive size={16} />
+                                {t('lists.archive')}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onDelete(list.id);
+                                    setDropdownOpen(false);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                            >
+                                <Trash2 size={16} />
+                                {t('lists.deleteTitle')}
+                            </button>
                             <Link
                                 to={`/list/${list.id}#settings`}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -135,16 +157,6 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
                                 <Settings size={16} />
                                 {t('lists.settings.title')}
                             </Link>
-                            <button
-                                onClick={() => {
-                                    onDelete(list.id);
-                                    setDropdownOpen(false);
-                                }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                            >
-                                <Trash2 size={16} />
-                                {t('lists.deleteTitle')}
-                            </button>
                         </div>
                     )}
                 </div>

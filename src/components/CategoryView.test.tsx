@@ -60,13 +60,17 @@ vi.mock('lucide-react', () => ({
     ChevronRight: () => <div data-testid="chevron-right" />,
     Layers: () => <div data-testid="layers" />,
     Home: () => <div data-testid="home" />,
-    Sparkles: () => <div data-testid="sparkles" />
+    Sparkles: () => <div data-testid="sparkles" />,
+    Archive: () => <div data-testid="archive" />,
+    ArchiveRestore: () => <div data-testid="archive-restore" />,
+    Trash2: () => <div data-testid="trash2" />
 }));
 
 
 
 const mockAddCategory = vi.fn();
 const mockAddCombination = vi.fn();
+const mockArchiveList = vi.fn();
 
 describe('CategoryView', () => {
     beforeEach(() => {
@@ -76,12 +80,16 @@ describe('CategoryView', () => {
                 { id: 'cat1', name: 'Work', order: 0 },
                 { id: 'cat2', name: 'Personal', order: 1 }
             ],
-            lists: [{ id: 'l1', name: 'List 1', categoryId: 'cat1', items: [] }],
+            lists: [
+                { id: 'l1', name: 'List 1', categoryId: 'cat1', items: [] },
+                { id: 'l2', name: 'Archived List', categoryId: 'cat1', items: [], archived: true }
+            ],
             combinations: [
                 { id: 'combo1', name: 'Morning Routine', listIds: ['l1'], createdAt: '' }
             ],
             addCategory: mockAddCategory,
             addCombination: mockAddCombination,
+            archiveList: mockArchiveList,
             updateCombination: vi.fn(),
             deleteCombination: vi.fn(),
             deleteCategory: vi.fn(),
@@ -91,7 +99,7 @@ describe('CategoryView', () => {
             updateListItems: vi.fn(),
             completeSession: vi.fn(),
             deleteSession: vi.fn(),
-            addList: vi.fn(), // addList returns Promise<string> but here mocked as void/any is fine or we can match signature
+            addList: vi.fn(),
             deleteList: vi.fn(),
             copyList: vi.fn(),
             moveList: vi.fn(),
@@ -127,9 +135,24 @@ describe('CategoryView', () => {
         fireEvent.click(screen.getByText('combinations.title'));
 
         // Check for templates content
-        // The title "combinations.title" is in the button, so we check for content specific to the tab
-        // like the "Create new template" button or the empty state message
         expect(screen.getByText('combinations.createRaw')).toBeDefined();
+    });
+
+    it('switches to archived tab and can restore a list', () => {
+        renderComponent();
+
+        // Click archived tab
+        fireEvent.click(screen.getByText('categories.archived'));
+
+        // Check archived list is displayed
+        expect(screen.getByText('Archived List')).toBeDefined();
+
+        // Click restore button
+        const restoreButton = screen.getByTitle('lists.unarchive');
+        expect(restoreButton).toBeDefined();
+        fireEvent.click(restoreButton);
+
+        expect(mockArchiveList).toHaveBeenCalledWith('l2', false);
     });
 
     it('opens manage categories modal', () => {

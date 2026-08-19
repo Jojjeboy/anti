@@ -32,6 +32,8 @@
         "goBack": "Gå tillbaka.",
         "archived": "Arkiverade",
         "recent": "Senaste",
+        "editTitle": "Redigera kategori",
+        "duplicateNameError": "En kategori med detta namn finns redan",
         "importJSON": "Importera JSON"
     },
     "lists": {
@@ -40,6 +42,7 @@
         "empty": "Inga listor i denna kategori.",
         "deleteTitle": "Ta bort lista",
         "deleteMessage": "Är du säker på att du vill ta bort denna lista? Denna åtgärd kan inte ångras.",
+        "deleteLastListMessage": "Är du säker på att du vill ta bort denna lista? Eftersom det är den sista listan i kategorin kommer även kategorin att tas bort.",
         "deleteConfirm": "Ta bort",
         "progress": "Avklarade",
         "itemsCount": "objekt",
@@ -49,6 +52,12 @@
         "move": "Flytta lista",
         "pin": "Fäst lista",
         "unpin": "Lossa lista",
+        "archive": "Arkivera lista",
+        "unarchive": "Återaktivera lista",
+        "archiveSuccess": "Listan har arkiverats",
+        "unarchiveSuccess": "Listan har återaktiverats",
+        "emptyArchived": "Inga arkiverade listor",
+        "duplicateNameError": "En lista med detta namn finns redan",
         "editTitle": "Redigera titel",
         "notFound": "Listan hittades inte.",
         "sort": {

@@ -5,7 +5,7 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check, Download } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check, Download, Archive, ArchiveRestore } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportFromListModal } from './ImportFromListModal';
@@ -538,14 +538,25 @@ export const ListDetail: React.FC = React.memo(() => {
             </div>
 
             {list?.archived && (
-                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 mb-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-full text-orange-600 dark:text-orange-400">
-                        <Settings size={18} />
+                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-full text-orange-600 dark:text-orange-400 flex-shrink-0">
+                            <Archive size={18} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-orange-800 dark:text-orange-200">{t('lists.archivedBadge')}</p>
+                            <p className="text-xs text-orange-600 dark:text-orange-400">{t('lists.archivedWarning')}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm font-medium text-orange-800 dark:text-orange-200">{t('lists.archivedBadge')}</p>
-                        <p className="text-xs text-orange-600 dark:text-orange-400">{t('lists.archivedWarning')}</p>
-                    </div>
+                    <button
+                        onClick={async () => {
+                            await archiveList(list.id, false);
+                        }}
+                        className="flex items-center justify-center gap-1.5 px-3.5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex-shrink-0 cursor-pointer"
+                    >
+                        <ArchiveRestore size={15} />
+                        <span>{t('lists.unarchive', 'Återaktivera lista')}</span>
+                    </button>
                 </div>
             )}
 
@@ -610,6 +621,19 @@ export const ListDetail: React.FC = React.memo(() => {
                                     <span>{t('export.buttonTitle', 'Exportera lista (JSON)')}</span>
                                 </button>
 
+                                {/* Archive */}
+                                <button
+                                    type="button"
+                                    onClick={async () => {
+                                        setMoreMenuOpen(false);
+                                        await archiveList(list.id, true);
+                                    }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/30 transition-colors"
+                                >
+                                    <Archive size={16} className="text-orange-500 dark:text-orange-400 flex-shrink-0" />
+                                    <span>{t('lists.archive', 'Arkivera lista')}</span>
+                                </button>
+
                                 <div className="border-t border-gray-100 dark:border-gray-700" />
 
                                 {/* Settings */}
@@ -628,7 +652,16 @@ export const ListDetail: React.FC = React.memo(() => {
             )}
 
             {list?.archived && (
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={async () => {
+                            await archiveList(list.id, false);
+                        }}
+                        className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 transition-colors flex items-center gap-2 text-sm font-medium"
+                    >
+                        <ArchiveRestore size={18} />
+                        {t('lists.unarchive', 'Återaktivera')}
+                    </button>
                     <button
                         onClick={() => setSettingsOpen(true)}
                         className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 flex items-center gap-2 text-sm font-medium"
@@ -1223,7 +1256,7 @@ export const ListDetail: React.FC = React.memo(() => {
                     }
                 }}
                 title={t('lists.deleteTitle')}
-                message={t('lists.deleteMessage')}
+                message={list && lists.filter((l) => l.categoryId === list.categoryId).length <= 1 ? t('lists.deleteLastListMessage') : t('lists.deleteMessage')}
                 confirmText={t('lists.deleteConfirm')}
                 isDestructive
             />

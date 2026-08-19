@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { Folder, ChevronRight, Plus, Layers } from 'lucide-react';
+import { Folder, ChevronRight, Plus, Layers, Archive, ArchiveRestore, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { SessionPicker } from './SessionPicker';
@@ -21,9 +21,9 @@ import { AIListGeneratorModal } from './AIListGeneratorModal';
  * and using list combinations (templates).
  */
 export const CategoryView: React.FC = React.memo(() => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const navigate = useNavigate();
-    const { categories, lists, addCategory, deleteCategory, updateCategoryName, addList, updateListSettings, deleteList, copyList, moveList, updateListItems, reorderLists, addSession, combinations, addCombination, updateCombination, deleteCombination, reorderCategories } = useApp();
+    const { categories, lists, addCategory, deleteCategory, updateCategoryName, addList, updateListSettings, deleteList, copyList, moveList, updateListItems, reorderLists, addSession, combinations, addCombination, updateCombination, deleteCombination, reorderCategories, archiveList } = useApp();
     const [activeTab, setActiveTab] = useState<'home' | 'templates' | 'archived'>('home');
     const [sessionPickerOpen, setSessionPickerOpen] = useState(false);
     const [manageCategoriesOpen, setManageCategoriesOpen] = useState(false);
@@ -166,6 +166,7 @@ export const CategoryView: React.FC = React.memo(() => {
                         onCopyList={copyList}
                         onMoveList={moveList}
                         onDeleteList={(listId: string) => setDeleteListModal({ isOpen: true, listId })}
+                        onArchiveList={async (listId) => { await archiveList(listId, true); }}
                         onClearCompleted={(listId) => {
                             const list = lists.find(l => l.id === listId);
                             if (list) {
@@ -241,48 +242,26 @@ export const CategoryView: React.FC = React.memo(() => {
                     <div className="animate-in slide-in-from-left-2 fade-in duration-300">
                         {recentLists.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                {recentLists.map((list, index) => {
-                                    const activeCount = (list.items || []).filter(i => !i.completed).length;
+                                {recentLists.map(list => {
+                                    const activeCount = list.items?.filter((i: Item) => !i.completed).length || 0;
                                     const listName = list.name || '';
                                     const truncatedName = listName.length > 30 ? listName.substring(0, 30) + '...' : listName;
+
                                     return (
                                         <button
-                                            key={`${list.id}-${index}`}
+                                            key={list.id}
                                             onClick={() => navigate(`/list/${list.id}`)}
                                             className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 transition-all cursor-pointer group w-full min-w-0 overflow-hidden text-left block"
                                         >
-                                            <div className="flex items-center justify-between mb-2 gap-2 min-w-0">
-                                                <span className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate min-w-0 flex-1" title={list.name}>{truncatedName}</span>
-                                                <div className="p-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex-shrink-0">
-                                                    <ChevronRight size={14} />
-                                                </div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate" title={list.name}>{truncatedName}</span>
+                                                <ChevronRight size={16} className="text-gray-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-gray-500">
                                                 <span className={`w-2 h-2 rounded-full ${activeCount === 0 ? 'bg-green-500' : 'bg-orange-500'}`} />
                                                 {activeCount === 0
                                                     ? t('categories.allDone', 'Klart')
                                                     : t('categories.itemsLeft', { count: activeCount, defaultValue: `${activeCount} kvar` })}
-
-                                                {list.lastAccessedAt && (
-                                                    <>
-                                                        <span className="text-gray-300 dark:text-gray-600">•</span>
-                                                        <span className="text-gray-400 dark:text-gray-500">
-                                                            {(() => {
-                                                                const date = new Date(list.lastAccessedAt);
-                                                                const now = new Date();
-                                                                const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-                                                                if (diffInSeconds < 60) return t('time.justNow', 'Just nu');
-
-                                                                const rtf = new Intl.RelativeTimeFormat(i18n.language, { numeric: 'auto' });
-
-                                                                if (diffInSeconds < 3600) return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
-                                                                if (diffInSeconds < 86400) return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
-                                                                return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
-                                                            })()}
-                                                        </span>
-                                                    </>
-                                                )}
                                             </div>
                                         </button>
                                     );
@@ -309,18 +288,17 @@ export const CategoryView: React.FC = React.memo(() => {
                         </div>
 
                         {combinations.length === 0 ? (
-                            <div className="text-center py-6 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
-                                <Layers size={48} className="mx-auto text-gray-300 mb-3" />
-                                <p className="text-gray-500 font-medium">
-                                    {t('combinations.empty', 'Du har inga sparade mallar än.')}
-                                </p>
+                            <div className="text-center py-12 bg-white dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+                                <Layers className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+                                <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t('combinations.empty')}</h3>
+                                <p className="text-sm text-gray-500 mt-1">{t('combinations.emptyDescription')}</p>
                             </div>
                         ) : (
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {combinations.map(combo => (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {combinations.map(comb => (
                                     <CombinationCard
-                                        key={combo.id}
-                                        combination={combo}
+                                        key={comb.id}
+                                        combination={comb}
                                         lists={lists}
                                         onStart={handleStartFromCombination}
                                         onEdit={(id) => setEditorState({ isOpen: true, combination: combinations.find(c => c.id === id) })}
@@ -334,32 +312,76 @@ export const CategoryView: React.FC = React.memo(() => {
                 {activeTab === 'archived' && (
                     <div className="animate-in slide-in-from-right-2 fade-in duration-300">
                         {archivedLists.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                 {archivedLists.map(list => {
                                     const listName = list.name || '';
                                     const truncatedName = listName.length > 30 ? listName.substring(0, 30) + '...' : listName;
+                                    const category = categories.find(c => c.id === list.categoryId);
+
                                     return (
-                                        <button
+                                        <div
                                             key={list.id}
-                                            onClick={() => navigate(`/list/${list.id}`)}
-                                            className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 transition-all cursor-pointer group w-full min-w-0 overflow-hidden opacity-75 grayscale-[0.5] text-left block"
+                                            className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
                                         >
-                                            <div className="flex items-center justify-between mb-2 gap-2 min-w-0">
-                                                <span className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate min-w-0 flex-1" title={list.name}>{truncatedName}</span>
-                                                <div className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                    {t('lists.archivedBadge')}
+                                            <div
+                                                onClick={() => navigate(`/list/${list.id}`)}
+                                                className="cursor-pointer mb-3"
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        navigate(`/list/${list.id}`);
+                                                    }
+                                                }}
+                                            >
+                                                <div className="flex items-center justify-between mb-1 gap-2 min-w-0">
+                                                    <span className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate min-w-0 flex-1" title={list.name}>{truncatedName}</span>
+                                                    <div className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex-shrink-0">
+                                                        {t('lists.archivedBadge')}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-xs text-gray-500">
+                                                    <span>{list.items?.length || 0} {t('lists.itemsCount')}</span>
+                                                    {category && (
+                                                        <>
+                                                            <span>•</span>
+                                                            <span className="truncate">{category.name}</span>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                {list.items?.length || 0} {t('lists.itemsCount')}
+                                            <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                                                <button
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        await archiveList(list.id, false);
+                                                    }}
+                                                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg text-xs font-semibold transition-colors"
+                                                    title={t('lists.unarchive', 'Återaktivera')}
+                                                >
+                                                    <ArchiveRestore size={14} />
+                                                    <span>{t('lists.unarchive', 'Återaktivera')}</span>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setDeleteListModal({ isOpen: true, listId: list.id });
+                                                    }}
+                                                    className="p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                                                    title={t('lists.deleteTitle')}
+                                                    aria-label={t('lists.deleteTitle')}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
-                                        </button>
+                                        </div>
                                     );
                                 })}
                             </div>
                         ) : (
-                            <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm italic">
-                                {t('lists.empty', 'Inga arkiverade listor')}
+                            <div className="text-center py-12 text-gray-400 dark:text-gray-500 text-sm flex flex-col items-center gap-2">
+                                <Archive size={32} className="opacity-40" />
+                                <span>{t('lists.emptyArchived', 'Inga arkiverade listor')}</span>
                             </div>
                         )}
                     </div>
@@ -386,15 +408,24 @@ export const CategoryView: React.FC = React.memo(() => {
                 isDestructive
             />
 
-            <Modal
-                isOpen={deleteListModal.isOpen}
-                onClose={() => setDeleteListModal({ isOpen: false, listId: null })}
-                onConfirm={confirmDeleteList}
-                title={t('lists.deleteTitle')}
-                message={t('lists.deleteMessage')}
-                confirmText={t('lists.deleteConfirm')}
-                isDestructive
-            />
+            {(() => {
+                const targetDeleteList = lists.find((l) => l.id === deleteListModal.listId);
+                const isLastListInCategory = Boolean(
+                    targetDeleteList &&
+                    lists.filter((l) => l.categoryId === targetDeleteList.categoryId).length <= 1
+                );
+                return (
+                    <Modal
+                        isOpen={deleteListModal.isOpen}
+                        onClose={() => setDeleteListModal({ isOpen: false, listId: null })}
+                        onConfirm={confirmDeleteList}
+                        title={t('lists.deleteTitle')}
+                        message={isLastListInCategory ? t('lists.deleteLastListMessage') : t('lists.deleteMessage')}
+                        confirmText={t('lists.deleteConfirm')}
+                        isDestructive
+                    />
+                );
+            })()}
 
             <ManageCategoriesModal
                 isOpen={manageCategoriesOpen}
@@ -402,6 +433,7 @@ export const CategoryView: React.FC = React.memo(() => {
                 categories={sortedCategories}
                 onReorder={reorderCategories}
                 onAdd={async (name) => { await addCategory(name); }}
+                onUpdateName={updateCategoryName}
                 onDelete={deleteCategory}
             />
 

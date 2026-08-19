@@ -1,5 +1,10 @@
 [
   {
+    "hash": "85c804c27d545773b3e247ba6e2d3030fd980f29",
+    "date": "2026-08-17 14:20:55 +0200",
+    "message": "Export and package stuff"
+  },
+  {
     "hash": "f390413ef50b527413606c303b22b565158b89a5",
     "date": "2026-06-10 06:58:58 +0200",
     "message": "feat: redesign list settings UI and add copy functionality to AI prompts"
@@ -93,10 +98,5 @@
     "hash": "9a369922b1fe54aaa02df38706f6f8c12b9cf369",
     "date": "2026-03-22 13:57:44 +0100",
     "message": "Add option to hide completed items in lists and update localization."
-  },
-  {
-    "hash": "acbc9d01e2a33a00dfb71d8fdb3800502ef26ae5",
-    "date": "2026-03-21 22:52:25 +0100",
-    "message": "chore: Ignore scripts/pasted_secret_config.js."
   }
 ]

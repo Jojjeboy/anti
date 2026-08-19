@@ -60,6 +60,13 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
         }
     };
 
+    const isDuplicateCategory = React.useMemo(() => {
+        if (!isCreatingCategory) return false;
+        const trimmed = (newCategoryName || '').trim().toLowerCase();
+        if (!trimmed) return false;
+        return (categories || []).some((c) => (c?.name || '').trim().toLowerCase() === trimmed);
+    }, [isCreatingCategory, newCategoryName, categories]);
+
     const handleSave = async () => {
         if (!generatedList) return;
         
@@ -68,6 +75,10 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
         if (isCreatingCategory) {
             if (!newCategoryName.trim()) {
                 setError('Vänligen ange ett namn för den nya kategorin.');
+                return;
+            }
+            if (isDuplicateCategory) {
+                setError('En kategori med detta namn finns redan.');
                 return;
             }
             if (!onAddCategory) {
@@ -253,26 +264,33 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="text"
-                                                value={newCategoryName}
-                                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                                placeholder="Ny kategori..."
-                                                className="w-full flex-1 px-4 py-2.5 bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 outline-none"
-                                                disabled={isSaving}
-                                                autoFocus
-                                            />
-                                            <button 
-                                                onClick={() => {
-                                                    setIsCreatingCategory(false);
-                                                    setNewCategoryName('');
-                                                }}
-                                                className="p-2.5 text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                                disabled={isSaving}
-                                            >
-                                                <X size={16} />
-                                            </button>
+                                        <div className="space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={newCategoryName}
+                                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                                    placeholder="Ny kategori..."
+                                                    className={`w-full flex-1 px-4 py-2.5 bg-white dark:bg-gray-900 border ${isDuplicateCategory ? 'border-red-500 focus:ring-red-500' : 'border-purple-300 dark:border-purple-700 focus:ring-purple-500'} rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:ring-2 outline-none`}
+                                                    disabled={isSaving}
+                                                    autoFocus
+                                                />
+                                                <button 
+                                                    onClick={() => {
+                                                        setIsCreatingCategory(false);
+                                                        setNewCategoryName('');
+                                                    }}
+                                                    className="p-2.5 text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                                    disabled={isSaving}
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                            {isDuplicateCategory && (
+                                                <p className="text-xs text-red-500 dark:text-red-400 font-medium pl-1 animate-in fade-in duration-200">
+                                                    En kategori med detta namn finns redan
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                 </div>

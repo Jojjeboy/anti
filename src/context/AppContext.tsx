@@ -223,6 +223,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             // Delete list from Firestore
             await listsSync.deleteItem(id);
 
+            // If this was the last list in the category, also delete the category
+            const remainingListsInCategory = processedLists.filter((l: List) => l.categoryId === listToDelete.categoryId && l.id !== id);
+            if (remainingListsInCategory.length === 0 && listToDelete.categoryId) {
+                await categoriesSync.deleteItem(listToDelete.categoryId);
+            }
+
             // Cascade operations: Cleanup combinations that depend on this list
             for (const combo of combinationsToDelete) {
                 await combinationsSync.deleteItem(combo.id);
