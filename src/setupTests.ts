@@ -22,8 +22,8 @@ vi.mock('firebase/firestore', () => ({
     initializeFirestore: vi.fn(() => ({})),
     persistentLocalCache: vi.fn(() => ({})),
     persistentMultipleTabManager: vi.fn(() => ({})),
-    collection: vi.fn(() => ({})), // Return mock collection reference
-    doc: vi.fn(() => ({})), // Return mock doc reference
+    collection: vi.fn(() => ({})),
+    doc: vi.fn(() => ({})),
     getDoc: vi.fn(),
     setDoc: vi.fn(),
     updateDoc: vi.fn(),
@@ -32,7 +32,13 @@ vi.mock('firebase/firestore', () => ({
     query: vi.fn(),
     where: vi.fn(),
     orderBy: vi.fn(),
-    getDocs: vi.fn(),
+    getDocs: vi.fn(() => Promise.resolve({ empty: true, forEach: vi.fn() })),
+    writeBatch: vi.fn(() => ({
+        set: vi.fn(),
+        update: vi.fn(),
+        delete: vi.fn(),
+        commit: vi.fn(() => Promise.resolve()),
+    })),
 }));
 
 
