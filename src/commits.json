@@ -1,5 +1,15 @@
 [
   {
+    "hash": "9e14c93d7d5b956a9289d81826277a48ff66643b",
+    "date": "2026-08-19 17:28:08 +0200",
+    "message": "Added necessary test covarage"
+  },
+  {
+    "hash": "772fa4497c771737ed3ee0edef7f142166224cac",
+    "date": "2026-08-19 08:42:12 +0200",
+    "message": "Add inline editing for category names and prevent duplicate names in ManageCategoriesModal"
+  },
+  {
     "hash": "85c804c27d545773b3e247ba6e2d3030fd980f29",
     "date": "2026-08-17 14:20:55 +0200",
     "message": "Export and package stuff"
@@ -88,15 +98,5 @@
     "hash": "a110b2670cc4827d5fb893a6c4acd7248f64ad1b",
     "date": "2026-04-03 11:07:21 +0200",
     "message": "feat: track and display AI generation metadata for lists"
-  },
-  {
-    "hash": "e6b20578c2efee9cb935087061203999b604520a",
-    "date": "2026-03-22 14:08:49 +0100",
-    "message": "Allow users to rephrase and regenerate AI-generated lists within the modal, including UI adjustments and new tests for this functionality."
-  },
-  {
-    "hash": "9a369922b1fe54aaa02df38706f6f8c12b9cf369",
-    "date": "2026-03-22 13:57:44 +0100",
-    "message": "Add option to hide completed items in lists and update localization."
   }
 ]
