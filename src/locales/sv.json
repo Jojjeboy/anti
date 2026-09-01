@@ -1,353 +1,389 @@
 {
-    "nav": {
-        "home": "Hem",
-        "todos": "Att göra",
-        "settings": "Inställningar"
+  "nav": {
+    "home": "Hem",
+    "todos": "Att göra",
+    "settings": "Inställningar"
+  },
+  "app": {
+    "title": "LoopList",
+    "searchPlaceholder": "Sök listor, objekt, kategorier...",
+    "settings": "Inställningar",
+    "toggleTheme": "Växla tema",
+    "notes": "Anteckningar",
+    "lastUpdated": "Senast uppdaterad: 2025-11-21 12:45"
+  },
+  "update": {
+    "title": "Uppdatering tillgänglig",
+    "message": "En ny version av appen är tillgänglig. Klicka på uppdatera för att ladda om och få de senaste funktionerna.",
+    "later": "Senare",
+    "reload": "Uppdatera & Ladda om",
+    "whatsNew": "Vad är nytt?"
+  },
+  "categories": {
+    "title": "Kategorier och listor",
+    "newPlaceholder": "Ny kategori...",
+    "add": "Lägg till",
+    "empty": "Inga kategorier än.",
+    "emptyHint": "Lägg till en för att komma igång!",
+    "deleteTitle": "Ta bort kategori",
+    "deleteMessage": "Är du säker? Alla listor i denna kategori kommer att tas bort. Denna åtgärd kan inte ångras.",
+    "deleteConfirm": "Ta bort",
+    "notFound": "Kategorin hittades inte.",
+    "goBack": "Gå tillbaka.",
+    "archived": "Arkiverade",
+    "recent": "Senaste",
+    "editTitle": "Redigera kategori",
+    "duplicateNameError": "En kategori med detta namn finns redan",
+    "importJSON": "Importera JSON"
+  },
+  "lists": {
+    "newPlaceholder": "Ny lista...",
+    "add": "Lägg till",
+    "empty": "Inga listor i denna kategori.",
+    "deleteTitle": "Ta bort lista",
+    "deleteMessage": "Är du säker på att du vill ta bort denna lista? Denna åtgärd kan inte ångras.",
+    "deleteLastListMessage": "Är du säker på att du vill ta bort denna lista? Eftersom det är den sista listan i kategorin kommer även kategorin att tas bort.",
+    "deleteConfirm": "Ta bort",
+    "progress": "Avklarade",
+    "itemsCount": "objekt",
+    "moveToCategory": "Flytta till kategori:",
+    "noOtherCategories": "Inga andra kategorier",
+    "copy": "Kopiera lista",
+    "move": "Flytta lista",
+    "pin": "Fäst lista",
+    "unpin": "Lossa lista",
+    "archive": "Arkivera lista",
+    "unarchive": "Återaktivera lista",
+    "archiveSuccess": "Listan har arkiverats",
+    "unarchiveSuccess": "Listan har återaktiverats",
+    "emptyArchived": "Inga arkiverade listor",
+    "duplicateNameError": "En lista med detta namn finns redan",
+    "editTitle": "Redigera titel",
+    "notFound": "Listan hittades inte.",
+    "sort": {
+      "manual": "Manuell",
+      "alphabetical": "A-Ö",
+      "completed": "Omarkerade först"
     },
-    "app": {
-        "title": "LoopList",
-        "searchPlaceholder": "Sök listor, objekt, kategorier...",
-        "settings": "Inställningar",
-        "toggleTheme": "Växla tema",
-        "notes": "Anteckningar",
-        "lastUpdated": "Senast uppdaterad: 2025-11-21 12:45"
-    },
-    "update": {
-        "title": "Uppdatering tillgänglig",
-        "message": "En ny version av appen är tillgänglig. Klicka på uppdatera för att ladda om och få de senaste funktionerna.",
-        "later": "Senare",
-        "reload": "Uppdatera & Ladda om",
-        "whatsNew": "Vad är nytt?"
-    },
-    "categories": {
-        "title": "Kategorier och listor",
-        "newPlaceholder": "Ny kategori...",
-        "add": "Lägg till",
-        "empty": "Inga kategorier än.",
-        "emptyHint": "Lägg till en för att komma igång!",
-        "deleteTitle": "Ta bort kategori",
-        "deleteMessage": "Är du säker? Alla listor i denna kategori kommer att tas bort. Denna åtgärd kan inte ångras.",
-        "deleteConfirm": "Ta bort",
-        "notFound": "Kategorin hittades inte.",
-        "goBack": "Gå tillbaka.",
-        "archived": "Arkiverade",
-        "recent": "Senaste",
-        "editTitle": "Redigera kategori",
-        "duplicateNameError": "En kategori med detta namn finns redan",
-        "importJSON": "Importera JSON"
-    },
-    "lists": {
-        "newPlaceholder": "Ny lista...",
-        "add": "Lägg till",
-        "empty": "Inga listor i denna kategori.",
-        "deleteTitle": "Ta bort lista",
-        "deleteMessage": "Är du säker på att du vill ta bort denna lista? Denna åtgärd kan inte ångras.",
-        "deleteLastListMessage": "Är du säker på att du vill ta bort denna lista? Eftersom det är den sista listan i kategorin kommer även kategorin att tas bort.",
-        "deleteConfirm": "Ta bort",
-        "progress": "Avklarade",
-        "itemsCount": "objekt",
-        "moveToCategory": "Flytta till kategori:",
-        "noOtherCategories": "Inga andra kategorier",
-        "copy": "Kopiera lista",
-        "move": "Flytta lista",
-        "pin": "Fäst lista",
-        "unpin": "Lossa lista",
-        "archive": "Arkivera lista",
-        "unarchive": "Återaktivera lista",
-        "archiveSuccess": "Listan har arkiverats",
-        "unarchiveSuccess": "Listan har återaktiverats",
-        "emptyArchived": "Inga arkiverade listor",
-        "duplicateNameError": "En lista med detta namn finns redan",
-        "editTitle": "Redigera titel",
-        "notFound": "Listan hittades inte.",
-        "sort": {
-            "manual": "Manuell",
-            "alphabetical": "A-Ö",
-            "completed": "Omarkerade först"
-        },
-        "reset": "Återställ",
-        "addItemPlaceholder": "Lägg till objekt...",
-        "emptyList": "Listan är tom.",
-        "completedAccordion": "Avklarade ({{count}})",
-        "resetTitle": "Återställ lista",
-        "resetMessage": "Är du säker på att du vill avmarkera alla objekt?",
-        "clearCompleted": "Rensa klara",
-        "clearCompletedTitle": "Rensa klara objekt",
-        "clearCompletedMessage": "Är du säker på att du vill ta bort alla avklarade objekt från denna lista?",
-        "settings": {
-            "title": "Listinställningar",
-            "threeStage": {
-                "title": "Trestegsobjekt",
-                "description": "Olöst → Pågående → Klar"
-            },
-            "resettable": {
-                "title": "Förslag om återställning",
-                "description": "Fråga om att återställa när alla punkter är klara"
-            },
-            "sort": "Sortering",
-            "calendar": {
-                "title": "Lägg till i kalender",
-                "eventTitle": "Händelsetitel",
-                "startTime": "Starttid",
-                "endTime": "Sluttid",
-                "generateLink": "Skapa kalenderlänk",
-                "description": "Skapa en Google Kalender-händelse med listans innehåll",
-                "linkText": "Se hela listan här"
-            },
-            "archive": {
-                "title": "Arkiverad",
-                "description": "Lås listan och göm den från huvudvyn."
-            },
-            "hideCompleted": {
-                "title": "Göm avklarade objekt",
-                "description": "Visa inte objekt som redan är klara"
-            }
-        },
-        "archivedBadge": "Arkiverad",
-        "archivedWarning": "Denna lista är arkiverad och kan inte ändras.",
-        "states": {
-            "unresolved": "Olöst",
-            "ongoing": "Pågående",
-            "completed": "Avklarad"
-        },
-        "sections": {
-            "title": "Sektioner",
-            "add": "Lägg till sektion",
-            "addPlaceholder": "Ny sektion...",
-            "empty": "Inga sektioner än",
-            "unsectioned": "Utan sektion",
-            "deleteTitle": "Ta bort sektion",
-            "deleteMessage": "Är du säker? Objekt i denna sektion kommer att flyttas till 'Utan sektion'.",
-            "deleteConfirm": "Ta bort"
-        },
-        "importFromList": {
-            "buttonTitle": "Lägg till från lista",
-            "title": "Lägg till från lista",
-            "description": "Välj en lista att hämta objekt ifrån. Du kan välja exakt vilka objekt du vill importera.",
-            "selectList": "Välj källista",
-            "noLists": "Inga andra listor tillgängliga",
-            "searchPlaceholder": "Sök listor...",
-            "itemsToImport": "Välj objekt att importera",
-            "selectAll": "Markera alla",
-            "selectNone": "Avmarkera alla",
-            "createSection": "Skapa ny sektion för dessa objekt",
-            "sectionNameLabel": "Sektionsnamn",
-            "importButton": "Importera {{count}} objekt",
-            "successToast": "Importerade {{count}} objekt från \"{{name}}\""
-        }
-    },
-    "todos": {
-        "title": "Att göra",
-        "add": "Ny uppgift",
-        "cancel": "Avbryt",
-        "save": "Spara uppgift",
-        "titlePlaceholder": "Titel...",
-        "contentPlaceholder": "Detaljer (valfritt)...",
-        "empty": "Inga uppgifter än. Lägg till en för att komma igång!",
-        "edit": "Redigera",
-        "delete": "Ta bort",
-        "deleteTitle": "Ta bort uppgift",
-        "deleteMessage": "Är du säker på att du vill ta bort denna uppgift?",
-        "deleteConfirm": "Ta bort",
-        "saveChanges": "Spara",
-        "priority": {
-            "low": "Låg",
-            "medium": "Medium",
-            "high": "Hög"
-        }
-    },
-    "common": {
-        "cancel": "Avbryt",
-        "delete": "Ta bort",
-        "save": "Spara",
-        "undo": "Ångra",
-        "confirm": "Bekräfta",
-        "done": "Klar",
-        "name": "Namn",
-        "edit": "Redigera",
-        "prev": "Föregående",
-        "next": "Nästa"
-    },
+    "reset": "Återställ",
+    "addItemPlaceholder": "Lägg till objekt...",
+    "emptyList": "Listan är tom.",
+    "completedAccordion": "Avklarade ({{count}})",
+    "resetTitle": "Återställ lista",
+    "resetMessage": "Är du säker på att du vill avmarkera alla objekt?",
+    "clearCompleted": "Rensa klara",
+    "clearCompletedTitle": "Rensa klara objekt",
+    "clearCompletedMessage": "Är du säker på att du vill ta bort alla avklarade objekt från denna lista?",
     "settings": {
-        "title": "Inställningar",
-        "language": "Språk",
-        "theme": "Tema",
-        "light": "Ljust",
-        "dark": "Mörkt",
-        "auto": "Auto",
-        "dataManagement": "Datahantering",
-        "exportData": "Exportera data",
-        "exportDataDesc": "Ladda ner en säkerhetskopia av dina listor och anteckningar",
-        "importData": "Importera data",
-        "importDataDesc": "Återställ från en säkerhetskopia",
-        "note": "Obs",
-        "importWarning": "Att importera data kommer att skriva över dina nuvarande listor och anteckningar. Se till att säkerhetskopiera din nuvarande data först.",
-        "importConfirm": "Detta kommer att skriva över din nuvarande data. Är du säker?"
+      "title": "Listinställningar",
+      "threeStage": {
+        "title": "Trestegsobjekt",
+        "description": "Olöst → Pågående → Klar"
+      },
+      "resettable": {
+        "title": "Förslag om återställning",
+        "description": "Fråga om att återställa när alla punkter är klara"
+      },
+      "sort": "Sortering",
+      "calendar": {
+        "title": "Lägg till i kalender",
+        "eventTitle": "Händelsetitel",
+        "startTime": "Starttid",
+        "endTime": "Sluttid",
+        "generateLink": "Skapa kalenderlänk",
+        "description": "Skapa en Google Kalender-händelse med listans innehåll",
+        "linkText": "Se hela listan här"
+      },
+      "archive": {
+        "title": "Arkiverad",
+        "description": "Lås listan och göm den från huvudvyn."
+      },
+      "hideCompleted": {
+        "title": "Göm avklarade objekt",
+        "description": "Visa inte objekt som redan är klara"
+      }
     },
-    "toasts": {
-        "listDeleted": "Listan \"{{name}}\" borttagen",
-        "itemDeleted": "Objekt borttaget",
-        "dataImported": "Data importerad",
-        "importFailed": "Misslyckades med att importera data"
+    "archivedBadge": "Arkiverad",
+    "archivedWarning": "Denna lista är arkiverad och kan inte ändras.",
+    "states": {
+      "unresolved": "Olöst",
+      "ongoing": "Pågående",
+      "completed": "Avklarad"
     },
-    "sessions": {
-        "multiSession": "Multi-Session",
-        "createTitle": "Skapa Multi-Session",
-        "sessionName": "Sessionsnamn",
-        "namePlaceholder": "T.ex. Tisdagens morgon",
-        "selectLists": "Välj listor",
-        "noLists": "Inga listor tillgängliga",
-        "noListsInSession": "Inga listor i denna session",
-        "progress": "Framsteg",
-        "viewFullList": "Visa lista",
-        "completeSession": "Slutför Session & Återställ Listor",
-        "completeTitle": "Slutför Session",
-        "completeMessage": "Detta kommer att återställa alla listor i sessionen (markera alla items som icke-avklarade) och ta bort sessionen. Vill du fortsätta?",
-        "complete": "Slutför",
-        "notFound": "Session hittades inte",
-        "start": "Starta Session",
-        "newSession": "Ny Session",
-        "create": "Skapa Session",
-        "save": "Spara Session",
-        "minTwoLists": "(minst 2 listor krävs)",
-        "searchPlaceholder": "Sök listor...",
-        "noResults": "Inga listor hittades"
+    "sections": {
+      "title": "Sektioner",
+      "add": "Lägg till sektion",
+      "addPlaceholder": "Ny sektion...",
+      "empty": "Inga sektioner än",
+      "unsectioned": "Utan sektion",
+      "deleteTitle": "Ta bort sektion",
+      "deleteMessage": "Är du säker? Objekt i denna sektion kommer att flyttas till 'Utan sektion'.",
+      "deleteConfirm": "Ta bort",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
     },
-    "combinations": {
-        "title": "Sparade Mallar",
-        "create": "Skapa kombination",
-        "createRaw": "Skapa ny mall",
-        "edit": "Redigera kombination",
-        "empty": "Du har inga sparade mallar än.",
-        "listCount": "{{count}} listor",
-        "saveAsTemplate": "Spara som mall för återanvändning",
-        "namePlaceholder": "T.ex. Helgrutin",
-        "deleteTitle": "Radera mall",
-        "deleteMessage": "Är du säker på att du vill radera denna mall? Listorna kommer inte att raderas."
-    },
-    "templates": {
-        "title": "Mallar",
-        "create": "Skapa från mall",
-        "grocery": {
-            "name": "Inköpslista",
-            "items": {
-                "milk": "Mjölk",
-                "bread": "Bröd",
-                "eggs": "Ägg",
-                "cheese": "Ost",
-                "butter": "Smör",
-                "coffee": "Kaffe",
-                "pasta": "Pasta",
-                "rice": "Ris",
-                "chicken": "Kyckling",
-                "vegetables": "Grönsaker"
-            }
-        },
-        "gym": {
-            "name": "Gymväska",
-            "items": {
-                "water": "Vattenflaska",
-                "towel": "Handduk",
-                "shoes": "Träningsskor",
-                "headphones": "Hörlurar",
-                "lock": "Hänglås",
-                "protein": "Proteinshake",
-                "clothes": "Träningskläder"
-            }
-        },
-        "travel": {
-            "name": "Resepackning",
-            "items": {
-                "passport": "Pass",
-                "tickets": "Biljetter",
-                "charger": "Mobilladdare",
-                "clothes": "Kläder",
-                "toiletries": "Necessär",
-                "medication": "Mediciner",
-                "camera": "Kamera"
-            }
-        }
-    },
-    "history": {
-        "title": "Aktivitet",
-        "activityLog": "Aktivitetslogg",
-        "activityLogDesc": "Visa ändringshistorik",
-        "statistics": "Statistik",
-        "statisticsDesc": "Användningsinsikter och trender"
-    },
-    "activity": {
-        "title": "Aktivitetslogg",
-        "subtitle": "Senaste uppdateringar och ändringar",
-        "show": "Visa",
-        "filesChanged": "{{count}} fil ändrad",
-        "filesChanged_plural": "{{count}} filer ändrade"
-    },
-    "time": {
-        "justNow": "Just nu"
-    },
-    "landing": {
-        "welcome": "Välkommen till LoopList",
-        "subtitle": "App för återanvändbara listor",
-        "signIn": "Logga in med Google"
-    },
-    "import": {
-        "title": "Importera lista från JSON",
-        "description": "Klistra in JSON-data nedan för att importera en lista. JSON-filen bör innehålla fältet \"name\" samt \"items\" eller \"sections\".",
-        "toCategory": "Importera till kategori",
-        "noCategories": "Inga kategorier tillgängliga",
-        "showExample": "Visa exempelformat",
-        "hideExample": "Dölj exempelformat",
-        "simpleWithSections": "Enkelt format med sektioner:",
-        "detailedWithSections": "Detaljerat format med sektioner:",
-        "simpleFormat": "Enkelt format (utan sektioner):",
-        "detailedFormat": "Detaljerat format (med status):",
-        "copy": "Kopiera",
-        "copied": "Kopierat!",
-        "placeholder": "Klistra in JSON här...",
-        "errorPaste": "Vänligen klistra in JSON-data för att importera.",
-        "errorInvalid": "Ogiltigt JSON-format. Kontrollera syntaxfel.",
-        "errorObject": "JSON måste vara ett objekt med fälten \"name\" samt \"items\" eller \"sections\".",
-        "errorName": "Saknar fältet \"name\". Din lista måste ha ett namn.",
-        "errorNameString": "Fältet \"name\" måste vara en textsträng.",
-        "errorItems": "Saknar fältet \"items\" eller \"sections\". Din lista måste ha minst ett objekt.",
-        "errorItemsArray": "Fältet \"items\" måste vara en lista (array).",
-        "errorItemsEmpty": "Listan är tom. Lägg till minst ett objekt.",
-        "errorItemFormat": "Ogiltigt format för objekt på position {{index}}.",
-        "errorSelectCategory": "Vänligen välj en kategori.",
-        "errorFailed": "Misslyckades med att importera listan. Försök igen.",
-        "importing": "Importerar...",
-        "import": "Importera"
-    },
-    "export": {
-        "title": "Exportera lista till JSON",
-        "description": "Exportera dina listobjekt i ett standardiserat JSON-format.",
-        "formatLabel": "JSON-format",
-        "simpleFormat": "Enkelt format (endast text)",
-        "detailedFormat": "Detaljerat format (med status)",
-        "copy": "Kopiera JSON",
-        "copied": "Kopierat!",
-        "download": "Ladda ner JSON",
-        "buttonTitle": "Exportera lista (JSON)"
-    },
-    "stats": {
-        "title": "Statistik",
-        "subtitle": "Insikter i din produktivitet och dina vanor",
-        "overview": "Översikt",
-        "topLists": "Mest använda listor",
-        "categoryDist": "Kategorifördelning",
-        "activityTrend": "Aktivitetslogg (30d)",
-        "todosPriority": "Prioriteringar",
-        "completionRate": "Genomförandegrad",
-        "metrics": {
-            "totalLists": "Listor",
-            "completedItems": "Klara objekt",
-            "totalTodos": "Att göra",
-            "totalSessions": "Sessioner"
-        },
-        "charts": {
-            "usageCount": "Användningar",
-            "listCount": "Listor",
-            "sessionCount": "Sessioner"
-        }
+    "importFromList": {
+      "buttonTitle": "Lägg till från lista",
+      "title": "Lägg till från lista",
+      "description": "Välj en lista att hämta objekt ifrån. Du kan välja exakt vilka objekt du vill importera.",
+      "selectList": "Välj källista",
+      "noLists": "Inga andra listor tillgängliga",
+      "searchPlaceholder": "Sök listor...",
+      "itemsToImport": "Välj objekt att importera",
+      "selectAll": "Markera alla",
+      "selectNone": "Avmarkera alla",
+      "createSection": "Skapa ny sektion för dessa objekt",
+      "sectionNameLabel": "Sektionsnamn",
+      "importButton": "Importera {{count}} objekt",
+      "successToast": "Importerade {{count}} objekt från \"{{name}}\""
     }
+  },
+  "todos": {
+    "title": "Att göra",
+    "add": "Ny uppgift",
+    "cancel": "Avbryt",
+    "save": "Spara uppgift",
+    "titlePlaceholder": "Titel...",
+    "contentPlaceholder": "Detaljer (valfritt)...",
+    "empty": "Inga uppgifter än. Lägg till en för att komma igång!",
+    "edit": "Redigera",
+    "delete": "Ta bort",
+    "deleteTitle": "Ta bort uppgift",
+    "deleteMessage": "Är du säker på att du vill ta bort denna uppgift?",
+    "deleteConfirm": "Ta bort",
+    "saveChanges": "Spara",
+    "priority": {
+      "low": "Låg",
+      "medium": "Medium",
+      "high": "Hög"
+    }
+  },
+  "common": {
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "save": "Spara",
+    "undo": "Ångra",
+    "confirm": "Bekräfta",
+    "done": "Klar",
+    "name": "Namn",
+    "edit": "Redigera",
+    "prev": "Föregående",
+    "next": "Nästa"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "language": "Språk",
+    "theme": "Tema",
+    "light": "Ljust",
+    "dark": "Mörkt",
+    "auto": "Auto",
+    "dataManagement": "Datahantering",
+    "exportData": "Exportera data",
+    "exportDataDesc": "Ladda ner en säkerhetskopia av dina listor och anteckningar",
+    "importData": "Importera data",
+    "importDataDesc": "Återställ från en säkerhetskopia",
+    "note": "Obs",
+    "importWarning": "Att importera data kommer att skriva över dina nuvarande listor och anteckningar. Se till att säkerhetskopiera din nuvarande data först.",
+    "importConfirm": "Detta kommer att skriva över din nuvarande data. Är du säker?"
+  },
+  "toasts": {
+    "listDeleted": "Listan \"{{name}}\" borttagen",
+    "itemDeleted": "Objekt borttaget",
+    "dataImported": "Data importerad",
+    "importFailed": "Misslyckades med att importera data"
+  },
+  "sessions": {
+    "multiSession": "Multi-Session",
+    "createTitle": "Skapa Multi-Session",
+    "sessionName": "Sessionsnamn",
+    "namePlaceholder": "T.ex. Tisdagens morgon",
+    "selectLists": "Välj listor",
+    "noLists": "Inga listor tillgängliga",
+    "noListsInSession": "Inga listor i denna session",
+    "progress": "Framsteg",
+    "viewFullList": "Visa lista",
+    "completeSession": "Slutför Session & Återställ Listor",
+    "completeTitle": "Slutför Session",
+    "completeMessage": "Detta kommer att återställa alla listor i sessionen (markera alla items som icke-avklarade) och ta bort sessionen. Vill du fortsätta?",
+    "complete": "Slutför",
+    "notFound": "Session hittades inte",
+    "start": "Starta Session",
+    "newSession": "Ny Session",
+    "create": "Skapa Session",
+    "save": "Spara Session",
+    "minTwoLists": "(minst 2 listor krävs)",
+    "searchPlaceholder": "Sök listor...",
+    "noResults": "Inga listor hittades"
+  },
+  "combinations": {
+    "title": "Sparade Mallar",
+    "create": "Skapa kombination",
+    "createRaw": "Skapa ny mall",
+    "edit": "Redigera kombination",
+    "empty": "Du har inga sparade mallar än.",
+    "listCount": "{{count}} listor",
+    "saveAsTemplate": "Spara som mall för återanvändning",
+    "namePlaceholder": "T.ex. Helgrutin",
+    "deleteTitle": "Radera mall",
+    "deleteMessage": "Är du säker på att du vill radera denna mall? Listorna kommer inte att raderas."
+  },
+  "templates": {
+    "title": "Mallar",
+    "create": "Skapa från mall",
+    "grocery": {
+      "name": "Inköpslista",
+      "items": {
+        "milk": "Mjölk",
+        "bread": "Bröd",
+        "eggs": "Ägg",
+        "cheese": "Ost",
+        "butter": "Smör",
+        "coffee": "Kaffe",
+        "pasta": "Pasta",
+        "rice": "Ris",
+        "chicken": "Kyckling",
+        "vegetables": "Grönsaker"
+      }
+    },
+    "gym": {
+      "name": "Gymväska",
+      "items": {
+        "water": "Vattenflaska",
+        "towel": "Handduk",
+        "shoes": "Träningsskor",
+        "headphones": "Hörlurar",
+        "lock": "Hänglås",
+        "protein": "Proteinshake",
+        "clothes": "Träningskläder"
+      }
+    },
+    "travel": {
+      "name": "Resepackning",
+      "items": {
+        "passport": "Pass",
+        "tickets": "Biljetter",
+        "charger": "Mobilladdare",
+        "clothes": "Kläder",
+        "toiletries": "Necessär",
+        "medication": "Mediciner",
+        "camera": "Kamera"
+      }
+    }
+  },
+  "history": {
+    "title": "Aktivitet",
+    "activityLog": "Aktivitetslogg",
+    "activityLogDesc": "Visa ändringshistorik",
+    "statistics": "Statistik",
+    "statisticsDesc": "Användningsinsikter och trender"
+  },
+  "activity": {
+    "title": "Aktivitetslogg",
+    "subtitle": "Senaste uppdateringar och ändringar",
+    "show": "Visa",
+    "filesChanged": "{{count}} fil ändrad",
+    "filesChanged_plural": "{{count}} filer ändrade"
+  },
+  "time": {
+    "justNow": "Just nu"
+  },
+  "landing": {
+    "welcome": "Välkommen till LoopList",
+    "subtitle": "App för återanvändbara listor",
+    "signIn": "Logga in med Google"
+  },
+  "import": {
+    "title": "Importera lista från JSON",
+    "description": "Klistra in JSON-data nedan för att importera en lista. JSON-filen bör innehålla fältet \"name\" samt \"items\" eller \"sections\".",
+    "toCategory": "Importera till kategori",
+    "noCategories": "Inga kategorier tillgängliga",
+    "showExample": "Visa exempelformat",
+    "hideExample": "Dölj exempelformat",
+    "simpleWithSections": "Enkelt format med sektioner:",
+    "detailedWithSections": "Detaljerat format med sektioner:",
+    "simpleFormat": "Enkelt format (utan sektioner):",
+    "detailedFormat": "Detaljerat format (med status):",
+    "copy": "Kopiera",
+    "copied": "Kopierat!",
+    "placeholder": "Klistra in JSON här...",
+    "errorPaste": "Vänligen klistra in JSON-data för att importera.",
+    "errorInvalid": "Ogiltigt JSON-format. Kontrollera syntaxfel.",
+    "errorObject": "JSON måste vara ett objekt med fälten \"name\" samt \"items\" eller \"sections\".",
+    "errorName": "Saknar fältet \"name\". Din lista måste ha ett namn.",
+    "errorNameString": "Fältet \"name\" måste vara en textsträng.",
+    "errorItems": "Saknar fältet \"items\" eller \"sections\". Din lista måste ha minst ett objekt.",
+    "errorItemsArray": "Fältet \"items\" måste vara en lista (array).",
+    "errorItemsEmpty": "Listan är tom. Lägg till minst ett objekt.",
+    "errorItemFormat": "Ogiltigt format för objekt på position {{index}}.",
+    "errorSelectCategory": "Vänligen välj en kategori.",
+    "errorFailed": "Misslyckades med att importera listan. Försök igen.",
+    "importing": "Importerar...",
+    "import": "Importera"
+  },
+  "importJson": {
+    "title": "Importera lista (JSON)",
+    "buttonTitle": "Importera lista (JSON)",
+    "description": "Klistra in JSON-data för att importera till den här listan. Formatet ska innehålla \"name\" samt \"items\" eller \"sections\".",
+    "showExample": "Visa exempelformat",
+    "hideExample": "Dölj exempelformat",
+    "exampleLabel": "Exempelformat:",
+    "placeholder": "Klistra in JSON här...",
+    "validate": "Validera JSON",
+    "validSuccess": "JSON validerat!",
+    "summary": "{{items}} objekt hittades.",
+    "summaryWithSections": "{{items}} objekt i {{sections}} sektion(er) hittades.",
+    "duplicateSectionsTitle": "Sektioner finns redan",
+    "duplicateSectionsDesc": "Sektionerna \"{{sections}}\" finns redan i listan. Vid \"Lägg till\" läggs punkterna till i de befintliga sektionerna.",
+    "chooseAction": "Välj hur du vill importera till listan \"{{name}}\":",
+    "appendAction": "Lägg till i listan",
+    "appendDesc": "Befintliga punkter behålls och de importerade läggs till.",
+    "replaceAction": "Ersätt hela listan",
+    "replaceDesc": "Alla befintliga punkter och sektioner tas bort och ersätts med importen.",
+    "backToEdit": "Ändra JSON",
+    "errorPaste": "Klistra in JSON-data för att importera.",
+    "errorInvalid": "Ogiltigt JSON-format. Kontrollera syntaxfel.",
+    "errorObject": "JSON måste vara ett objekt med fälten \"name\" samt \"items\" eller \"sections\".",
+    "errorName": "Fältet \"name\" saknas eller är tomt.",
+    "errorItemsOrSections": "JSON måste innehålla fältet \"items\" eller \"sections\".",
+    "errorSectionsArray": "Fältet \"sections\" måste vara en lista (array).",
+    "errorSectionFormat": "Sektion på position {{index}} har ogiltigt format.",
+    "errorSectionName": "Sektion på position {{index}} saknar namn.",
+    "errorSectionItemsArray": "Fältet \"items\" i sektion {{index}} måste vara en lista.",
+    "errorItemsArray": "Fältet \"items\" måste vara en lista (array).",
+    "errorItemFormat": "Objekt på position {{index}} har ogiltigt format.",
+    "errorEmpty": "Listan är tom. Lägg till minst ett objekt.",
+    "errorFailed": "Importen misslyckades. Försök igen."
+  },
+  "export": {
+    "title": "Exportera lista till JSON",
+    "description": "Exportera dina listobjekt i ett standardiserat JSON-format.",
+    "formatLabel": "JSON-format",
+    "simpleFormat": "Enkelt format (endast text)",
+    "detailedFormat": "Detaljerat format (med status)",
+    "copy": "Kopiera JSON",
+    "copied": "Kopierat!",
+    "download": "Ladda ner JSON",
+    "buttonTitle": "Exportera lista (JSON)"
+  },
+  "stats": {
+    "title": "Statistik",
+    "subtitle": "Insikter i din produktivitet och dina vanor",
+    "overview": "Översikt",
+    "topLists": "Mest använda listor",
+    "categoryDist": "Kategorifördelning",
+    "activityTrend": "Aktivitetslogg (30d)",
+    "todosPriority": "Prioriteringar",
+    "completionRate": "Genomförandegrad",
+    "metrics": {
+      "totalLists": "Listor",
+      "completedItems": "Klara objekt",
+      "totalTodos": "Att göra",
+      "totalSessions": "Sessioner"
+    },
+    "charts": {
+      "usageCount": "Användningar",
+      "listCount": "Listor",
+      "sessionCount": "Sessioner"
+    }
+  }
 }

@@ -50,7 +50,14 @@ interface AppContextType {
     addSection: (listId: string, name: string) => Promise<void>;
     updateSection: (listId: string, sectionId: string, name: string) => Promise<void>;
     deleteSection: (listId: string, sectionId: string) => Promise<void>;
+    reorderSections: (listId: string, sections: Section[]) => Promise<void>;
     importItemsFromList: (targetListId: string, sourceItems: Item[], sourceListName: string, sectionName?: string) => Promise<void>;
+    importJsonToList: (
+        listId: string,
+        items: Item[],
+        sections: Section[] | undefined,
+        mode: 'replace' | 'append'
+    ) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -481,6 +488,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const reorderSections = async (listId: string, reorderedSections: Section[]) => {
+        const list = processedLists.find((l: List) => l.id === listId);
+        if (list) {
+            const updatedSections = reorderedSections.map((section, index) => ({
+                ...section,
+                order: index
+            }));
+            await listsSync.updateItem(listId, { sections: updatedSections });
+        }
+    };
+
     const importItemsFromList = async (targetListId: string, sourceItems: Item[], sourceListName: string, sectionName?: string) => {
         const list = processedLists.find((l: List) => l.id === targetListId);
         if (!list) return;
@@ -514,6 +532,56 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         // Trigger success toast message
         showToast(t('lists.importFromList.successToast', { count: newItems.length, name: sourceListName }), 'success');
+    };
+
+    const importJsonToList = async (
+        listId: string,
+        items: Item[],
+        sections: Section[] | undefined,
+        mode: 'replace' | 'append'
+    ) => {
+        const list = processedLists.find((l: List) => l.id === listId);
+        if (!list) return;
+
+        if (mode === 'replace') {
+            await listsSync.updateItem(listId, {
+                items,
+                sections: sections ?? [],
+            });
+        } else {
+            // Append mode: merge sections by name
+            const existingSections = list.sections || [];
+            const existingItems = list.items || [];
+            const existingSectionNames = new Map(
+                existingSections.map((s: Section) => [s.name.toLowerCase(), s.id])
+            );
+
+            const sectionIdMap = new Map<string, string>();
+            const newSectionsToAdd: Section[] = [];
+
+            for (const sec of sections ?? []) {
+                const existingId = existingSectionNames.get(sec.name.toLowerCase());
+                if (existingId) {
+                    sectionIdMap.set(sec.id, existingId);
+                } else {
+                    const mergedSection: Section = { ...sec, order: existingSections.length + newSectionsToAdd.length };
+                    newSectionsToAdd.push(mergedSection);
+                    sectionIdMap.set(sec.id, sec.id);
+                }
+            }
+
+            const remappedItems: Item[] = items.map(item => ({
+                ...item,
+                sectionId: item.sectionId
+                    ? (sectionIdMap.get(item.sectionId) ?? item.sectionId)
+                    : item.sectionId,
+            }));
+
+            await listsSync.updateItem(listId, {
+                items: [...existingItems, ...remappedItems],
+                sections: [...existingSections, ...newSectionsToAdd],
+            });
+        }
     };
 
     return (
@@ -557,7 +625,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addSection,
                 updateSection,
                 deleteSection,
+                reorderSections,
                 importItemsFromList,
+                importJsonToList,
             }}
         >
             <ErrorBoundary>

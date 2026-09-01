@@ -3,13 +3,15 @@ import { useParams, useBlocker, useNavigate, useLocation } from 'react-router-do
 import { useApp } from '../context/AppContext';
 import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check, Download, Archive, ArchiveRestore } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, EyeOff, FolderInput, MoreVertical, Copy, Check, Download, Archive, ArchiveRestore, Upload, GripVertical } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportFromListModal } from './ImportFromListModal';
 import { ExportListModal } from './ExportListModal';
+import { ImportJsonToListModal } from './ImportJsonToListModal';
 import geminiIconUrl from '../assets/gemini.svg';
 
 import { useTranslation } from 'react-i18next';
@@ -24,10 +26,130 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
     return <div ref={setNodeRef}>{children}</div>;
 };
 
+interface SortableSectionItemProps {
+    section: { id: string; name: string; order?: number };
+    editingSectionId: string | null;
+    editedSectionName: string;
+    setEditedSectionName: (name: string) => void;
+    setEditingSectionId: (id: string | null) => void;
+    handleUpdateSection: (id: string) => void;
+    setDeleteSectionId: (id: string) => void;
+}
+
+const SortableSectionItem: React.FC<SortableSectionItemProps> = ({
+    section,
+    editingSectionId,
+    editedSectionName,
+    setEditedSectionName,
+    setEditingSectionId,
+    handleUpdateSection,
+    setDeleteSectionId,
+}) => {
+    const isEditing = editingSectionId === section.id;
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: section.id, disabled: isEditing });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 ${isDragging ? 'z-50 opacity-50 shadow-md ring-2 ring-blue-500/50' : ''}`}
+        >
+            {isEditing ? (
+                <>
+                    <input
+                        type="text"
+                        value={editedSectionName}
+                        onChange={(e) => setEditedSectionName(e.target.value)}
+                        className="flex-1 p-1 rounded border border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                        autoFocus
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleUpdateSection(section.id);
+                            if (e.key === 'Escape') {
+                                setEditingSectionId(null);
+                                setEditedSectionName('');
+                            }
+                        }}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => handleUpdateSection(section.id)}
+                        className="p-1 text-green-600 hover:text-green-700"
+                        title="Save"
+                        aria-label="Save section name"
+                    >
+                        ✓
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setEditingSectionId(null);
+                            setEditedSectionName('');
+                        }}
+                        className="p-1 text-gray-600 hover:text-gray-700"
+                        title="Cancel"
+                        aria-label="Cancel editing section"
+                    >
+                        ✕
+                    </button>
+                </>
+            ) : (
+                <>
+                    <div
+                        {...attributes}
+                        {...listeners}
+                        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 touch-none flex-shrink-0 p-0.5"
+                        aria-label="Drag to reorder section"
+                    >
+                        <GripVertical size={16} />
+                    </div>
+                    <span className="flex-1 text-sm text-gray-900 dark:text-gray-100 truncate">
+                        {section.name}
+                    </span>
+                    <div className="flex items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingSectionId(section.id);
+                                setEditedSectionName(section.name);
+                            }}
+                            className="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                            title="Edit"
+                            aria-label="Edit section"
+                        >
+                            <Edit2 size={14} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setDeleteSectionId(section.id)}
+                            className="p-1 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                            title="Delete"
+                            aria-label="Delete section"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
 export const ListDetail: React.FC = React.memo(() => {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
-    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, deleteList, importItemsFromList } = useApp();
+    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, reorderSections, deleteList, importItemsFromList, importJsonToList } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -44,6 +166,7 @@ export const ListDetail: React.FC = React.memo(() => {
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [importFromListOpen, setImportFromListOpen] = useState(false);
     const [exportModalOpen, setExportModalOpen] = useState(false);
+    const [importJsonModalOpen, setImportJsonModalOpen] = useState(false);
     const [moreMenuOpen, setMoreMenuOpen] = useState(false);
     const [promptCopied, setPromptCopied] = useState(false);
     const moreMenuRef = useRef<HTMLDivElement>(null);
@@ -383,6 +506,20 @@ export const ListDetail: React.FC = React.memo(() => {
         }
     };
 
+    const handleSectionDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id || !list?.sections) return;
+
+        const sorted = [...list.sections].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        const oldIndex = sorted.findIndex((s) => s.id === active.id);
+        const newIndex = sorted.findIndex((s) => s.id === over.id);
+
+        if (oldIndex !== -1 && newIndex !== -1) {
+            const reordered = arrayMove(sorted, oldIndex, newIndex);
+            await reorderSections(list.id, reordered);
+        }
+    };
+
     // Helper function to group items by section
     const groupItemsBySection = (items: Item[]): Map<string | undefined, Item[]> => {
         const grouped = new Map<string | undefined, Item[]>();
@@ -391,7 +528,7 @@ export const ListDetail: React.FC = React.memo(() => {
         grouped.set(undefined, items.filter(item => !item.sectionId));
 
         // Add items for each section
-        const sections = list?.sections || [];
+        const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
         sections.forEach(section => {
             grouped.set(section.id, items.filter(item => item.sectionId === section.id));
         });
@@ -611,6 +748,16 @@ export const ListDetail: React.FC = React.memo(() => {
                                     <span>{t('lists.importFromList.buttonTitle')}</span>
                                 </button>
 
+                                {/* Import JSON to list */}
+                                <button
+                                    type="button"
+                                    onClick={() => { setMoreMenuOpen(false); setImportJsonModalOpen(true); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <Upload size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                    <span>{t('importJson.buttonTitle', 'Importera lista (JSON)')}</span>
+                                </button>
+
                                 {/* Export list */}
                                 <button
                                     type="button"
@@ -679,7 +826,7 @@ export const ListDetail: React.FC = React.memo(() => {
                             <div className="space-y-6">
                                 {(() => {
                                     const groupedItems = groupItemsBySection(activeItems);
-                                    const sections = list?.sections || [];
+                                    const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
                                     const hasAnySections = sections.length > 0;
 
                                     return (
@@ -753,7 +900,7 @@ export const ListDetail: React.FC = React.memo(() => {
                     <div className="space-y-6">
                         {(() => {
                             const groupedItems = groupItemsBySection(activeItems);
-                            const sections = list?.sections || [];
+                            const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
                             const hasAnySections = sections.length > 0;
 
                             return (
@@ -1034,77 +1181,43 @@ export const ListDetail: React.FC = React.memo(() => {
 
                             {/* Sections List */}
                             <div className="space-y-2">
-                                {list?.sections && list.sections.length > 0 ? (
-                                    list.sections.map((section) => (
-                                        <div
-                                            key={section.id}
-                                            className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50"
+                                {(() => {
+                                    const sortedSections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                                    if (sortedSections.length === 0) {
+                                        return (
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                                                {t('lists.sections.empty')}
+                                            </p>
+                                        );
+                                    }
+                                    return (
+                                        <DndContext
+                                            sensors={sensors}
+                                            collisionDetection={closestCenter}
+                                            onDragEnd={handleSectionDragEnd}
                                         >
-                                            {editingSectionId === section.id ? (
-                                                <>
-                                                    <input
-                                                        type="text"
-                                                        value={editedSectionName}
-                                                        onChange={(e) => setEditedSectionName(e.target.value)}
-                                                        className="flex-1 p-1 rounded border border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                                        autoFocus
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === 'Enter') handleUpdateSection(section.id);
-                                                            if (e.key === 'Escape') {
-                                                                setEditingSectionId(null);
-                                                                setEditedSectionName('');
-                                                            }
-                                                        }}
-                                                    />
-                                                    <button
-                                                        onClick={() => handleUpdateSection(section.id)}
-                                                        className="p-1 text-green-600 hover:text-green-700"
-                                                        title="Save"
-                                                    >
-                                                        ✓
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditingSectionId(null);
-                                                            setEditedSectionName('');
-                                                        }}
-                                                        className="p-1 text-gray-600 hover:text-gray-700"
-                                                        title="Cancel"
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <span className="flex-1 text-sm text-gray-900 dark:text-gray-100">
-                                                        {section.name}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditingSectionId(section.id);
-                                                            setEditedSectionName(section.name);
-                                                        }}
-                                                        className="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                                                        title="Edit"
-                                                    >
-                                                        <Edit2 size={14} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setDeleteSectionId(section.id)}
-                                                        className="p-1 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
-                                                </>
-                                            )}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                                        {t('lists.sections.empty')}
-                                    </p>
-                                )}
+                                            <SortableContext
+                                                items={sortedSections.map((s) => s.id)}
+                                                strategy={verticalListSortingStrategy}
+                                            >
+                                                <div className="space-y-2">
+                                                    {sortedSections.map((section) => (
+                                                        <SortableSectionItem
+                                                            key={section.id}
+                                                            section={section}
+                                                            editingSectionId={editingSectionId}
+                                                            editedSectionName={editedSectionName}
+                                                            setEditedSectionName={setEditedSectionName}
+                                                            setEditingSectionId={setEditingSectionId}
+                                                            handleUpdateSection={handleUpdateSection}
+                                                            setDeleteSectionId={setDeleteSectionId}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </SortableContext>
+                                        </DndContext>
+                                    );
+                                })()}
                             </div>
                         </div>
                     )}
@@ -1310,6 +1423,17 @@ export const ListDetail: React.FC = React.memo(() => {
                 isOpen={exportModalOpen}
                 onClose={() => setExportModalOpen(false)}
                 list={list}
+            />
+            <ImportJsonToListModal
+                isOpen={importJsonModalOpen}
+                onClose={() => setImportJsonModalOpen(false)}
+                currentList={list}
+                onReplace={(newItems, newSections) =>
+                    importJsonToList(list.id, newItems, newSections, 'replace')
+                }
+                onAppend={(appendItems, appendSections) =>
+                    importJsonToList(list.id, appendItems, appendSections, 'append')
+                }
             />
         </div >
     );

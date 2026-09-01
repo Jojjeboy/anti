@@ -19,13 +19,27 @@ vi.mock('@dnd-kit/core', () => ({
     KeyboardSensor: vi.fn(),
     useSensor: vi.fn(),
     useSensors: vi.fn(),
+    useDroppable: () => ({ setNodeRef: vi.fn() }),
 }));
 
 vi.mock('@dnd-kit/sortable', () => ({
     SortableContext: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     sortableKeyboardCoordinates: vi.fn(),
     verticalListSortingStrategy: vi.fn(),
-    arrayMove: vi.fn(),
+    arrayMove: vi.fn((items, oldIndex, newIndex) => {
+        const result = [...items];
+        const [removed] = result.splice(oldIndex, 1);
+        result.splice(newIndex, 0, removed);
+        return result;
+    }),
+    useSortable: () => ({
+        attributes: {},
+        listeners: {},
+        setNodeRef: vi.fn(),
+        transform: null,
+        transition: null,
+        isDragging: false,
+    }),
 }));
 
 // Mock child components
@@ -57,6 +71,10 @@ vi.mock('lucide-react', () => ({
     Check: () => <div />,
     Archive: () => <div />,
     ArchiveRestore: () => <div />,
+    Upload: () => <div />,
+    AlertTriangle: () => <div />,
+    RefreshCw: () => <div />,
+    GripVertical: () => <div data-testid="grip-vertical" />,
 }));
 
 const mockUpdateListItems = vi.fn();
@@ -105,6 +123,7 @@ describe('ListDetail', () => {
             addSection: vi.fn(),
             updateSection: vi.fn(),
             deleteSection: vi.fn(),
+            reorderSections: vi.fn(),
         } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
     });
 
@@ -339,6 +358,18 @@ describe('ListDetail', () => {
         expect(mockArchiveList).toHaveBeenCalledWith('list1', true);
     });
 
+    it('opens import JSON modal from quick settings menu', () => {
+        renderComponent();
+        const moreButton = screen.getByTitle('common.more');
+        fireEvent.click(moreButton);
+
+        const importJsonButton = screen.getByText('importJson.buttonTitle');
+        expect(importJsonButton).toBeDefined();
+        fireEvent.click(importJsonButton);
+
+        expect(screen.getByText('importJson.title')).toBeDefined();
+    });
+
     it('displays banner and unarchives list when list is archived', () => {
         vi.spyOn(AppContext, 'useApp').mockReturnValue({
             lists: [
@@ -390,6 +421,70 @@ describe('ListDetail', () => {
         fireEvent.click(unarchiveButtons[0]);
 
         expect(mockArchiveList).toHaveBeenCalledWith('list1', false);
+    });
+
+    it('renders sections with drag handle in list settings', () => {
+        const mockReorderSections = vi.fn();
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'My List',
+                    categoryId: 'cat1',
+                    items: [],
+                    sections: [
+                        { id: 'sec1', name: 'Fruits', order: 0 },
+                        { id: 'sec2', name: 'Vegetables', order: 1 },
+                        { id: 'sec3', name: 'Dairy', order: 2 },
+                    ]
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: mockArchiveList,
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            reorderSections: mockReorderSections,
+            categories: [],
+            addCategory: vi.fn(),
+            deleteCategory: vi.fn(),
+            reorderCategories: vi.fn(),
+            addList: vi.fn(),
+            deleteList: vi.fn(),
+            copyList: vi.fn(),
+            moveList: vi.fn(),
+            updateCategoryName: vi.fn(),
+            reorderLists: vi.fn(),
+            addSession: vi.fn(),
+            combinations: [],
+            addCombination: vi.fn(),
+            updateCombination: vi.fn(),
+            deleteCombination: vi.fn(),
+            sessions: [],
+            completeSession: vi.fn(),
+            deleteSession: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+
+        // Open settings modal
+        const moreButton = screen.getByTitle('common.more');
+        fireEvent.click(moreButton);
+        const settingsButton = screen.getByText('lists.settings.title');
+        fireEvent.click(settingsButton);
+
+        // Sections should be visible in settings
+        expect(screen.getAllByText('Fruits')).toBeDefined();
+        expect(screen.getAllByText('Vegetables')).toBeDefined();
+        expect(screen.getAllByText('Dairy')).toBeDefined();
+
+        // Drag handles should be present
+        const dragHandles = screen.getAllByLabelText('Drag to reorder section');
+        expect(dragHandles).toHaveLength(3);
     });
 
 });

@@ -200,6 +200,26 @@ describe('AppContext - Combinations', () => {
             ]),
         }));
     });
+
+    it('reorderSections updates sections array and re-indexes order sequentially', async () => {
+        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
+
+        const reorderedSections = [
+            { id: 'sec2', name: 'Second Section', order: 1 },
+            { id: 'sec1', name: 'First Section', order: 0 },
+        ];
+
+        await act(async () => {
+            await result.current.reorderSections('list1', reorderedSections);
+        });
+
+        expect(mockUpdateItem).toHaveBeenCalledWith('list1', {
+            sections: [
+                { id: 'sec2', name: 'Second Section', order: 0 },
+                { id: 'sec1', name: 'First Section', order: 1 },
+            ],
+        });
+    });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -349,6 +369,51 @@ describe('AppContext - Extended Operations', () => {
             expect.objectContaining({
                 items: expect.arrayContaining([
                     expect.objectContaining({ text: 'Milk', completed: false }),
+                ]),
+            })
+        );
+    });
+
+    it('importJsonToList replaces items and sections in replace mode', async () => {
+        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
+
+        const newItems = [{ id: 'new1', text: 'New Item', completed: true }];
+        const newSections = [{ id: 'newSec1', name: 'New Section', order: 0 }];
+
+        await act(async () => {
+            await result.current.importJsonToList('list1', newItems, newSections, 'replace');
+        });
+
+        expect(mockUpdateItem).toHaveBeenCalledWith('list1', {
+            items: newItems,
+            sections: newSections,
+        });
+    });
+
+    it('importJsonToList merges sections and appends items in append mode', async () => {
+        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
+
+        const appendItems = [
+            { id: 'app1', text: 'Apple', completed: false, sectionId: 'incomingSec1' },
+            { id: 'app2', text: 'Orange', completed: false }
+        ];
+        const appendSections = [
+            { id: 'incomingSec1', name: 'Fruit', order: 0 }
+        ];
+
+        await act(async () => {
+            await result.current.importJsonToList('list1', appendItems, appendSections, 'append');
+        });
+
+        expect(mockUpdateItem).toHaveBeenCalledWith(
+            'list1',
+            expect.objectContaining({
+                items: expect.arrayContaining([
+                    expect.objectContaining({ text: 'Apple' }),
+                    expect.objectContaining({ text: 'Orange' }),
+                ]),
+                sections: expect.arrayContaining([
+                    expect.objectContaining({ name: 'Fruit' }),
                 ]),
             })
         );
