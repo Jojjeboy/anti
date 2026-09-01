@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, X, Folder, Copy, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Item, Category } from '../types';
+import { Item, Category, Section } from '../types';
 
 interface ImportListModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onImport: (name: string, items: Item[], categoryId: string) => Promise<void>;
+    onImport: (name: string, items: Item[], categoryId: string, aiPrompt?: string, sections?: Section[]) => Promise<void>;
     categories: Category[];
 }
 
@@ -16,6 +16,7 @@ interface ValidationResult {
     listData?: {
         name: string;
         items: Item[];
+        sections?: Section[];
     };
 }
 
@@ -26,6 +27,8 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
     const [error, setError] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [showExample, setShowExample] = useState(false);
+    const [copiedSimpleSections, setCopiedSimpleSections] = useState(false);
+    const [copiedDetailedSections, setCopiedDetailedSections] = useState(false);
     const [copiedSimple, setCopiedSimple] = useState(false);
     const [copiedDetailed, setCopiedDetailed] = useState(false);
 
@@ -54,7 +57,7 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
         if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
             return {
                 isValid: false,
-                error: t('import.errorObject', 'JSON must be an object with "name" and "items" fields.'),
+                error: t('import.errorObject', 'JSON must be an object with "name" and "items" or "sections" fields.'),
             };
         }
 
@@ -75,64 +78,139 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
             };
         }
 
-        // Check for items field
-        if (!('items' in data)) {
+        const hasItems = 'items' in data;
+        const hasSections = 'sections' in data;
+
+        // Check that at least one of items or sections is present
+        if (!hasItems && !hasSections) {
             return {
                 isValid: false,
-                error: t('import.errorItems', 'Missing required field "items". Your list must have at least one item.'),
+                error: t('import.errorItems', 'Missing required field "items" or "sections". Your list must have at least one item.'),
             };
         }
 
-        if (!Array.isArray(data.items)) {
-            return {
-                isValid: false,
-                error: t('import.errorItemsArray', 'The "items" field must be an array.'),
-            };
-        }
-
-        if (data.items.length === 0) {
-            return {
-                isValid: false,
-                error: t('import.errorItemsEmpty', 'Items array is empty. Please add at least one item.'),
-            };
-        }
-
-        // Validate and transform items
         const items: Item[] = [];
-        for (let i = 0; i < data.items.length; i++) {
-            const item = data.items[i];
+        const sections: Section[] = [];
 
-            // Support simple string format
-            if (typeof item === 'string') {
-                items.push({
-                    id: crypto.randomUUID(),
-                    text: item,
-                    completed: false,
-                });
+        // Parse sections if present
+        if (hasSections) {
+            if (!Array.isArray(data.sections)) {
+                return {
+                    isValid: false,
+                    error: t('import.errorSectionsArray', 'The "sections" field must be an array.'),
+                };
             }
-            // Support detailed object format
-            else if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
-                const itemObj = item as Record<string, unknown>;
 
-                if (!('text' in itemObj) || typeof itemObj.text !== 'string') {
+            for (let sIndex = 0; sIndex < data.sections.length; sIndex++) {
+                const sec = data.sections[sIndex];
+                if (typeof sec !== 'object' || sec === null || Array.isArray(sec)) {
+                    return {
+                        isValid: false,
+                        error: t('import.errorSectionFormat', { index: sIndex + 1 }),
+                    };
+                }
+
+                const secObj = sec as Record<string, unknown>;
+                if (!('name' in secObj) || typeof secObj.name !== 'string' || secObj.name.trim() === '') {
+                    return {
+                        isValid: false,
+                        error: t('import.errorSectionName', { index: sIndex + 1 }),
+                    };
+                }
+
+                const sectionId = crypto.randomUUID();
+                sections.push({
+                    id: sectionId,
+                    name: secObj.name.trim(),
+                    order: sIndex,
+                });
+
+                if ('items' in secObj) {
+                    if (!Array.isArray(secObj.items)) {
+                        return {
+                            isValid: false,
+                            error: t('import.errorSectionItemsArray', { index: sIndex + 1 }),
+                        };
+                    }
+
+                    for (let i = 0; i < secObj.items.length; i++) {
+                        const item = secObj.items[i];
+                        if (typeof item === 'string') {
+                            items.push({
+                                id: crypto.randomUUID(),
+                                text: item,
+                                completed: false,
+                                sectionId,
+                            });
+                        } else if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+                            const itemObj = item as Record<string, unknown>;
+                            if (!('text' in itemObj) || typeof itemObj.text !== 'string') {
+                                return {
+                                    isValid: false,
+                                    error: t('import.errorItemFormat', { index: i + 1 }),
+                                };
+                            }
+                            items.push({
+                                id: crypto.randomUUID(),
+                                text: itemObj.text,
+                                completed: typeof itemObj.completed === 'boolean' ? itemObj.completed : false,
+                                sectionId,
+                            });
+                        } else {
+                            return {
+                                isValid: false,
+                                error: t('import.errorItemFormat', { index: i + 1 }),
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        // Parse top-level items if present
+        if (hasItems) {
+            if (!Array.isArray(data.items)) {
+                return {
+                    isValid: false,
+                    error: t('import.errorItemsArray', 'The "items" field must be an array.'),
+                };
+            }
+
+            for (let i = 0; i < data.items.length; i++) {
+                const item = data.items[i];
+                if (typeof item === 'string') {
+                    items.push({
+                        id: crypto.randomUUID(),
+                        text: item,
+                        completed: false,
+                    });
+                } else if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+                    const itemObj = item as Record<string, unknown>;
+                    if (!('text' in itemObj) || typeof itemObj.text !== 'string') {
+                        return {
+                            isValid: false,
+                            error: t('import.errorItemFormat', { index: i + 1 }),
+                        };
+                    }
+                    items.push({
+                        id: crypto.randomUUID(),
+                        text: itemObj.text,
+                        completed: typeof itemObj.completed === 'boolean' ? itemObj.completed : false,
+                    });
+                } else {
                     return {
                         isValid: false,
                         error: t('import.errorItemFormat', { index: i + 1 }),
                     };
                 }
+            }
+        }
 
-                items.push({
-                    id: crypto.randomUUID(),
-                    text: itemObj.text,
-                    completed: typeof itemObj.completed === 'boolean' ? itemObj.completed : false,
-                });
-            }
-            else {
-                return {
-                    isValid: false,
-                    error: t('import.errorItemFormat', { index: i + 1 }),
-                };
-            }
+        if (items.length === 0 && sections.length === 0) {
+            return {
+                isValid: false,
+                error: t('import.errorItemsEmpty', 'Items array is empty. Please add at least one item.'),
+            };
         }
 
         return {
@@ -140,6 +218,7 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
             listData: {
                 name: data.name,
                 items,
+                sections: sections.length > 0 ? sections : undefined,
             },
         };
     };
@@ -177,7 +256,7 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
 
         try {
             setIsImporting(true);
-            await onImport(result.listData!.name, result.listData!.items, selectedCategoryId);
+            await onImport(result.listData!.name, result.listData!.items, selectedCategoryId, undefined, result.listData!.sections);
 
             // Reset and close on success
             setJsonInput('');
@@ -197,17 +276,50 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
         onClose();
     };
 
+    const exampleSimpleWithSections = `{
+  "name": "Packlista fjällen",
+  "sections": [
+    {
+      "name": "Kläder",
+      "items": ["Underställ", "Skidjacka", "Vantar"]
+    },
+    {
+      "name": "Utrustning",
+      "items": ["Skidor", "Pjäxor", "Hjälm"]
+    }
+  ]
+}`;
+
+    const exampleDetailedWithSections = `{
+  "name": "Morgonrutin",
+  "sections": [
+    {
+      "name": "Badrum",
+      "items": [
+        { "text": "Borsta tänderna", "completed": true },
+        { "text": "Duscha", "completed": false }
+      ]
+    },
+    {
+      "name": "Kök",
+      "items": [
+        { "text": "Koka kaffe", "completed": false },
+        { "text": "Äta frukost", "completed": false }
+      ]
+    }
+  ]
+}`;
+
     const exampleSimple = `{
   "name": "Shopping List",
   "items": ["Milk", "Bread", "Eggs", "Butter"]
 }`;
 
     const exampleDetailed = `{
-  "name": "Morning Routine",
+  "name": "Work Tasks",
   "items": [
-    { "text": "Wake up", "completed": true },
-    { "text": "Exercise", "completed": false },
-    { "text": "Shower", "completed": false }
+    { "text": "Write report", "completed": true },
+    { "text": "Send email", "completed": false }
   ]
 }`;
 
@@ -275,18 +387,52 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
 
                         {/* Examples */}
                         {showExample && (
-                            <div className="space-y-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg max-h-72 overflow-y-auto custom-scrollbar">
                                 <div>
                                     <div className="flex items-center justify-between mb-1">
                                         <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                            {t('import.simpleFormat', 'Simple format (recommended):')}
+                                            {t('import.simpleWithSections', 'Enkelt format med sektioner:')}
+                                        </p>
+                                        <button
+                                            onClick={() => copyToClipboard(exampleSimpleWithSections, setCopiedSimpleSections)}
+                                            className="flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded px-1.5 py-0.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                                        >
+                                            {copiedSimpleSections ? <Check size={10} /> : <Copy size={10} />}
+                                            {copiedSimpleSections ? t('import.copied', 'Kopierat!') : t('import.copy', 'Kopiera')}
+                                        </button>
+                                    </div>
+                                    <pre className="text-xs bg-white dark:bg-gray-900 p-2 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto">
+                                        {exampleSimpleWithSections}
+                                    </pre>
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                            {t('import.detailedWithSections', 'Detaljerat format med sektioner:')}
+                                        </p>
+                                        <button
+                                            onClick={() => copyToClipboard(exampleDetailedWithSections, setCopiedDetailedSections)}
+                                            className="flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded px-1.5 py-0.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                                        >
+                                            {copiedDetailedSections ? <Check size={10} /> : <Copy size={10} />}
+                                            {copiedDetailedSections ? t('import.copied', 'Kopierat!') : t('import.copy', 'Kopiera')}
+                                        </button>
+                                    </div>
+                                    <pre className="text-xs bg-white dark:bg-gray-900 p-2 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto">
+                                        {exampleDetailedWithSections}
+                                    </pre>
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                            {t('import.simpleFormat', 'Enkelt format (utan sektioner):')}
                                         </p>
                                         <button
                                             onClick={() => copyToClipboard(exampleSimple, setCopiedSimple)}
                                             className="flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded px-1.5 py-0.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                                         >
                                             {copiedSimple ? <Check size={10} /> : <Copy size={10} />}
-                                            {copiedSimple ? t('import.copied', 'Copied!') : t('import.copy', 'Copy')}
+                                            {copiedSimple ? t('import.copied', 'Kopierat!') : t('import.copy', 'Kopiera')}
                                         </button>
                                     </div>
                                     <pre className="text-xs bg-white dark:bg-gray-900 p-2 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto">
@@ -296,14 +442,14 @@ export const ImportListModal: React.FC<ImportListModalProps> = ({ isOpen, onClos
                                 <div>
                                     <div className="flex items-center justify-between mb-1">
                                         <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                            {t('import.detailedFormat', 'Detailed format (with completion status):')}
+                                            {t('import.detailedFormat', 'Detaljerat format (med status):')}
                                         </p>
                                         <button
                                             onClick={() => copyToClipboard(exampleDetailed, setCopiedDetailed)}
                                             className="flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded px-1.5 py-0.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                                         >
                                             {copiedDetailed ? <Check size={10} /> : <Copy size={10} />}
-                                            {copiedDetailed ? t('import.copied', 'Copied!') : t('import.copy', 'Copy')}
+                                            {copiedDetailed ? t('import.copied', 'Kopierat!') : t('import.copy', 'Kopiera')}
                                         </button>
                                     </div>
                                     <pre className="text-xs bg-white dark:bg-gray-900 p-2 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto">

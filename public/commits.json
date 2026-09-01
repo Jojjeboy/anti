@@ -1,5 +1,15 @@
 [
   {
+    "hash": "bd37207e3acb0dd505de04a91e6b4076280219b8",
+    "date": "2026-08-19 17:43:32 +0200",
+    "message": "CI and jsdom versions"
+  },
+  {
+    "hash": "968e7ce0973a3da7f41ccd80a70a694d20757dc8",
+    "date": "2026-08-19 17:36:13 +0200",
+    "message": "Uppgradering av npm bibliotek"
+  },
+  {
     "hash": "9e14c93d7d5b956a9289d81826277a48ff66643b",
     "date": "2026-08-19 17:28:08 +0200",
     "message": "Added necessary test covarage"
@@ -88,15 +98,5 @@
     "hash": "f2068f8b285bfbd9d7f7c9a6e6d09fc0dd87d24e",
     "date": "2026-04-03 12:08:50 +0200",
     "message": "feat: add direct list settings access from home page"
-  },
-  {
-    "hash": "4f76726e0424edee810d1e4c5cfb04ada02c4cb1",
-    "date": "2026-04-03 11:46:36 +0200",
-    "message": "feat: add list deletion confirmation modals and settings-level delete"
-  },
-  {
-    "hash": "a110b2670cc4827d5fb893a6c4acd7248f64ad1b",
-    "date": "2026-04-03 11:07:21 +0200",
-    "message": "feat: track and display AI generation metadata for lists"
   }
 ]

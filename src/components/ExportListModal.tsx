@@ -18,6 +18,52 @@ export const ExportListModal: React.FC<ExportListModalProps> = ({ isOpen, onClos
 
     // Generate JSON structure based on selected format
     const generateJsonData = () => {
+        const hasSections = Array.isArray(list.sections) && list.sections.length > 0;
+
+        if (hasSections) {
+            const sortedSections = [...list.sections!].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+            const sectionIds = new Set(sortedSections.map((s) => s.id));
+            const unsectionedItems = (list.items || []).filter((item) => !item.sectionId || !sectionIds.has(item.sectionId));
+
+            if (format === 'simple') {
+                const sectionsData = sortedSections.map((section) => ({
+                    name: section.name,
+                    items: (list.items || [])
+                        .filter((item) => item.sectionId === section.id)
+                        .map((item) => item.text),
+                }));
+
+                return {
+                    name: list.name,
+                    ...(unsectionedItems.length > 0 ? { items: unsectionedItems.map((item) => item.text) } : {}),
+                    sections: sectionsData,
+                };
+            } else {
+                const sectionsData = sortedSections.map((section) => ({
+                    name: section.name,
+                    items: (list.items || [])
+                        .filter((item) => item.sectionId === section.id)
+                        .map((item) => ({
+                            text: item.text,
+                            completed: item.completed,
+                        })),
+                }));
+
+                return {
+                    name: list.name,
+                    ...(unsectionedItems.length > 0
+                        ? {
+                              items: unsectionedItems.map((item) => ({
+                                  text: item.text,
+                                  completed: item.completed,
+                              })),
+                          }
+                        : {}),
+                    sections: sectionsData,
+                };
+            }
+        }
+
         if (format === 'simple') {
             return {
                 name: list.name,

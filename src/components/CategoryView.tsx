@@ -9,7 +9,7 @@ import geminiIconUrl from '../assets/gemini.svg';
 
 import { CombinationCard } from './CombinationCard';
 import { CombinationEditor } from './CombinationEditor';
-import { ListCombination, Item } from '../types';
+import { ListCombination, Item, Section } from '../types';
 import { CategorySection } from './CategorySection';
 import { ManageCategoriesModal } from './ManageCategoriesModal';
 import { ImportListModal } from './ImportListModal';
@@ -120,8 +120,8 @@ export const CategoryView: React.FC = React.memo(() => {
     /**
      * Handles the import of a list from JSON data.
      */
-    const handleImportList = async (name: string, items: Item[], categoryId: string, aiPrompt?: string) => {
-        const newListId = await addList(name, categoryId);
+    const handleImportList = async (name: string, items: Item[], categoryId: string, aiPrompt?: string, sections?: Section[]) => {
+        const newListId = await addList(name, categoryId, sections);
         await updateListItems(newListId, items);
 
         if (aiPrompt) {

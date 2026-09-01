@@ -28,6 +28,13 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
         }
     }, [isOpen, categories, selectedCategoryId]);
 
+    const isDuplicateCategory = React.useMemo(() => {
+        if (!isCreatingCategory) return false;
+        const trimmed = (newCategoryName || '').trim().toLowerCase();
+        if (!trimmed) return false;
+        return (categories || []).some((c) => (c?.name || '').trim().toLowerCase() === trimmed);
+    }, [isCreatingCategory, newCategoryName, categories]);
+
     if (!isOpen) return null;
 
     const handleClose = () => {
@@ -59,13 +66,6 @@ export const AIListGeneratorModal: React.FC<AIListGeneratorModalProps> = ({ isOp
             setIsLoading(false);
         }
     };
-
-    const isDuplicateCategory = React.useMemo(() => {
-        if (!isCreatingCategory) return false;
-        const trimmed = (newCategoryName || '').trim().toLowerCase();
-        if (!trimmed) return false;
-        return (categories || []).some((c) => (c?.name || '').trim().toLowerCase() === trimmed);
-    }, [isCreatingCategory, newCategoryName, categories]);
 
     const handleSave = async () => {
         if (!generatedList) return;

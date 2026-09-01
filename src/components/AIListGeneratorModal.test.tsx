@@ -100,4 +100,29 @@ describe('AIListGeneratorModal', () => {
             expect(screen.queryByText('Ett fel uppstod')).toBeNull();
         });
     });
+
+    it('renders cleanly when opening without hook order errors', () => {
+        const { rerender } = render(
+            <AIListGeneratorModal 
+                isOpen={false} 
+                onClose={mockOnClose} 
+                onSave={mockOnSave} 
+                categories={mockCategories} 
+            />
+        );
+
+        expect(screen.queryByText('Skapa lista med AI')).toBeNull();
+
+        // Rerender with isOpen = true (this previously threw the hooks error)
+        rerender(
+            <AIListGeneratorModal 
+                isOpen={true} 
+                onClose={mockOnClose} 
+                onSave={mockOnSave} 
+                categories={mockCategories} 
+            />
+        );
+
+        expect(screen.getByText('Skapa lista med AI')).toBeDefined();
+    });
 });

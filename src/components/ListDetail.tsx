@@ -589,7 +589,7 @@ export const ListDetail: React.FC = React.memo(() => {
                         </button>
 
                         {moreMenuOpen && (
-                            <div className="absolute right-0 bottom-full mb-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                                 {/* Reset */}
                                 <button
                                     type="button"

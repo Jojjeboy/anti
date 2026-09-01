@@ -100,7 +100,7 @@ describe('ImportListModal', () => {
         });
     });
 
-    it('shows an error when the "items" field is missing', async () => {
+    it('shows an error when both "items" and "sections" fields are missing', async () => {
         renderModal();
         const textarea = screen.getByRole('textbox');
         fireEvent.change(textarea, {
@@ -124,7 +124,7 @@ describe('ImportListModal', () => {
         });
     });
 
-    it('shows an error when items array is empty', async () => {
+    it('shows an error when items and sections arrays are empty', async () => {
         renderModal();
         const textarea = screen.getByRole('textbox');
         fireEvent.change(textarea, {
@@ -156,7 +156,9 @@ describe('ImportListModal', () => {
                     expect.objectContaining({ text: 'Milk', completed: false }),
                     expect.objectContaining({ text: 'Eggs', completed: false }),
                 ]),
-                'cat1'
+                'cat1',
+                undefined,
+                undefined
             );
         });
     });
@@ -184,7 +186,49 @@ describe('ImportListModal', () => {
                     expect.objectContaining({ text: 'Write report', completed: true }),
                     expect.objectContaining({ text: 'Send email', completed: false }),
                 ]),
-                'cat1'
+                'cat1',
+                undefined,
+                undefined
+            );
+        });
+    });
+
+    it('calls onImport with correct sections and section-assigned items', async () => {
+        mockOnImport.mockResolvedValue(undefined);
+        renderModal();
+
+        const sectionsJson = JSON.stringify({
+            name: 'Ski Trip',
+            sections: [
+                {
+                    name: 'Clothes',
+                    items: ['Jacket', 'Gloves'],
+                },
+                {
+                    name: 'Gear',
+                    items: [{ text: 'Skis', completed: true }],
+                },
+            ],
+        });
+
+        const textarea = screen.getByRole('textbox');
+        fireEvent.change(textarea, { target: { value: sectionsJson } });
+        fireEvent.click(screen.getByText('import.import'));
+
+        await waitFor(() => {
+            expect(mockOnImport).toHaveBeenCalledWith(
+                'Ski Trip',
+                expect.arrayContaining([
+                    expect.objectContaining({ text: 'Jacket', completed: false, sectionId: expect.any(String) }),
+                    expect.objectContaining({ text: 'Gloves', completed: false, sectionId: expect.any(String) }),
+                    expect.objectContaining({ text: 'Skis', completed: true, sectionId: expect.any(String) }),
+                ]),
+                'cat1',
+                undefined,
+                expect.arrayContaining([
+                    expect.objectContaining({ name: 'Clothes', order: 0 }),
+                    expect.objectContaining({ name: 'Gear', order: 1 }),
+                ])
             );
         });
     });

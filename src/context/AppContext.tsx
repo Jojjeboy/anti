@@ -19,7 +19,7 @@ interface AppContextType {
     updateCategoryName: (id: string, name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
     reorderCategories: (categories: Category[]) => Promise<void>;
-    addList: (name: string, categoryId: string) => Promise<string>;
+    addList: (name: string, categoryId: string, initialSections?: Section[]) => Promise<string>;
     updateListName: (id: string, name: string) => Promise<void>;
     updateListSettings: (id: string, settings: ListSettings) => Promise<void>;
     deleteList: (id: string) => Promise<void>;
@@ -138,9 +138,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await Promise.all(listsToDelete.map((l: List) => listsSync.deleteItem(l.id)));
     };
 
-    const addList = async (name: string, categoryId: string) => {
+    const addList = async (name: string, categoryId: string, initialSections?: Section[]) => {
         const id = uuidv4();
-        await listsSync.addItem({ id, name, categoryId, items: [] });
+        await listsSync.addItem({
+            id,
+            name,
+            categoryId,
+            items: [],
+            ...(initialSections && initialSections.length > 0 ? { sections: initialSections } : {})
+        });
         return id;
     };
 

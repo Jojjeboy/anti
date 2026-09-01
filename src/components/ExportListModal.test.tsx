@@ -121,4 +121,72 @@ describe('ExportListModal', () => {
         fireEvent.click(cancelButton);
         expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
     });
+
+    it('renders sections in simple format when list has sections', () => {
+        const listWithSections = {
+            id: 'list2',
+            name: 'Packing List',
+            categoryId: 'cat1',
+            sections: [
+                { id: 'sec1', name: 'Clothes', order: 0 },
+                { id: 'sec2', name: 'Gear', order: 1 },
+            ],
+            items: [
+                { id: 'i1', text: 'Jacket', completed: false, sectionId: 'sec1' },
+                { id: 'i2', text: 'Gloves', completed: true, sectionId: 'sec1' },
+                { id: 'i3', text: 'Helmet', completed: false, sectionId: 'sec2' },
+                { id: 'i4', text: 'General Item', completed: false }, // unsectioned
+            ],
+        };
+
+        render(<ExportListModal {...defaultProps} list={listWithSections} />);
+
+        const preview = screen.getByText((content) => content.includes('"Packing List"') && content.includes('"Clothes"'));
+        expect(preview).toBeDefined();
+
+        const parsed = JSON.parse(preview.textContent || '{}');
+        expect(parsed.name).toBe('Packing List');
+        expect(parsed.items).toEqual(['General Item']);
+        expect(parsed.sections).toEqual([
+            {
+                name: 'Clothes',
+                items: ['Jacket', 'Gloves'],
+            },
+            {
+                name: 'Gear',
+                items: ['Helmet'],
+            },
+        ]);
+    });
+
+    it('renders sections in detailed format when list has sections and detailed tab is active', () => {
+        const listWithSections = {
+            id: 'list2',
+            name: 'Packing List',
+            categoryId: 'cat1',
+            sections: [
+                { id: 'sec1', name: 'Clothes', order: 0 },
+            ],
+            items: [
+                { id: 'i1', text: 'Jacket', completed: true, sectionId: 'sec1' },
+                { id: 'i2', text: 'General Item', completed: false },
+            ],
+        };
+
+        render(<ExportListModal {...defaultProps} list={listWithSections} />);
+        const detailedTab = screen.getByText('Detaljerat format (med status)');
+        fireEvent.click(detailedTab);
+
+        const preview = screen.getByText((content) => content.includes('"Packing List"') && content.includes('"Clothes"'));
+        expect(preview).toBeDefined();
+
+        const parsed = JSON.parse(preview.textContent || '{}');
+        expect(parsed.items).toEqual([{ text: 'General Item', completed: false }]);
+        expect(parsed.sections).toEqual([
+            {
+                name: 'Clothes',
+                items: [{ text: 'Jacket', completed: true }],
+            },
+        ]);
+    });
 });
