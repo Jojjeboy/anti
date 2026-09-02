@@ -1,5 +1,15 @@
 [
   {
+    "hash": "1da9cce7515c09d2a36e4e9ecc48591db34ec305",
+    "date": "2026-09-01 09:07:03 +0200",
+    "message": "test: add import JSON functionality and section reordering"
+  },
+  {
+    "hash": "4b0ccb18c61c675c62c15a405a2bf7bf12cf8b29",
+    "date": "2026-09-01 08:30:22 +0200",
+    "message": "chore: update commits.json and refactor list import logic"
+  },
+  {
     "hash": "bd37207e3acb0dd505de04a91e6b4076280219b8",
     "date": "2026-08-19 17:43:32 +0200",
     "message": "CI and jsdom versions"
@@ -88,15 +98,5 @@
     "hash": "3f0ab805f887d0510aa0f0711dab0596f7474018",
     "date": "2026-05-11 14:59:29 +0200",
     "message": "Stuff"
-  },
-  {
-    "hash": "6fb6f387fca321ffbece12bf70263edc5bdd63a0",
-    "date": "2026-04-15 07:26:30 +0200",
-    "message": "Error handleing"
-  },
-  {
-    "hash": "f2068f8b285bfbd9d7f7c9a6e6d09fc0dd87d24e",
-    "date": "2026-04-03 12:08:50 +0200",
-    "message": "feat: add direct list settings access from home page"
   }
 ]
