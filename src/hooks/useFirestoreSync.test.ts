@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
 import { useFirestoreSync } from './useFirestoreSync';
 import { collection, doc, setDoc, deleteDoc, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
 
@@ -12,8 +12,14 @@ describe('useFirestoreSync', () => {
     const mockUserId = 'test-user-id';
     const mockCollectionPath = 'users/{uid}/test-collection';
 
+    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
     beforeEach(() => {
         vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        consoleErrorSpy?.mockRestore();
     });
 
     it('should initialize with empty data and loading true', () => {
@@ -86,6 +92,8 @@ describe('useFirestoreSync', () => {
     });
 
     it('should handle snapshot errors', async () => {
+        // Suppress expected console.error for this intentional error test
+        consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         const mockError = new Error('Firestore error');
 
         (onSnapshot as Mock).mockImplementation((_, __: unknown, onError: (error: Error) => void) => {

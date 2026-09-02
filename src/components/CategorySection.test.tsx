@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { CategorySection } from './CategorySection';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Category, List } from '../types';
@@ -98,10 +98,10 @@ describe('CategorySection - Duplicate list name validation', () => {
         renderSection();
 
         // Open the add list form
-        fireEvent.click(screen.getByText('+ Lägg till lista'));
+        act(() => { fireEvent.click(screen.getByText('+ Lägg till lista')); });
 
         const input = screen.getByPlaceholderText('lists.newPlaceholder');
-        fireEvent.change(input, { target: { value: 'groceries' } }); // case-insensitive match
+        act(() => { fireEvent.change(input, { target: { value: 'groceries' } }); }); // case-insensitive match
 
         expect(screen.getByText('En lista med detta namn finns redan')).toBeDefined();
 
@@ -112,12 +112,12 @@ describe('CategorySection - Duplicate list name validation', () => {
     it('does not call onAddList when submitting a duplicate list name', () => {
         renderSection();
 
-        fireEvent.click(screen.getByText('+ Lägg till lista'));
+        act(() => { fireEvent.click(screen.getByText('+ Lägg till lista')); });
 
         const input = screen.getByPlaceholderText('lists.newPlaceholder');
-        fireEvent.change(input, { target: { value: 'Todos' } });
+        act(() => { fireEvent.change(input, { target: { value: 'Todos' } }); });
 
-        fireEvent.submit(input.closest('form')!);
+        act(() => { fireEvent.submit(input.closest('form')!); });
 
         expect(mockOnAddList).not.toHaveBeenCalled();
     });
@@ -125,14 +125,14 @@ describe('CategorySection - Duplicate list name validation', () => {
     it('calls onAddList when typing a unique list name', () => {
         renderSection();
 
-        fireEvent.click(screen.getByText('+ Lägg till lista'));
+        act(() => { fireEvent.click(screen.getByText('+ Lägg till lista')); });
 
         const input = screen.getByPlaceholderText('lists.newPlaceholder');
-        fireEvent.change(input, { target: { value: 'New Unique List' } });
+        act(() => { fireEvent.change(input, { target: { value: 'New Unique List' } }); });
 
         expect(screen.queryByText('En lista med detta namn finns redan')).toBeNull();
 
-        fireEvent.submit(input.closest('form')!);
+        act(() => { fireEvent.submit(input.closest('form')!); });
 
         expect(mockOnAddList).toHaveBeenCalledWith('New Unique List', 'cat1');
     });

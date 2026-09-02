@@ -15,7 +15,7 @@ describe('ToastContext', () => {
     it('showToast adds a toast', async () => {
         const { result } = renderHook(() => useToast(), { wrapper: ToastProvider });
 
-        act(() => {
+        await act(async () => {
             result.current.showToast('Test Message', 'success');
         });
 
@@ -29,13 +29,13 @@ describe('ToastContext', () => {
     it('removeToast removes a toast by id', async () => {
         const { result } = renderHook(() => useToast(), { wrapper: ToastProvider });
 
-        act(() => {
+        await act(async () => {
             result.current.showToast('Test Message', 'success');
         });
 
         const toastId = result.current.toasts[0].id;
 
-        act(() => {
+        await act(async () => {
             result.current.removeToast(toastId);
         });
 
@@ -45,13 +45,13 @@ describe('ToastContext', () => {
     it('auto removes toast after 5 seconds', async () => {
         const { result } = renderHook(() => useToast(), { wrapper: ToastProvider });
 
-        act(() => {
+        await act(async () => {
             result.current.showToast('Test Message', 'success');
         });
 
         expect(result.current.toasts).toHaveLength(1);
 
-        act(() => {
+        await act(async () => {
             vi.advanceTimersByTime(5000);
         });
 

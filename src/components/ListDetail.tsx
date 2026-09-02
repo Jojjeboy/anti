@@ -13,6 +13,8 @@ import { ImportFromListModal } from './ImportFromListModal';
 import { ExportListModal } from './ExportListModal';
 import { ImportJsonToListModal } from './ImportJsonToListModal';
 import geminiIconUrl from '../assets/gemini.svg';
+import { sortAndFilterItems, groupItemsBySection, type SortMode } from '../utils/itemUtils';
+import { toLocalISOString, getNextFullHour, buildGoogleCalendarUrl } from '../utils/calendarUtils';
 
 import { useTranslation } from 'react-i18next';
 
@@ -282,25 +284,10 @@ export const ListDetail: React.FC = React.memo(() => {
         })
     );
 
-    const [sortBy, setSortBy] = useState<'manual' | 'alphabetical' | 'completed'>('manual');
+    const [sortBy, setSortBy] = useState<SortMode>('manual');
     const threeStageMode = list?.settings?.threeStageMode ?? false;
 
-    // Helper to format date for datetime-local input (YYYY-MM-DDTHH:mm) in LOCAL time
-    const toLocalISOString = (date: Date) => {
-        const offset = date.getTimezoneOffset() * 60000;
-        const localDate = new Date(date.getTime() - offset);
-        return localDate.toISOString().slice(0, 16);
-    };
-
-    // Helper function to get next full hour
-    const getNextFullHour = () => {
-        const now = new Date();
-        now.setHours(now.getHours() + 1);
-        now.setMinutes(0);
-        now.setSeconds(0);
-        now.setMilliseconds(0);
-        return toLocalISOString(now);
-    };
+    // Calendar helpers now live in calendarUtils (getNextFullHour, toLocalISOString, buildGoogleCalendarUrl)
 
     // Calendar time state with defaults
     const [calendarStartTime, setCalendarStartTime] = useState(() =>
@@ -355,38 +342,12 @@ export const ListDetail: React.FC = React.memo(() => {
     // Memoized sort of items based on current settings
     const { activeItems, completedItems } = React.useMemo(() => {
         if (!list) return { activeItems: [], completedItems: [] };
-        const items = [...list.items];
-
-        if (sortBy === 'alphabetical') {
-            items.sort((a, b) => (a?.text || '').localeCompare(b?.text || ''));
-        } else if (sortBy === 'completed') {
-            items.sort((a, b) => {
-                // Sort order: Prepared -> Unchecked -> Completed
-                // Assign weights: Prepared = 0, Unchecked = 1, Completed = 2
-                const getWeight = (item: Item) => {
-                    if (item.completed) return 2;
-                    if (threeStageMode && item.state === 'ongoing') return 0;
-                    return 1;
-                };
-                const weightA = getWeight(a);
-                const weightB = getWeight(b);
-                if (weightA !== weightB) return weightA - weightB;
-                // Secondary sort: Alphabetical
-                return (a?.text || '').localeCompare(b?.text || '');
-            });
-        }
-
-        if (list.settings?.hideCompleted) {
-            return {
-                activeItems: items.filter(item => !item.completed),
-                completedItems: items.filter(item => item.completed)
-            };
-        }
-
-        return {
-            activeItems: items,
-            completedItems: []
-        };
+        return sortAndFilterItems(
+            list.items,
+            sortBy,
+            threeStageMode,
+            list.settings?.hideCompleted
+        );
     }, [list, sortBy, threeStageMode]);
 
     // Update calendar event title when list name changes
@@ -585,21 +546,8 @@ export const ListDetail: React.FC = React.memo(() => {
         }
     };
 
-    // Helper function to group items by section
-    const groupItemsBySection = (items: Item[]): Map<string | undefined, Item[]> => {
-        const grouped = new Map<string | undefined, Item[]>();
-
-        // Add unsectioned items
-        grouped.set(undefined, items.filter(item => !item.sectionId));
-
-        // Add items for each section
-        const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-        sections.forEach(section => {
-            grouped.set(section.id, items.filter(item => item.sectionId === section.id));
-        });
-
-        return grouped;
-    };
+    // Helper function to group items by section (delegated to itemUtils)
+    const groupedItemsBySection = (items: Item[]) => groupItemsBySection(items, list?.sections);
 
     /**
      * Ensures start time is in the future and returns valid times
@@ -627,7 +575,7 @@ export const ListDetail: React.FC = React.memo(() => {
     };
 
     /**
-     * Generates a Google Calendar event URL with list details
+     * Generates a Google Calendar event URL with list details (via calendarUtils)
      */
     const generateGoogleCalendarLink = () => {
         if (!list) return;
@@ -639,30 +587,17 @@ export const ListDetail: React.FC = React.memo(() => {
         // Save the selected times to list settings
         updateSettings({ calendarStartTime: actualStart, calendarEndTime: actualEnd });
 
-        // Format event title (use edited title or list name)
-        const title = encodeURIComponent(calendarEventTitle || list.name);
-
-        // Format event description: bullet points for items + HTML link
-        const itemsText = list.items.map(item => `• ${item.text}`).join('\n');
         const linkText = t('lists.settings.calendar.linkText');
-        const deepLink = `https://jojjeboy.github.io/looplist/#/list/${list.id}`;
-        const htmlLink = `<a href="${deepLink}">${linkText}</a>`;
-        const description = encodeURIComponent(`${itemsText}\n\n${htmlLink}`);
+        const url = buildGoogleCalendarUrl({
+            title: calendarEventTitle || list.name,
+            items: list.items,
+            listId: list.id,
+            startTime: actualStart,
+            endTime: actualEnd,
+            linkText,
+        });
 
-        // Format times for Google Calendar (YYYYMMDDTHHMMSS format in UTC)
-        const formatGoogleTime = (isoString: string) => {
-            const date = new Date(isoString);
-            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-        };
-
-        const startTime = formatGoogleTime(actualStart);
-        const endTime = formatGoogleTime(actualEnd);
-
-        // Construct Google Calendar URL
-        const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${description}&dates=${startTime}/${endTime}`;
-
-        // Open in new tab
-        window.open(calendarUrl, '_blank');
+        window.open(url, '_blank');
     };
 
     // --- Validation Logic for UI ---
@@ -1060,7 +995,7 @@ export const ListDetail: React.FC = React.memo(() => {
                     );
                 };
 
-                const groupedItems = groupItemsBySection(activeItems);
+                const groupedItems = groupedItemsBySection(activeItems);
                 const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
                 const hasAnySections = sections.length > 0;
 

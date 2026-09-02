@@ -1,5 +1,10 @@
 [
   {
+    "hash": "6c3d467951e6ecc165988ed5d961dd1738ac6b6e",
+    "date": "2026-09-02 06:20:36 +0200",
+    "message": "feat: add section collapse and item counter to list view"
+  },
+  {
     "hash": "6b076549c99da798c0d6de6d3dc9abd2e56cb408",
     "date": "2026-09-02 06:10:55 +0200",
     "message": "mc"
@@ -93,10 +98,5 @@
     "hash": "b7355286700c0a5753fcd5a842848b6552652648",
     "date": "2026-05-11 15:13:36 +0200",
     "message": "Updates"
-  },
-  {
-    "hash": "ed991b57154dd4bee480950999680c6040f70835",
-    "date": "2026-05-11 15:07:27 +0200",
-    "message": "mc"
   }
 ]
