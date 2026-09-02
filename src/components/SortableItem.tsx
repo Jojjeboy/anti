@@ -150,19 +150,6 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                                 <GripVertical size={24} strokeWidth={2.5} />
                             </div>
                         )}
-
-                        {onDelete && (
-                            <button
-                                onClick={() => onDelete(item.id)}
-                                className="p-2 text-gray-400 hover:text-red-500 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 flex-shrink-0 mt-0.5"
-                                aria-label="Delete item"
-                                // Stop propagation to prevent swipe start when clicking button
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            >
-                                <Trash2 size={18} />
-                            </button>
-                        )}
                     </div>
                 </SwipeableListItem>
             </SwipeableList>

@@ -1,5 +1,10 @@
 [
   {
+    "hash": "6b076549c99da798c0d6de6d3dc9abd2e56cb408",
+    "date": "2026-09-02 06:10:55 +0200",
+    "message": "mc"
+  },
+  {
     "hash": "1da9cce7515c09d2a36e4e9ecc48591db34ec305",
     "date": "2026-09-01 09:07:03 +0200",
     "message": "test: add import JSON functionality and section reordering"
@@ -93,10 +98,5 @@
     "hash": "ed991b57154dd4bee480950999680c6040f70835",
     "date": "2026-05-11 15:07:27 +0200",
     "message": "mc"
-  },
-  {
-    "hash": "3f0ab805f887d0510aa0f0711dab0596f7474018",
-    "date": "2026-05-11 14:59:29 +0200",
-    "message": "Stuff"
   }
 ]

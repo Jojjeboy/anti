@@ -21,9 +21,13 @@ import { useTranslation } from 'react-i18next';
  * Supports adding items, toggling states (normal/three-stage), 
  * sorting, and reordering items via drag and drop.
  */
-const DroppableSection = ({ sectionId, children }: { sectionId: string, children: React.ReactNode }) => {
-    const { setNodeRef } = useDroppable({ id: sectionId });
-    return <div ref={setNodeRef}>{children}</div>;
+const DroppableSection = ({ sectionId, children, className, isOverClassName }: { sectionId: string; children: React.ReactNode; className?: string; isOverClassName?: string }) => {
+    const { setNodeRef, isOver } = useDroppable({ id: sectionId });
+    return (
+        <div ref={setNodeRef} className={`${className || ''} ${isOver ? (isOverClassName || 'ring-2 ring-blue-500/50 bg-blue-50/40 dark:bg-blue-900/30 rounded-2xl') : ''}`}>
+            {children}
+        </div>
+    );
 };
 
 interface SortableSectionItemProps {
@@ -169,11 +173,60 @@ export const ListDetail: React.FC = React.memo(() => {
     const [importJsonModalOpen, setImportJsonModalOpen] = useState(false);
     const [moreMenuOpen, setMoreMenuOpen] = useState(false);
     const [promptCopied, setPromptCopied] = useState(false);
+    const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>(() => {
+        if (!listId) return {};
+        try {
+            const saved = localStorage.getItem(`looplist_collapsed_${listId}`);
+            return saved ? JSON.parse(saved) : {};
+        } catch {
+            return {};
+        }
+    });
+    const [quickAddSectionId, setQuickAddSectionId] = useState<string | null>(null);
+    const [quickAddText, setQuickAddText] = useState('');
     const moreMenuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const { hash } = useLocation();
 
     const list: List | undefined = lists.find((l) => l.id === listId);
+
+    // Sync collapsed state with localStorage on listId change
+    useEffect(() => {
+        if (!listId) return;
+        try {
+            const saved = localStorage.getItem(`looplist_collapsed_${listId}`);
+            setCollapsedSections(saved ? JSON.parse(saved) : {});
+        } catch {
+            setCollapsedSections({});
+        }
+    }, [listId]);
+
+    const toggleSectionCollapse = (sectionKey: string) => {
+        setCollapsedSections(prev => {
+            const next = { ...prev, [sectionKey]: !prev[sectionKey] };
+            if (listId) {
+                try {
+                    localStorage.setItem(`looplist_collapsed_${listId}`, JSON.stringify(next));
+                } catch (e) {
+                    console.error('Failed to save collapsed sections state', e);
+                }
+            }
+            return next;
+        });
+    };
+
+    const handleQuickAdd = async (sectionId?: string) => {
+        if (quickAddText.trim() && list) {
+            const newItem: Item = {
+                id: uuidv4(),
+                text: quickAddText.trim(),
+                completed: false,
+                sectionId: sectionId
+            };
+            await updateListItems(list.id, [...list.items, newItem]);
+            setQuickAddText('');
+        }
+    };
 
     // Close more-menu when clicking outside
     useEffect(() => {
@@ -367,9 +420,21 @@ export const ListDetail: React.FC = React.memo(() => {
 
         // Check if dropped ON a section container directly (empty section or section header)
         const overSectionId = list.sections?.find(s => s.id === over.id)?.id;
+        const overUnsectioned = over.id === '__unsectioned__';
 
         const activeItem = list.items.find((item) => item.id === active.id);
         if (!activeItem) return;
+
+        // If dropped on unsectioned directly
+        if (overUnsectioned) {
+            if (activeItem.sectionId !== undefined) {
+                const updatedItems = list.items.map(item =>
+                    item.id === active.id ? { ...item, sectionId: undefined } : item
+                );
+                await updateListItems(list.id, updatedItems);
+            }
+            return;
+        }
 
         // If dropped on a section directly
         if (overSectionId) {
@@ -819,159 +884,260 @@ export const ListDetail: React.FC = React.memo(() => {
                 </div>
             )}
 
-            {
-                sortBy === 'manual' ? (
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                            <div className="space-y-6">
-                                {(() => {
-                                    const groupedItems = groupItemsBySection(activeItems);
-                                    const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-                                    const hasAnySections = sections.length > 0;
+            {(() => {
+                const renderSectionCard = (
+                    section: { id: string; name: string; order?: number } | undefined,
+                    sectionItems: Item[],
+                    isManualSort: boolean
+                ) => {
+                    const sectionKey = section ? section.id : '__unsectioned__';
+                    const isCollapsed = !!collapsedSections[sectionKey];
 
-                                    return (
-                                        <>
-                                            {/* Unsectioned items */}
-                                            {groupedItems.get(undefined) && groupedItems.get(undefined)!.length > 0 && (
-                                                <div>
-                                                    {hasAnySections && (
-                                                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                                                            {t('lists.sections.unsectioned')}
-                                                        </h3>
-                                                    )}
-                                                    <div className="space-y-2">
-                                                        {groupedItems.get(undefined)!.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={item}
-                                                                onToggle={list?.archived ? undefined : handleToggle}
-                                                                onDelete={list?.archived ? undefined : handleDelete}
-                                                                onEdit={list?.archived ? undefined : handleEdit}
-                                                                threeStageMode={threeStageMode}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
+                    const allItemsInSection = list.items.filter(item => (section ? item.sectionId === section.id : !item.sectionId));
+                    const totalCount = allItemsInSection.length;
+                    const completedCount = allItemsInSection.filter(item => item.completed).length;
+                    const allDone = totalCount > 0 && completedCount === totalCount;
+                    const isQuickAdding = quickAddSectionId === sectionKey;
 
-                                            {/* Sectioned items */}
-                                            {sections.map((section) => {
-                                                const sectionItems = groupedItems.get(section.id) || [];
-                                                return (
-                                                    <DroppableSection sectionId={section.id} key={section.id}>
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
-                                                                {section.name}
-                                                            </h3>
-                                                            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                        </div>
-                                                        <div className="space-y-2 min-h-[2rem]"> {/* Add min-height for empty target */}
-                                                            {sectionItems.map((item) => (
-                                                                <SortableItem
-                                                                    key={item.id}
-                                                                    item={item}
-                                                                    onToggle={list?.archived ? undefined : handleToggle}
-                                                                    onDelete={list?.archived ? undefined : handleDelete}
-                                                                    onEdit={list?.archived ? undefined : handleEdit}
-                                                                    threeStageMode={threeStageMode}
-                                                                />
-                                                            ))}
-                                                            {sectionItems.length === 0 && (
-                                                                <p className="text-center text-gray-400 dark:text-gray-600 text-sm py-4 italic">
-                                                                    {t('lists.emptyList')}
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </DroppableSection>
-                                                );
-                                            })}
+                    const cardContent = (
+                        <div className={`rounded-2xl border transition-all duration-200 ${
+                            allDone
+                                ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-200/50 dark:border-emerald-800/40'
+                                : 'bg-gray-50/70 dark:bg-gray-800/40 border-gray-200/70 dark:border-gray-700/60'
+                        } p-2.5 sm:p-3 shadow-sm`}>
+                            {/* Header */}
+                            <div className="flex items-center justify-between gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSectionCollapse(sectionKey)}
+                                    className="flex items-center gap-2 text-left flex-1 min-w-0 group/header focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg py-1 px-1 -mx-1 cursor-pointer"
+                                    aria-label={isCollapsed ? t('lists.sections.expand') : t('lists.sections.collapse')}
+                                    aria-expanded={!isCollapsed}
+                                >
+                                    <div className="p-1 rounded-md text-gray-400 group-hover/header:text-gray-600 dark:text-gray-500 dark:group-hover/header:text-gray-300 transition-colors">
+                                        <ChevronDown
+                                            size={18}
+                                            className={`transform transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+                                        />
+                                    </div>
+                                    <h3 className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate">
+                                        {section ? section.name : t('lists.sections.unsectioned')}
+                                    </h3>
 
-                                            {activeItems.length === 0 && (
-                                                <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                            )}
-                                        </>
-                                    );
-                                })()}
+                                    {/* Counter badge */}
+                                    {totalCount > 0 && (
+                                        <span
+                                            className={`text-xs px-2.5 py-0.5 rounded-full font-medium transition-colors border flex-shrink-0 ${
+                                                allDone
+                                                    ? 'bg-emerald-100/80 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300/60 dark:border-emerald-700/60'
+                                                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 shadow-2xs'
+                                            }`}
+                                        >
+                                            {allDone
+                                                ? `✓ ${t('lists.sections.itemsCountAllDone')}`
+                                                : completedCount > 0
+                                                ? t('lists.sections.itemsCount', { completed: completedCount, total: totalCount })
+                                                : t('lists.sections.itemsCountTotal', { count: totalCount })}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Right side buttons */}
+                                {!list?.archived && (
+                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (isCollapsed) {
+                                                    toggleSectionCollapse(sectionKey);
+                                                }
+                                                setQuickAddSectionId(isQuickAdding ? null : sectionKey);
+                                                setQuickAddText('');
+                                            }}
+                                            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                                isQuickAdding
+                                                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                                                    : 'text-gray-400 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 hover:bg-gray-200/60 dark:hover:bg-gray-700/60'
+                                            }`}
+                                            title={t('lists.sections.quickAdd')}
+                                            aria-label={t('lists.sections.quickAdd')}
+                                        >
+                                            <Plus size={18} />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        </SortableContext>
-                    </DndContext>
-                ) : (
-                    <div className="space-y-6">
-                        {(() => {
-                            const groupedItems = groupItemsBySection(activeItems);
-                            const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-                            const hasAnySections = sections.length > 0;
 
-                            return (
-                                <>
-                                    {/* Unsectioned items */}
-                                    {groupedItems.get(undefined) && groupedItems.get(undefined)!.length > 0 && (
-                                        <div>
-                                            {hasAnySections && (
-                                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                                                    {t('lists.sections.unsectioned')}
-                                                </h3>
+                            {/* Collapsible Content */}
+                            {!isCollapsed && (
+                                <div className="mt-2.5 space-y-2">
+                                    {/* Quick Add Form */}
+                                    {isQuickAdding && (
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                handleQuickAdd(section?.id);
+                                            }}
+                                            className="flex gap-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-blue-400/80 dark:border-blue-500/80 shadow-sm animate-in fade-in duration-150"
+                                        >
+                                            <input
+                                                type="text"
+                                                value={quickAddText}
+                                                onChange={(e) => setQuickAddText(e.target.value)}
+                                                placeholder={t('lists.sections.quickAddPlaceholder', { section: section ? section.name : t('lists.sections.unsectioned') })}
+                                                className="flex-1 bg-transparent text-sm text-gray-900 dark:text-gray-100 outline-none px-1"
+                                                autoFocus
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Escape') {
+                                                        setQuickAddSectionId(null);
+                                                        setQuickAddText('');
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                type="submit"
+                                                disabled={!quickAddText.trim()}
+                                                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:cursor-not-allowed"
+                                            >
+                                                {t('lists.sections.quickAddButton')}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setQuickAddSectionId(null);
+                                                    setQuickAddText('');
+                                                }}
+                                                className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xs cursor-pointer"
+                                                aria-label="Cancel"
+                                            >
+                                                ✕
+                                            </button>
+                                        </form>
+                                    )}
+
+                                    {/* Items */}
+                                    {sectionItems.map((item) => (
+                                        <SortableItem
+                                            key={item.id}
+                                            item={item}
+                                            onToggle={list?.archived ? undefined : handleToggle}
+                                            onDelete={list?.archived ? undefined : handleDelete}
+                                            onEdit={list?.archived ? undefined : handleEdit}
+                                            disabled={!isManualSort}
+                                            threeStageMode={threeStageMode}
+                                        />
+                                    ))}
+
+                                    {/* Empty State */}
+                                    {sectionItems.length === 0 && !isQuickAdding && (
+                                        <div className="text-center py-4 px-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm">
+                                            <p>{t('lists.sections.emptySection')}</p>
+                                            {!list?.archived && (
+                                                <p className="text-[11px] sm:text-xs text-gray-400/80 dark:text-gray-500/80 mt-0.5">
+                                                    {t('lists.sections.emptySectionHint')}
+                                                </p>
                                             )}
-                                            <div className="space-y-2">
-                                                {groupedItems.get(undefined)!.map((item) => (
-                                                    <SortableItem
-                                                        key={item.id}
-                                                        item={item}
-                                                        onToggle={list?.archived ? undefined : handleToggle}
-                                                        onDelete={list?.archived ? undefined : handleDelete}
-                                                        onEdit={list?.archived ? undefined : handleEdit}
-                                                        disabled={true}
-                                                        threeStageMode={threeStageMode}
-                                                    />
-                                                ))}
-                                            </div>
                                         </div>
                                     )}
+                                </div>
+                            )}
+                        </div>
+                    );
 
-                                    {/* Sectioned items */}
-                                    {sections.map((section) => {
-                                        const sectionItems = groupedItems.get(section.id) || [];
-                                        return (
-                                            <div key={section.id}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
-                                                        {section.name}
-                                                    </h3>
-                                                    <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    {sectionItems.map((item) => (
-                                                        <SortableItem
-                                                            key={item.id}
-                                                            item={item}
-                                                            onToggle={list?.archived ? undefined : handleToggle}
-                                                            onDelete={list?.archived ? undefined : handleDelete}
-                                                            onEdit={list?.archived ? undefined : handleEdit}
-                                                            disabled={true}
-                                                            threeStageMode={threeStageMode}
-                                                        />
-                                                    ))}
-                                                    {sectionItems.length === 0 && (
-                                                        <p className="text-center text-gray-400 dark:text-gray-600 text-sm py-4 italic">
-                                                            {t('lists.emptyList')}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                    if (isManualSort) {
+                        return (
+                            <DroppableSection sectionId={sectionKey} key={sectionKey} className="min-h-[2.5rem]">
+                                {cardContent}
+                            </DroppableSection>
+                        );
+                    }
 
-                                    {activeItems.length === 0 && (
-                                        <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                    )}
-                                </>
-                            );
-                        })()}
+                    return (
+                        <div key={sectionKey}>
+                            {cardContent}
+                        </div>
+                    );
+                };
+
+                const groupedItems = groupItemsBySection(activeItems);
+                const sections = [...(list?.sections || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                const hasAnySections = sections.length > 0;
+
+                if (!hasAnySections) {
+                    if (sortBy === 'manual') {
+                        return (
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                    <div className="space-y-2">
+                                        {activeItems.map((item) => (
+                                            <SortableItem
+                                                key={item.id}
+                                                item={item}
+                                                onToggle={list?.archived ? undefined : handleToggle}
+                                                onDelete={list?.archived ? undefined : handleDelete}
+                                                onEdit={list?.archived ? undefined : handleEdit}
+                                                threeStageMode={threeStageMode}
+                                            />
+                                        ))}
+                                        {activeItems.length === 0 && (
+                                            <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
+                                        )}
+                                    </div>
+                                </SortableContext>
+                            </DndContext>
+                        );
+                    }
+
+                    return (
+                        <div className="space-y-2">
+                            {activeItems.map((item) => (
+                                <SortableItem
+                                    key={item.id}
+                                    item={item}
+                                    onToggle={list?.archived ? undefined : handleToggle}
+                                    onDelete={list?.archived ? undefined : handleDelete}
+                                    onEdit={list?.archived ? undefined : handleEdit}
+                                    disabled={true}
+                                    threeStageMode={threeStageMode}
+                                />
+                            ))}
+                            {activeItems.length === 0 && (
+                                <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
+                            )}
+                        </div>
+                    );
+                }
+
+                const unsectionedActiveItems = groupedItems.get(undefined) || [];
+                const unsectionedAllItems = list.items.filter(item => !item.sectionId);
+                const showUnsectioned = unsectionedAllItems.length > 0;
+
+                const sectionsList = (
+                    <div className="space-y-4">
+                        {showUnsectioned && renderSectionCard(undefined, unsectionedActiveItems, sortBy === 'manual')}
+                        {sections.map((section) => {
+                            const sectionItems = groupedItems.get(section.id) || [];
+                            return renderSectionCard(section, sectionItems, sortBy === 'manual');
+                        })}
+                        {activeItems.length === 0 && (
+                            <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
+                        )}
                     </div>
-                )
-            }
+                );
+
+                if (sortBy === 'manual') {
+                    return (
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                {sectionsList}
+                            </SortableContext>
+                        </DndContext>
+                    );
+                }
+
+                return sectionsList;
+            })()}
 
             {/* Completed Items Accordion (when hideCompleted is active) */}
             {list.settings?.hideCompleted && completedItems.length > 0 && (

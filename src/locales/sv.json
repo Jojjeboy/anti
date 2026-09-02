@@ -120,7 +120,17 @@
       "deleteMessage": "Är du säker? Objekt i denna sektion kommer att flyttas till 'Utan sektion'.",
       "deleteConfirm": "Ta bort",
       "moveUp": "Flytta upp",
-      "moveDown": "Flytta ner"
+      "moveDown": "Flytta ner",
+      "itemsCount": "{{completed}}/{{total}} klara",
+      "itemsCountAllDone": "Alla klara",
+      "itemsCountTotal": "{{count}} st",
+      "collapse": "Fäll ihop sektion",
+      "expand": "Fäll ut sektion",
+      "quickAdd": "Lägg till i sektionen",
+      "quickAddPlaceholder": "Lägg till i {{section}}...",
+      "quickAddButton": "Lägg till",
+      "emptySection": "Inga punkter i denna sektion än",
+      "emptySectionHint": "Klicka + för att lägga till eller dra punkter hit"
     },
     "importFromList": {
       "buttonTitle": "Lägg till från lista",

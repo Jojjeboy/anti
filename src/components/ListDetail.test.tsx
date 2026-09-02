@@ -487,4 +487,102 @@ describe('ListDetail', () => {
         expect(dragHandles).toHaveLength(3);
     });
 
+    it('toggles section collapse and hides/shows section items', () => {
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'My List',
+                    categoryId: 'cat1',
+                    items: [
+                        { id: 'i1', text: 'Apples', completed: false, sectionId: 'sec1' },
+                    ],
+                    sections: [
+                        { id: 'sec1', name: 'Fruits', order: 0 },
+                    ]
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: mockArchiveList,
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            reorderSections: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+
+        // Item should initially be visible
+        expect(screen.getByText('Apples')).toBeDefined();
+
+        // Click section header button to collapse
+        const collapseBtn = screen.getByLabelText('lists.sections.collapse');
+        fireEvent.click(collapseBtn);
+
+        // Item should now be hidden
+        expect(screen.queryByText('Apples')).toBeNull();
+
+        // Click again to expand
+        const expandBtn = screen.getByLabelText('lists.sections.expand');
+        fireEvent.click(expandBtn);
+
+        // Item should be visible again
+        expect(screen.getByText('Apples')).toBeDefined();
+    });
+
+    it('allows quick-adding an item directly to a section', async () => {
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [
+                {
+                    id: 'list1',
+                    name: 'My List',
+                    categoryId: 'cat1',
+                    items: [],
+                    sections: [
+                        { id: 'sec1', name: 'Produce', order: 0 },
+                    ]
+                }
+            ],
+            updateListItems: mockUpdateListItems,
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: mockArchiveList,
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            reorderSections: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+
+        // Click quick-add button in section header
+        const quickAddBtn = screen.getByLabelText('lists.sections.quickAdd');
+        fireEvent.click(quickAddBtn);
+
+        // Form should be shown
+        const input = screen.getByPlaceholderText('lists.sections.quickAddPlaceholder');
+        expect(input).toBeDefined();
+
+        fireEvent.change(input, { target: { value: 'Carrots' } });
+        const submitBtn = screen.getByText('lists.sections.quickAddButton');
+        fireEvent.click(submitBtn);
+
+        expect(mockUpdateListItems).toHaveBeenCalledWith(
+            'list1',
+            expect.arrayContaining([
+                expect.objectContaining({
+                    text: 'Carrots',
+                    sectionId: 'sec1',
+                    completed: false
+                })
+            ])
+        );
+    });
+
 });

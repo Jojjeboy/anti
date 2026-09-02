@@ -121,7 +121,17 @@
             "deleteMessage": "Are you sure? Items in this section will be moved to 'Unsectioned'.",
             "deleteConfirm": "Delete",
             "moveUp": "Move up",
-            "moveDown": "Move down"
+            "moveDown": "Move down",
+            "itemsCount": "{{completed}}/{{total}} completed",
+            "itemsCountAllDone": "All completed",
+            "itemsCountTotal": "{{count}} items",
+            "collapse": "Collapse section",
+            "expand": "Expand section",
+            "quickAdd": "Add to section",
+            "quickAddPlaceholder": "Add to {{section}}...",
+            "quickAddButton": "Add",
+            "emptySection": "No items in this section yet",
+            "emptySectionHint": "Click + to add or drag items here"
         },
         "importFromList": {
             "buttonTitle": "Add from another list",
