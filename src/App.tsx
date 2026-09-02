@@ -12,6 +12,7 @@ import { StatisticsView } from './components/StatisticsView'
 import { ToastProvider } from './context/ToastContext'
 import { ToastContainer } from './components/ToastContainer'
 import { UpdatePrompt } from './components/UpdatePrompt'
+import { WhatsNewModal } from './components/WhatsNewModal'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -25,6 +26,7 @@ const router = createHashRouter([
                     <Outlet />
                     <ToastContainer />
                     <UpdatePrompt />
+                    <WhatsNewModal />
                 </Layout>
             </ProtectedRoute>
         ),

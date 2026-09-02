@@ -178,7 +178,8 @@
     "name": "Namn",
     "edit": "Redigera",
     "prev": "Föregående",
-    "next": "Nästa"
+    "next": "Nästa",
+    "close": "Stäng"
   },
   "settings": {
     "title": "Inställningar",
@@ -395,5 +396,10 @@
       "listCount": "Listor",
       "sessionCount": "Sessioner"
     }
+  },
+  "whatsNew": {
+    "title": "Vad är nytt? 🎉",
+    "subtitle": "Här är vad som har ändrats sedan du senast öppnade appen:",
+    "dismiss": "Uppfattat!"
   }
 }

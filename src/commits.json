@@ -1,5 +1,10 @@
 [
   {
+    "hash": "7f98d98a2e2b4936555cba9d33f0d4f86d9fc987",
+    "date": "2026-09-02 06:46:12 +0200",
+    "message": "refactor: extract utils, split ListSettingsModal, add 31 tests"
+  },
+  {
     "hash": "6c3d467951e6ecc165988ed5d961dd1738ac6b6e",
     "date": "2026-09-02 06:20:36 +0200",
     "message": "feat: add section collapse and item counter to list view"
@@ -93,10 +98,5 @@
     "hash": "9b9d5c5dce45a54e0b02d04a81bc26e80a6e6e71",
     "date": "2026-05-19 09:36:53 +0200",
     "message": "Fixed statistics"
-  },
-  {
-    "hash": "b7355286700c0a5753fcd5a842848b6552652648",
-    "date": "2026-05-11 15:13:36 +0200",
-    "message": "Updates"
   }
 ]
