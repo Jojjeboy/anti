@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useBlocker, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import type { Item, ListSettings, List } from '../types';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
+import { DndContext, closestCenter, pointerWithin, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, type CollisionDetection, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SortableItem } from './SortableItem';
@@ -278,11 +278,33 @@ export const ListDetail: React.FC = React.memo(() => {
     }, [hash]);
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        }),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
+
+    const collisionDetectionStrategy: CollisionDetection = (args) => {
+        // First, check pointerWithin
+        const pointerCollisions = pointerWithin(args);
+        if (pointerCollisions.length > 0) {
+            // Prioritize sortable item collisions over section container collisions
+            const itemCollision = pointerCollisions.find(
+                (c) => c.id !== '__unsectioned__' && !list?.sections?.some(s => s.id === c.id)
+            );
+            if (itemCollision) {
+                return [itemCollision];
+            }
+            return pointerCollisions;
+        }
+
+        // Fallback to closestCenter
+        return closestCenter(args);
+    };
 
     const [sortBy, setSortBy] = useState<SortMode>('manual');
     const threeStageMode = list?.settings?.threeStageMode ?? false;
@@ -379,12 +401,12 @@ export const ListDetail: React.FC = React.memo(() => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
+        const activeItem = list.items.find((item) => item.id === active.id);
+        if (!activeItem) return;
+
         // Check if dropped ON a section container directly (empty section or section header)
         const overSectionId = list.sections?.find(s => s.id === over.id)?.id;
         const overUnsectioned = over.id === '__unsectioned__';
-
-        const activeItem = list.items.find((item) => item.id === active.id);
-        if (!activeItem) return;
 
         // If dropped on unsectioned directly
         if (overUnsectioned) {
@@ -399,8 +421,7 @@ export const ListDetail: React.FC = React.memo(() => {
 
         // If dropped on a section directly
         if (overSectionId) {
-            const currentSectionId = activeItem.sectionId;
-            if (currentSectionId !== overSectionId) {
+            if (activeItem.sectionId !== overSectionId) {
                 // Move to new section (append to end)
                 const updatedItems = list.items.map(item =>
                     item.id === active.id ? { ...item, sectionId: overSectionId } : item
@@ -412,19 +433,21 @@ export const ListDetail: React.FC = React.memo(() => {
 
         // Dropped on another item
         const overItem = list.items.find((item) => item.id === over.id);
+        if (!overItem) return;
 
-        // Check if we're moving to a different section via item drop
         const activeItemSectionId = activeItem.sectionId;
-        const overItemSectionId = overItem?.sectionId;
+        const overItemSectionId = overItem.sectionId;
 
-        // If moving between sections (dropped on item in different section)
-        if (overItemSectionId !== undefined && activeItemSectionId !== overItemSectionId) {
-            const updatedItems = list.items.map(item =>
-                item.id === active.id ? { ...item, sectionId: overItemSectionId } : item
-            );
-            await updateListItems(list.id, updatedItems);
-        } else if (overItem) {
-            // Reordering within the same section
+        // If moving between different sections (including moving to/from unsectioned)
+        if (activeItemSectionId !== overItemSectionId) {
+            const updatedItem = { ...activeItem, sectionId: overItemSectionId };
+            const remainingItems = list.items.filter(item => item.id !== active.id);
+            const overIndexInRemaining = remainingItems.findIndex(item => item.id === over.id);
+            const newItems = [...remainingItems];
+            newItems.splice(overIndexInRemaining, 0, updatedItem);
+            await updateListItems(list.id, newItems);
+        } else {
+            // Reordering within the same section (or both unsectioned)
             const oldIndex = list.items.findIndex((item) => item.id === active.id);
             const newIndex = list.items.findIndex((item) => item.id === over.id);
             await updateListItems(list.id, arrayMove(list.items, oldIndex, newIndex));
@@ -952,17 +975,37 @@ export const ListDetail: React.FC = React.memo(() => {
                                     )}
 
                                     {/* Items */}
-                                    {sectionItems.map((item) => (
-                                        <SortableItem
-                                            key={item.id}
-                                            item={item}
-                                            onToggle={list?.archived ? undefined : handleToggle}
-                                            onDelete={list?.archived ? undefined : handleDelete}
-                                            onEdit={list?.archived ? undefined : handleEdit}
-                                            disabled={!isManualSort}
-                                            threeStageMode={threeStageMode}
-                                        />
-                                    ))}
+                                    {isManualSort ? (
+                                        <SortableContext items={sectionItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                            <div className="space-y-2">
+                                                {sectionItems.map((item) => (
+                                                    <SortableItem
+                                                        key={item.id}
+                                                        item={item}
+                                                        onToggle={list?.archived ? undefined : handleToggle}
+                                                        onDelete={list?.archived ? undefined : handleDelete}
+                                                        onEdit={list?.archived ? undefined : handleEdit}
+                                                        disabled={!isManualSort}
+                                                        threeStageMode={threeStageMode}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </SortableContext>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {sectionItems.map((item) => (
+                                                <SortableItem
+                                                    key={item.id}
+                                                    item={item}
+                                                    onToggle={list?.archived ? undefined : handleToggle}
+                                                    onDelete={list?.archived ? undefined : handleDelete}
+                                                    onEdit={list?.archived ? undefined : handleEdit}
+                                                    disabled={!isManualSort}
+                                                    threeStageMode={threeStageMode}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
 
                                     {/* Empty State */}
                                     {sectionItems.length === 0 && !isQuickAdding && (
@@ -1002,7 +1045,7 @@ export const ListDetail: React.FC = React.memo(() => {
                 if (!hasAnySections) {
                     if (sortBy === 'manual') {
                         return (
-                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <DndContext sensors={sensors} collisionDetection={collisionDetectionStrategy} onDragEnd={handleDragEnd}>
                                 <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                     <div className="space-y-2">
                                         {activeItems.map((item) => (
@@ -1063,10 +1106,8 @@ export const ListDetail: React.FC = React.memo(() => {
 
                 if (sortBy === 'manual') {
                     return (
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                                {sectionsList}
-                            </SortableContext>
+                        <DndContext sensors={sensors} collisionDetection={collisionDetectionStrategy} onDragEnd={handleDragEnd}>
+                            {sectionsList}
                         </DndContext>
                     );
                 }

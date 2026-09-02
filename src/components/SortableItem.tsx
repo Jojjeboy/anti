@@ -146,7 +146,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                         />
 
                         {!disabled && (
-                            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 touch-none mt-0.5 flex-shrink-0" aria-label="Drag to reorder item">
+                            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 touch-none select-none mt-0.5 flex-shrink-0" aria-label="Drag to reorder item">
                                 <GripVertical size={24} strokeWidth={2.5} />
                             </div>
                         )}

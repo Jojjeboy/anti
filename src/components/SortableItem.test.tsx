@@ -76,4 +76,14 @@ describe('SortableItem', () => {
         const textarea = screen.getByDisplayValue('Köp kaffe');
         expect(textarea).toHaveProperty('disabled', true);
     });
+
+    it('renders drag handle when not disabled', () => {
+        render(<SortableItem item={mockItem} disabled={false} />);
+        expect(screen.getByLabelText('Drag to reorder item')).toBeDefined();
+    });
+
+    it('hides drag handle when disabled is true', () => {
+        render(<SortableItem item={mockItem} disabled={true} />);
+        expect(screen.queryByLabelText('Drag to reorder item')).toBeNull();
+    });
 });

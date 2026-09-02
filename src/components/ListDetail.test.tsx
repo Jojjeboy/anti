@@ -585,4 +585,43 @@ describe('ListDetail', () => {
         );
     });
 
+    it('renders items in a standard list when manual sorting is active', () => {
+        renderComponent();
+        const items = screen.getAllByTestId('sortable-item');
+        expect(items.length).toBeGreaterThan(0);
+    });
+
+    it('renders items inside sections when manual sorting is active', () => {
+        const mockListWithSections: List = {
+            id: 'list1',
+            name: 'Groceries',
+            items: [
+                { id: 'item1', text: 'Apples', completed: false, sectionId: 'sec1' },
+                { id: 'item2', text: 'Bananas', completed: false, sectionId: 'sec1' },
+                { id: 'item3', text: 'Milk', completed: false, sectionId: 'sec2' },
+            ],
+            sections: [
+                { id: 'sec1', name: 'Fruit', order: 0 },
+                { id: 'sec2', name: 'Dairy', order: 1 },
+            ],
+        };
+
+        vi.spyOn(AppContext, 'useApp').mockReturnValue({
+            lists: [mockListWithSections],
+            updateListItems: vi.fn(),
+            deleteItem: vi.fn(),
+            updateListName: vi.fn(),
+            updateListSettings: vi.fn(),
+            updateListAccess: vi.fn(),
+            archiveList: vi.fn(),
+            addSection: vi.fn(),
+            updateSection: vi.fn(),
+            deleteSection: vi.fn(),
+            reorderSections: vi.fn(),
+        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+
+        renderComponent();
+        const items = screen.getAllByTestId('sortable-item');
+        expect(items).toHaveLength(3);
+    });
 });

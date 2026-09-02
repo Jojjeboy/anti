@@ -1,5 +1,10 @@
 [
   {
+    "hash": "3331e6ed6118f525cb5d6fd1378a7f603f2d58c0",
+    "date": "2026-09-02 07:21:57 +0200",
+    "message": "feat: lägg till WhatsNewModal för att visa användare de senaste ändringarna"
+  },
+  {
     "hash": "7f98d98a2e2b4936555cba9d33f0d4f86d9fc987",
     "date": "2026-09-02 06:46:12 +0200",
     "message": "refactor: extract utils, split ListSettingsModal, add 31 tests"
@@ -93,10 +98,5 @@
     "hash": "990551ede2ac02b68af04d7d9ecc555e396c972a",
     "date": "2026-05-21 06:28:11 +0200",
     "message": "feat: add functionality to import items from another list"
-  },
-  {
-    "hash": "9b9d5c5dce45a54e0b02d04a81bc26e80a6e6e71",
-    "date": "2026-05-19 09:36:53 +0200",
-    "message": "Fixed statistics"
   }
 ]
